@@ -1,48 +1,51 @@
-# Entrega do Comando 01
+# Correção e validação do Comando 01
 
-## Estado inicial e branches
+O repositório foi inicializado com README no commit
+68821118edfb5a1e1d1a19f89f01fd8270718fc4; main permanece nesse ponto.
+Toda a implementação e suas correções estão em dev/comando-01-fundacao, PR nº 1.
+Sem merge, deploy, integração ATENA OS/Manus, migração de legados ou inclusão da UTU.
 
-O GitHub informou repositório privado vazio (size 0), sem branches e com padrão
-Geoportal. A API de criação de arquivo inicializou Geoportal com apenas README.md,
-commit 68821118edfb5a1e1d1a19f89f01fd8270718fc4.
-main foi criada nesse mesmo commit, sem código funcional.
-dev/comando-01-fundacao partiu do mesmo ponto e recebe toda a implementação.
+## Correção do TS2769
 
-A configuração da branch padrão ainda requer alteração de Geoportal para main em
-Settings → Branches/Default branch. O conector disponível não oferece edição dessa
-configuração. Não excluir Geoportal antes de mudar o padrão.
-Configure proteção de main e checks obrigatórios antes da integração.
+O helper rows aceitava unknown[], incompatível com ExecuteValues do mysql2.
+Agora SqlParameter restringe parâmetros a string, number, boolean, Date, Buffer
+ou null. Não há any, supressão de erro ou relaxamento do TypeScript.
+Consultas continuam parametrizadas.
 
-## Verificações e limites do ambiente
+## Dependências reproduzíveis
 
-- Nove testes de catálogo, isolamento, permissões e criptografia passaram ao executar
-  node tests/core.test.ts. npm test também terminou sem falhas.
-- npm install foi tentado e falhou por conexão/EPERM no proxy de rede do ambiente.
-- npm run build foi tentado e parou em tsc: not found, pois as dependências não puderam ser instaladas.
-- Compilação completa, interface no navegador, testes HTTP com MySQL, migrações
-  reais e npm audit ainda não foram validados localmente.
-- CI foi preparada para executar essas verificações no GitHub; resultado remoto
-  precisa ser conferido na PR. Não considerar verificações pendentes como aprovadas.
-- Não há lockfile de dependências validado. A CI resolve versões declaradas,
-  gera lock temporário para auditoria e deve ser substituída por npm ci após
-  registrar um lock revisado. Esta limitação bloqueia declarar build reproduzível.
+package-lock.json v3 gerado pelo npm no runner GitHub e versionado (205 pacotes).
+Manifesto raiz e dependências do lock conferidos.
+CI e instruções locais usam npm ci; cache baseado no lockfile.
+CI verifica que package.json e package-lock.json não mudam durante a execução.
+A configuração final não gera lock temporário.
 
-## Entregáveis
+## Evidência inicial da correção
 
-client: aplicação React, login, navegação superior, seletor e visão corporativa.
-server: API versionada, autenticação independente, autorização, banco e auditoria.
-shared: catálogo dos cinco módulos e cinco empresas, tipos comuns.
-db/migrations: schema versionado com up/down.
-scripts: migração protegida e seed exclusivamente sintético.
-tests: políticas/criptografia e integração HTTP/MySQL.
-.github/workflows: compilação, testes, migrações e auditoria.
-docs: arquitetura, API, segurança e este registro de entrega.
+[Foundation CI — execução 42117254283](https://github.com/jandersontameirao-svg/Gest-o-Integrada-/actions/runs/42117254283)
+concluiu com sucesso no commit 248265100a8b52f8edc2ca8b2d360bec71542eaa:
 
-## Pendências para revisão
+- TypeScript estrito e bundle React/Vite.
+- 9 testes unitários; 7 testes HTTP de integração com MySQL 8.4.
+- Migração up, repetição idempotente e seed sintético.
+- Rollback down explícito e reaplicação up.
+- Auditoria npm: zero vulnerabilidades.
 
-Conferir o Plano Mestre V03 (não fornecido/não localizado), validar identidade visual
-com manual oficial, passar build/integração/auditoria, registrar lockfile e alterar
-branch padrão para main. Administração de usuários/cargos, MFA, recuperação de conta,
-funcionalidades de negócio e migração dos legados estão fora desta fundação.
-Não houve deploy, uso de Manus, integração com ATENA OS, alteração de aplicativo
-existente ou inclusão da UTU. Comando 02 aguarda aprovação.
+Essa execução gerou o lockfile. A configuração definitiva usa npm ci com o lock
+versionado e adiciona seed e os sete testes de integração novamente após down/up.
+Consulte os checks do último commit e o comentário de evidências na PR nº 1 para
+a confirmação da rodada definitiva; o resultado inicial não substitui o final.
+
+O ambiente local continua sem acesso funcional ao registro npm. Verificações com
+dependências e MySQL são executadas no runner GitHub, sem alegação de execução local.
+Os nove testes unitários também passaram localmente.
+
+## Pendências de produto
+
+Plano Mestre V03 não fornecido/não localizado: conferir aderência.
+Marca tipográfica provisória: validar com manual oficial.
+Padrão inicial informado como Geoportal: revisar configuração para main e proteção.
+Administração de usuários/cargos, MFA, recuperação de conta e requisitos operacionais
+permanecem fora desta fundação; veja architecture.md e security.md.
+Comando 02 não iniciado.
+

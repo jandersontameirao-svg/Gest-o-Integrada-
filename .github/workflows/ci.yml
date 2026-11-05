@@ -32,10 +32,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+          cache: npm
       - name: Instalar dependências
-        run: npm install --ignore-scripts
-      - name: Exportar lockfile para versionamento
-        run: node -e "console.log('LOCKFILE_BASE64='+require('fs').readFileSync('package-lock.json').toString('base64'))"
+        run: npm ci
       - name: Configuração descartável de testes
         run: touch .env
       - run: npm run build
@@ -51,8 +50,12 @@ jobs:
           ALLOW_DESTRUCTIVE_ROLLBACK: 'yes'
       - name: Reaplicar após rollback
         run: npm run migrate
-      - name: Auditoria de dependências
+      - name: Validar dados e API após rollback/reaplicação
         run: |
-          npm install --package-lock-only --ignore-scripts
-          npm audit --audit-level=high
+          npm run seed
+          npm run test:integration
+      - name: Auditoria de dependências
+        run: npm audit --audit-level=high
+      - name: Lockfile preservado
+        run: git diff --exit-code -- package.json package-lock.json
 
