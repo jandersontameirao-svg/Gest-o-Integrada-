@@ -4,7 +4,9 @@ export const pool = mysql.createPool({
  user: process.env.DB_USER, password: process.env.DB_PASSWORD, database: process.env.DB_NAME,
  connectionLimit: 5, multipleStatements: false, timezone: 'Z',
 });
-export async function rows<T>(sql: string, args: unknown[] = [], connection: PoolConnection | typeof pool = pool): Promise<T[]> {
+export type SqlParameter = string | number | boolean | Date | Buffer | null;
+export async function rows<T>(sql: string, args: SqlParameter[] = [], connection: PoolConnection | typeof pool = pool): Promise<T[]> {
  const [result] = await connection.execute<RowDataPacket[]>(sql, args);
  return result as T[];
 }
+

@@ -33,7 +33,9 @@ jobs:
         with:
           node-version: '24'
       - name: Instalar dependências
-        run: npm install --ignore-scripts --package-lock=false
+        run: npm install --ignore-scripts
+      - name: Exportar lockfile para versionamento
+        run: node -e "console.log('LOCKFILE_BASE64='+require('fs').readFileSync('package-lock.json').toString('base64'))"
       - name: Configuração descartável de testes
         run: touch .env
       - run: npm run build
@@ -53,3 +55,4 @@ jobs:
         run: |
           npm install --package-lock-only --ignore-scripts
           npm audit --audit-level=high
+
