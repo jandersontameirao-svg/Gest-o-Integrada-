@@ -1,3 +1,123 @@
+# Comando 02C — rodada concentrada de Estratégia
+
+**Estado: incremento funcional parcial; 02B não encerrado e não homologado integralmente.**
+Mesma branch e PR #3 em rascunho, dependente da PR #1. Nenhum merge/deploy.
+As matrizes dos incrementos anteriores abaixo são registros históricos; esta seção
+é o estado mais recente. Decisões D01–D13 permanecem aplicáveis.
+
+## Entregue nesta rodada
+
+### Alinhamento e consolidação
+
+- Relações objetivo de empresa → unidade → Holding, com vigência explícita,
+  edição autorizada nos dois planos, bloqueio de sobreposição e CAS de revisão.
+  Não é possível saltar nível, criar ciclo, vincular objetivo estrangeiro ou
+  atravessar uma transferência na mesma vigência. Dividir intervalos nesse caso.
+- As relações entram nos snapshots aprovados e no histórico de alterações.
+  Remoção/revisão exige plano em elaboração; não apaga baselines anteriores.
+- Catálogo corporativo de indicadores com nome, unidade de medida e declaração
+  explícita de agregabilidade, criado por diretor autorizado da Holding.
+- Publicação controlada de metas anuais e observações mensais de KPI de empresas.
+  Holding/unidade não publicam cópias para soma: evita dupla contagem entre níveis.
+  Uma contribuição por empresa/indicador/tipo/competência/moeda, inclusive entre
+  planos diferentes. Índice único e lock da empresa protegem concorrência.
+- Consulta por empresa/unidade/Holding e intervalo. Decimais com seis casas somados
+  como inteiros exatos, sem somas binárias de ponto flutuante. Metas anuais e valores
+  mensais não são misturados; cada período, moeda e tipo gera grupo próprio.
+- Valores qualitativos/não agregáveis não recebem soma. Valor ausente não é zero.
+  Não há conversão cambial: BRL/USD/XXX permanecem separados. XXX é somente medida
+  não monetária declarada pelo publicador; a classificação precisa de homologação.
+- Proveniência: plano/versão, fonte/revisão, empresa, competência, moeda, unidade,
+  publicador e horário. A unidade é a vigente no **último dia da competência**,
+  sem rateio intramês. Republicar preserva a unidade registrada originalmente.
+  Sem vínculo histórico determinável, a publicação é recusada.
+- Editar valor publicado marca contribuição desatualizada e impede total do grupo
+  até republicação. Competência, vínculo e moeda/indicador publicados não podem
+  ser trocados silenciosamente. Exclusão de fonte publicada é bloqueada.
+- Consolidação revalida leitura de cada empresa na competência, respeitando
+  negações explícitas; exportação revalida export de cada contribuição. O relatório
+  informa cobertura limitada a contribuições publicadas/autorizadas, sem anunciar
+  total global completo. Não expõe linhas negadas por somas indiretas.
+
+### Execução e variantes originais
+
+Port real de ProjetosEmpresa, PlanoAcaoEmpresa, GanttChart, AnaliseSwoTtows,
+CincoForcasPorter, AnaliseRbvVrio e AnaliseStakeholders. Ver
+[manifesto de fonte e adaptação](SGE_PORT_COMANDO_02C.json).
+
+- Projetos estratégicos: criação, edição, filtros, datas, responsáveis, status,
+  gráfico Gantt; objetivo, meta e KPI vinculados ao mesmo plano.
+- Ações: criação, edição, exclusão sem dependentes, responsável, prazo, custo
+  estimado BRL analítico, observações, vínculos, lista/kanban e mudança de status.
+  O adaptador mescla o registro confirmado em mudanças parciais do kanban, para
+  não apagar descrição, prazo ou responsáveis. Datas são validadas no horizonte.
+- Projetos/ações continuam entradas estratégicas, sem cadastros operacionais,
+  lançamentos financeiros ou contratos. Campo de vínculo operacional ativo é
+  recusado; futuro relacionamento deve usar referência ao cadastro mestre externo
+  ao domínio Estratégia, sem duplicar projeto.
+- SWOT/TOWS mantém quatro quadrantes, impacto e estratégia por item, com
+  persistência/CAS/histórico. A matriz F-O/F-A/W-O/W-A é explicativa na origem;
+  não é anunciada como motor automático de cruzamento/alinhamento.
+- Porter completo conserva cinco forças/textos/intensidades/síntese. Corrigidos
+  selects sem onChange, chave de intensidade divergente e barras estáticas de 33%.
+  Barras agora seguem baixa/média/alta; nenhum sucesso local simulado.
+- RBV/VRIO completo conserva campos booleanos e matriz; Stakeholders completo
+  conserva poder/interesse/estratégia e matriz de quadrantes. Documentos separados
+  das variantes Lite para não converter/perder campos ou presumir equivalência.
+- Correção demonstrável RBV: recurso não raro não recebe vantagem sustentável
+  apenas por inimitabilidade. A classificação passa a paridade quando valioso,
+  organizado e não raro; demais divergências metodológicas exigem homologação.
+- Todos usam persistência autenticada, recarga, edição, revisão, ciclos e snapshots
+  existentes. Botões Salvar das variantes agora persistem; Voltar navega de fato.
+
+## Matriz de paridade — atualização 02C
+
+| Capacidade/fonte | Estado | Evidência e limite |
+|---|---|---|
+| Alinhamento de objetivos entre níveis | Funcional na fatia | HTTP hierarquia/vigência/snapshot/remoção/negação; sem alinhamento automático de OKRs |
+| Consolidação gerencial | Funcional com limites declarados | Testes exatos 0,1 + 0,2, origem histórica após transferência, fonte editada, deduplicação entre planos, export e negação |
+| ProjetosEmpresa / GanttChart | Portado com persistência | API e navegador criam/editam/recarregam; decurso do prazo não equivale a progresso físico |
+| PlanoAcaoEmpresa | Portado com persistência | Lista/kanban e campos preservados; navegador salva/recarrega ação vinculada; custo BRL só analítico |
+| AnaliseSwoTtows | Portado com persistência corrigida | Salvar/recarregar/editar/histórico; matriz de estratégias original explicativa |
+| CincoForcasPorter | Portado/adaptado | Texto/intensidades dinâmicas, salvar/editar/recarga/versionamento HTTP |
+| AnaliseRbvVrio / AnaliseStakeholders | Portado/adaptado | Campos originais, matrizes e persistência/versionamento HTTP; homologar interpretação |
+| Sete variantes Lite e ciclos/objetivos/metas/KPIs | Mantidos do incremento 2 | Regressão CI; não removidos nem sobrescritos pelas variantes completas |
+| PESTEL completo com planos integrados | Pendente | Lite permanece funcional; componentes auxiliares ainda sem port integral |
+| BSC/OKR alternativas completas | Parcial | Lite persistente; variantes adicionais não certificadas, sem alinhamento automático |
+| Gestão autônoma de riscos/respostas/matriz 5x5 | Pendente | Impacto/probabilidade em objetivos/projetos mantidos; não equivalem ao módulo GestaoRiscos |
+| PDF original e relatórios especializados | Pendente | JSON autorizado funcional; nenhum botão PDF anunciado como pronto |
+| Comentários/anexos/templates/configurações | Pendente | Sem backend/UI completa ou sucesso simulado |
+| Orçamento/cenários/DRE/balanço/capital de giro | Pendente | Nenhum segundo financeiro; fórmulas da auditoria 02A ainda aguardam port/homologação |
+| IA/ATENA/Manus | Não ativados | Nenhum provider externo ou conexão operacional |
+
+## Verificação, riscos e transição
+
+CI: TypeScript/Vite, unitários, integração MySQL isolada, migrações/checksum/rollback
+004→001 e reaplicação, regressão dos incrementos 1/2, Playwright com formulários
+originais, download JSON e bloqueio de chamadas externas, npm audit e lockfile.
+Fixtures exclusivamente sintéticas. Evidências e commit final constam no comentário
+02C da PR #3; aprovação de CI não equivale à homologação completa de métodos/UX.
+
+A suíte 02C usa instância de API isolada com os limites de produção mantidos:
+a soma dos cenários anteriores ultrapassava a quota por IP. Não há bypass de
+autorização ou desativação do rate limit. As tabelas novas não importam dados reais.
+
+Pendências importantes: homologar agregabilidade/unidades/moedas e convenção de
+competência; remapeamento/cancelamento controlado de contribuições publicadas;
+catálogo de métricas ainda sem edição/desativação; sem conversão FX ou média
+ponderada/razões; limites de paginação/performance em grandes bases; composição
+entre ciclos e responsividade/acessibilidade completas; auditoria imutável SQL e
+retenção externa. Autorização histórica de leitura não migra usuários nem produz
+backfill inventado. Não foi usado o SGE de produção.
+
+[Relatório de transição para Gestão de Contratos](TRANSICAO_GESTAO_CONTRATOS.md).
+Contratos NÃO foi iniciado. Esta rodada termina com a PR aberta para revisão do
+CEO e pendências explícitas; não declara conclusão integral da Estratégia.
+
+---
+
+## Registro histórico do incremento 2
+
 # Implementação do Comando 02B — incremento 2
 
 **Estado geral: PARCIAL, com port funcional real do SGE. Sem encerramento do 02B.**

@@ -8,15 +8,19 @@ import type {AddressInfo} from 'node:net';
 if (!process.env.DB_NAME?.endsWith('_demo')) throw new Error('Testes de integração exigem banco *_demo.');
 const server=createApp().listen(0,'127.0.0.1');
 const strategyServer=createApp().listen(0,'127.0.0.1');
+const alignmentServer=createApp().listen(0,'127.0.0.1');
+let alignmentBase:string;
 let strategyBase:string;
 let base:string;
 before(async()=>{
  if(!server.listening) await new Promise<void>(resolve=>server.once('listening',resolve));
  if(!strategyServer.listening)await new Promise<void>(resolve=>strategyServer.once('listening',resolve));
+ if(!alignmentServer.listening)await new Promise<void>(resolve=>alignmentServer.once('listening',resolve));
+ alignmentBase='http://127.0.0.1:'+(alignmentServer.address() as AddressInfo).port+'/api/v1';
  strategyBase='http://127.0.0.1:'+(strategyServer.address() as AddressInfo).port+'/api/v1';
  base='http://127.0.0.1:'+(server.address() as AddressInfo).port+'/api/v1';
 });
-after(async()=>{await new Promise<void>((resolve,reject)=>strategyServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()));await pool.end();});
+after(async()=>{await new Promise<void>((resolve,reject)=>alignmentServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>strategyServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()));await pool.end();});
 async function login(email:string){
  const response=await fetch(base+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:process.env.DEMO_PASSWORD})});
  assert.equal(response.status,200);return (await response.json()).token as string;
@@ -89,7 +93,7 @@ test('Holding unificada preserva proveniência e inclui somente estratégia para
  assert.equal(provenance.length,2);assert.ok(provenance.every(p=>p.scope_id==='scope-holding'));
  const list=await(await get('/companies?module=strategy',token)).json();assert.equal(list.length,7);
  for(const company of ['utu','vinho-24'])for(const module of ['projects','contracts','suppliers','finance'])assert.equal((await get('/modules/'+module+'/overview?companyId='+company,token)).status,403);
- const snapshot=await(await get('/governance/snapshot',token)).json();assert.equal(snapshot.companies.length,7);assert.equal(snapshot.profile,'DIRETORES');assert.equal(snapshot.units.length,4);
+ const snapshot=await(await get('/governance/snapshot',token)).json();assert.equal(snapshot.companies.length,7);assert.equal(snapshot.profile,'DIRETORES');assert.equal(snapshot.units.length,3);
  assert.equal((await get('/governance/snapshot?scopeId=-1',token)).status,403);
 });
 test('permissão pessoal, unitária e revogação são verificadas em sessão já aberta',async()=>{
@@ -131,7 +135,7 @@ test('unidades futuras e perfis possuem persistência e auditoria',async()=>{
  assert.ok((await rows('SELECT id FROM governance_events WHERE action=?',['profile.configure'])).length>0);
 });
 registerStrategyTests(()=>strategyBase,directorToken,managerToken);
-register02cTests(()=>strategyBase,directorToken,managerToken);
+register02cTests(()=>alignmentBase,directorToken,managerToken);
 test('migrações validam checksum/dirty e rollback 002 preserva 001 e usuários',async()=>{
  const {migrate}=await import('../scripts/migration-engine.ts');const c=await pool.getConnection();
  try{

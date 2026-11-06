@@ -22,4 +22,4 @@ CREATE TABLE strategy_facts (
  FOREIGN KEY(origin_unit_id) REFERENCES business_units(id), FOREIGN KEY(published_by) REFERENCES users(id),
  UNIQUE(scope_id,metric_id,measure,period_start,period_end,currency)
 );
-ALTER TABLE strategy_documents MODIFY kind ENUM('porter','stakeholders','vrio','bsc','okr','swot','pestel','tows') NOT NULL;
+ALTER TABLE strategy_documents MODIFY kind ENUM('porter','stakeholders','vrio','bsc','okr','swot','pestel','tows','porter-full','vrio-full','stakeholders-full') NOT NULL;
