@@ -1,16 +1,17 @@
+import {useStrategy} from "../../strategy/context.tsx";
 import { useAuth } from "../../strategy/legacy.tsx";
-import { Button } from "../components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
-import { Textarea } from "../components/ui/textarea";
+import { Button } from "../components/ui/button.tsx";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card.tsx";
+import { Input } from "../components/ui/input.tsx";
+import { Label } from "../components/ui/label.tsx";
+import { Textarea } from "../components/ui/textarea.tsx";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../components/ui/select";
+} from "../components/ui/select.tsx";
 import {
   Dialog,
   DialogContent,
@@ -18,8 +19,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../components/ui/dialog";
-import { Badge } from "../components/ui/badge";
+} from "../components/ui/dialog.tsx";
+import { Badge } from "../components/ui/badge.tsx";
 import { trpc } from "../../strategy/legacy.tsx";
 import { CheckCircle2, Clock, Circle, AlertCircle, Plus, Pencil, Trash2, Target, FolderKanban, DollarSign, User, Calendar as CalendarIcon, LayoutList, LayoutGrid, Building2 } from "lucide-react";
 import { useLocation } from "../../strategy/navigation.tsx";
@@ -31,7 +32,9 @@ interface PlanoAcaoEmpresaProps {
 }
 
 export default function PlanoAcaoEmpresa({ empresaId }: PlanoAcaoEmpresaProps) {
+  const ctx=useStrategy();
   const { user } = useAuth();
+  const canEdit=user?.role==='gestor';
   const [, setLocation] = useLocation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingAcao, setEditingAcao] = useState<any>(null);
@@ -80,25 +83,27 @@ export default function PlanoAcaoEmpresa({ empresaId }: PlanoAcaoEmpresaProps) {
   });
 
   const [formData, setFormData] = useState({
+    metaId:"",kpiId:"",
     descricao: "",
     responsavel: "",
     prazo: "",
     custo: "",
     status: "pendente" as "pendente" | "em_andamento" | "concluida" | "cancelada",
-    objetivoId: undefined as string | undefined,
-    projetoId: undefined as string | undefined,
+    objetivoId: null as string | null,
+    projetoId: null as string | null,
     observacoes: "",
   });
 
   const resetForm = () => {
     setFormData({
+      metaId:"",kpiId:"",
       descricao: "",
       responsavel: "",
       prazo: "",
       custo: "",
       status: "pendente",
-      objetivoId: undefined,
-      projetoId: undefined,
+      objetivoId: null,
+      projetoId: null,
       observacoes: "",
     });
   };
@@ -106,13 +111,14 @@ export default function PlanoAcaoEmpresa({ empresaId }: PlanoAcaoEmpresaProps) {
   const handleEdit = (acao: any) => {
     setEditingAcao(acao);
     setFormData({
+      metaId:acao.metaId||"",kpiId:acao.kpiId||"",
       descricao: acao.descricao || "",
       responsavel: acao.responsavel || "",
       prazo: acao.prazo ? new Date(acao.prazo).toISOString().split('T')[0] : "",
                       custo: acao.custo?.toString() || "",
       status: acao.status || "pendente",
-      objetivoId: acao.objetivoId || undefined,
-      projetoId: acao.projetoId || undefined,
+      objetivoId: acao.objetivoId || null,
+      projetoId: acao.projetoId || null,
       observacoes: acao.observacoes || "",
     });
     setDialogOpen(true);
@@ -223,7 +229,7 @@ export default function PlanoAcaoEmpresa({ empresaId }: PlanoAcaoEmpresaProps) {
               Matriz de Risco
             </Button>
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
+              <DialogTrigger asChild disabled={!canEdit}>
               <Button onClick={() => { setEditingAcao(null); resetForm(); }}>
                 <Plus className="mr-2 h-4 w-4" />
                 Nova Ação
@@ -236,7 +242,7 @@ export default function PlanoAcaoEmpresa({ empresaId }: PlanoAcaoEmpresaProps) {
                   {editingAcao ? "Atualize os dados da ação" : "Cadastre uma nova ação do plano"}
                 </DialogDescription>
               </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4"><div className="grid grid-cols-2 gap-3"><label>Meta vinculada<select aria-label="Meta vinculada" value={formData.metaId} onChange={e=>setFormData({...formData,metaId:e.target.value})}><option value="">Sem vínculo</option>{ctx.data.entries.filter(e=>e.kind==='target').map(e=><option key={e.id} value={e.id}>{String(e.payload.ano)} · {String(e.payload.metaAnual)}</option>)}</select></label><label>Indicador vinculado<select aria-label="Indicador vinculado" value={formData.kpiId} onChange={e=>setFormData({...formData,kpiId:e.target.value})}><option value="">Sem vínculo</option>{ctx.data.entries.filter(e=>e.kind==='kpi').map(e=><option key={e.id} value={e.id}>{String(e.payload.nome)}</option>)}</select></label></div>
                 <div>
                   <Label htmlFor="descricao">Descrição *</Label>
                   <Textarea
@@ -308,7 +314,7 @@ export default function PlanoAcaoEmpresa({ empresaId }: PlanoAcaoEmpresaProps) {
                     <Label htmlFor="objetivoId">Vincular a Objetivo</Label>
                     <Select
                       value={formData.objetivoId?.toString() || "none"}
-                      onValueChange={(value) => setFormData({ ...formData, objetivoId: value === "none" ? undefined : value })}
+                      onValueChange={(value) => setFormData({ ...formData, objetivoId: value === "none" ? null : value })}
                     >
                       <SelectTrigger id="objetivoId">
                         <SelectValue placeholder="Selecione (opcional)" />
@@ -328,7 +334,7 @@ export default function PlanoAcaoEmpresa({ empresaId }: PlanoAcaoEmpresaProps) {
                     <Label htmlFor="projetoId">Vincular a Projeto</Label>
                     <Select
                       value={formData.projetoId?.toString() || "none"}
-                      onValueChange={(value) => setFormData({ ...formData, projetoId: value === "none" ? undefined : value })}
+                      onValueChange={(value) => setFormData({ ...formData, projetoId: value === "none" ? null : value })}
                     >
                       <SelectTrigger id="projetoId">
                         <SelectValue placeholder="Selecione (opcional)" />
@@ -572,14 +578,14 @@ export default function PlanoAcaoEmpresa({ empresaId }: PlanoAcaoEmpresaProps) {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleEdit(acao)}
+                            disabled={!canEdit} onClick={() => handleEdit(acao)}
                           >
                             <Pencil className="h-4 w-4" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleDelete(acao.id)}
+                            disabled={!canEdit} onClick={() => handleDelete(acao.id)}
                           >
                             <Trash2 className="h-4 w-4 text-destructive" />
                           </Button>
@@ -600,7 +606,7 @@ export default function PlanoAcaoEmpresa({ empresaId }: PlanoAcaoEmpresaProps) {
             onEdit={handleEdit}
             onDelete={handleDelete}
             onStatusChange={(id, status) => {
-              updateMutation.mutate({ id, status });
+              if(canEdit) updateMutation.mutate({ id, status });
             }}
           />
         )}

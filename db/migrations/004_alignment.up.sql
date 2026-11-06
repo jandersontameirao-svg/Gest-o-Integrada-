@@ -1,6 +1,6 @@
 CREATE TABLE strategy_objective_links (
  child_id CHAR(36) NOT NULL, parent_id CHAR(36) NOT NULL,
- valid_from DATE NOT NULL, valid_to DATE NOT NULL, created_by CHAR(36) NOT NULL,
+ valid_from DATE NOT NULL, valid_to DATE NOT NULL, revision INT NOT NULL DEFAULT 1, created_by CHAR(36) NOT NULL,
  PRIMARY KEY(child_id,valid_from), FOREIGN KEY(child_id) REFERENCES strategy_entries(id),
  FOREIGN KEY(parent_id) REFERENCES strategy_entries(id), FOREIGN KEY(created_by) REFERENCES users(id),
  CHECK(valid_to>=valid_from), INDEX(parent_id)

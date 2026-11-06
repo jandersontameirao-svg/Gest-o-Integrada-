@@ -1,15 +1,16 @@
-import { Button } from "../components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
-import { Textarea } from "../components/ui/textarea";
+import {useStrategy} from "../../strategy/context.tsx";
+import { Button } from "../components/ui/button.tsx";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card.tsx";
+import { Input } from "../components/ui/input.tsx";
+import { Label } from "../components/ui/label.tsx";
+import { Textarea } from "../components/ui/textarea.tsx";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../components/ui/select";
+} from "../components/ui/select.tsx";
 import {
   Dialog,
   DialogContent,
@@ -17,9 +18,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../components/ui/dialog";
-import { Badge } from "../components/ui/badge";
-import { GanttChart } from "../components/GanttChart";
+} from "../components/ui/dialog.tsx";
+import { Badge } from "../components/ui/badge.tsx";
+import { GanttChart } from "../components/GanttChart.tsx";
 import { trpc } from "../../strategy/legacy.tsx";
 import { useAuth } from "../../strategy/legacy.tsx";
 import { FolderKanban, Plus, Pencil, Trash2, Building2, AlertCircle, Calendar } from "lucide-react";
@@ -32,6 +33,7 @@ interface ProjetosEmpresaProps {
 }
 
 export default function ProjetosEmpresa({ empresaId }: ProjetosEmpresaProps) {
+  const ctx=useStrategy();
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -78,6 +80,7 @@ export default function ProjetosEmpresa({ empresaId }: ProjetosEmpresaProps) {
   });
 
   const [formData, setFormData] = useState({
+    metaId:"",kpiId:"",
     objetivoId: "",
     nome: "",
     descricao: "",
@@ -91,6 +94,7 @@ export default function ProjetosEmpresa({ empresaId }: ProjetosEmpresaProps) {
 
   const resetForm = () => {
     setFormData({
+      metaId:"",kpiId:"",
       objetivoId: "",
     nome: "",
       descricao: "",
@@ -129,6 +133,7 @@ export default function ProjetosEmpresa({ empresaId }: ProjetosEmpresaProps) {
   const handleEdit = (projeto: any) => {
     setEditingProjeto(projeto);
     setFormData({
+      metaId:projeto.metaId||"",kpiId:projeto.kpiId||"",
       objetivoId: projeto.objetivoId || "",
       nome: projeto.nome,
       descricao: projeto.descricao || "",
@@ -217,7 +222,7 @@ export default function ProjetosEmpresa({ empresaId }: ProjetosEmpresaProps) {
                     Preencha os dados do projeto estratégico
                   </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4"><div className="grid grid-cols-2 gap-3"><label>Meta vinculada<select aria-label="Meta vinculada" value={formData.metaId} onChange={e=>setFormData({...formData,metaId:e.target.value})}><option value="">Sem vínculo</option>{ctx.data.entries.filter(e=>e.kind==='target').map(e=><option key={e.id} value={e.id}>{String(e.payload.ano)} · {String(e.payload.metaAnual)}</option>)}</select></label><label>Indicador vinculado<select aria-label="Indicador vinculado" value={formData.kpiId} onChange={e=>setFormData({...formData,kpiId:e.target.value})}><option value="">Sem vínculo</option>{ctx.data.entries.filter(e=>e.kind==='kpi').map(e=><option key={e.id} value={e.id}>{String(e.payload.nome)}</option>)}</select></label></div>
                   <div><Label htmlFor="strategic-objective">Objetivo estratégico</Label><select id="strategic-objective" value={formData.objetivoId} onChange={e=>setFormData({...formData,objetivoId:e.target.value})}><option value="">Sem vínculo</option>{objetivos?.map(o=><option key={o.id} value={o.id}>{o.titulo}</option>)}</select></div>
 <div>
                     <Label htmlFor="nome">Nome do Projeto *</Label>
@@ -479,7 +484,7 @@ export default function ProjetosEmpresa({ empresaId }: ProjetosEmpresaProps) {
                       {projeto.dataInicio && projeto.dataFim && (
                         <div className="mb-3">
                           <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                            <span>Progresso</span>
+                            <span>Decurso do prazo (não execução física)</span>
                             <span>{getProgressPercentage(projeto.dataInicio, projeto.dataFim, projeto.status)}%</span>
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2">
@@ -519,7 +524,7 @@ export default function ProjetosEmpresa({ empresaId }: ProjetosEmpresaProps) {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleEdit(projeto)}
+                          aria-label={"Editar projeto "+projeto.nome} onClick={() => handleEdit(projeto)}
                         >
                           <Pencil className="h-4 w-4" />
                         </Button>

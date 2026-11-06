@@ -1,8 +1,8 @@
 import { useLocation } from "../../strategy/navigation.tsx";
 import { ArrowLeft, Building2, Lightbulb, Plus, Trash2 } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import { Textarea } from "../components/ui/textarea";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card.tsx";
+import { Button } from "../components/ui/button.tsx";
+import { Textarea } from "../components/ui/textarea.tsx";
 import { trpc } from "../../strategy/legacy.tsx";
 import {useDocument,ReadOnly,useStrategy} from "../../strategy/context.tsx";
 
@@ -203,8 +203,8 @@ export default function AnaliseSwoTtows() {
 
         {/* Botões de Ação */}
         <div className="flex gap-2">
-          <Button variant="outline">Cancelar</Button>
-          <Button className="bg-orange-600 hover:bg-orange-700">Salvar Análise</Button>
+          <Button variant="outline" onClick={()=>setLocation("/")}>Voltar ao painel</Button>
+          <Button className="bg-orange-600 hover:bg-orange-700" onClick={()=>void save()}>Salvar Análise</Button>
         </div>
       </div>
     </div></ReadOnly>
