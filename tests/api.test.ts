@@ -1,3 +1,4 @@
+import {register02cTests} from './strategy-02c.integration.ts';
 import {registerStrategyTests} from './strategy.integration.ts';
 import {test,after,before} from 'node:test';
 import assert from 'node:assert/strict';
@@ -88,7 +89,7 @@ test('Holding unificada preserva proveniência e inclui somente estratégia para
  assert.equal(provenance.length,2);assert.ok(provenance.every(p=>p.scope_id==='scope-holding'));
  const list=await(await get('/companies?module=strategy',token)).json();assert.equal(list.length,7);
  for(const company of ['utu','vinho-24'])for(const module of ['projects','contracts','suppliers','finance'])assert.equal((await get('/modules/'+module+'/overview?companyId='+company,token)).status,403);
- const snapshot=await(await get('/governance/snapshot',token)).json();assert.equal(snapshot.companies.length,7);assert.equal(snapshot.profile,'DIRETORES');assert.equal(snapshot.units.length,3);
+ const snapshot=await(await get('/governance/snapshot',token)).json();assert.equal(snapshot.companies.length,7);assert.equal(snapshot.profile,'DIRETORES');assert.equal(snapshot.units.length,4);
  assert.equal((await get('/governance/snapshot?scopeId=-1',token)).status,403);
 });
 test('permissão pessoal, unitária e revogação são verificadas em sessão já aberta',async()=>{
@@ -130,6 +131,7 @@ test('unidades futuras e perfis possuem persistência e auditoria',async()=>{
  assert.ok((await rows('SELECT id FROM governance_events WHERE action=?',['profile.configure'])).length>0);
 });
 registerStrategyTests(()=>strategyBase,directorToken,managerToken);
+register02cTests(()=>strategyBase,directorToken,managerToken);
 test('migrações validam checksum/dirty e rollback 002 preserva 001 e usuários',async()=>{
  const {migrate}=await import('../scripts/migration-engine.ts');const c=await pool.getConnection();
  try{
@@ -147,6 +149,6 @@ test('migrações validam checksum/dirty e rollback 002 preserva 001 e usuários
  assert.equal((await rows<{n:number}>('SELECT COUNT(*) n FROM users'))[0].n,before);
  assert.equal((await rows('SELECT version FROM schema_migrations')).length,1);
  await migrate(c,'up');await migrate(c,'up');
- assert.equal((await rows('SELECT version FROM schema_migrations')).length,3);
+ assert.equal((await rows('SELECT version FROM schema_migrations')).length,4);
  }finally{c.release();}
 });

@@ -1,0 +1,29 @@
+{
+  "source_zip_sha256": "0d0dbb8b44ae90f0d42a439fa2c9468e55a2cca5e6339a12b666e720c867b20e",
+  "files": [
+    {
+      "source": "client/src/pages/ProjetosEmpresa.tsx",
+      "destination": "client/sge/pages/ProjetosEmpresa.tsx",
+      "source_sha256": "4cc4fa20d240a0900db7b11a32ef027aa372728962c4a2a89d6832c8495b2df2",
+      "adapted_sha256": "d24c3d1a7f78f8b341079a37b37287315770977c8bbcadc4711dbd7582fa7251"
+    },
+    {
+      "source": "client/src/pages/PlanoAcaoEmpresa.tsx",
+      "destination": "client/sge/pages/PlanoAcaoEmpresa.tsx",
+      "source_sha256": "8d4514a25854d5d9713636f8033b6c77912c02c5dd285fc95a6b220cac038928",
+      "adapted_sha256": "dd3cb5130d4152774d7b13e761973fc7eb9049eb98b12284aeaf8f20be90af64"
+    },
+    {
+      "source": "client/src/components/GanttChart.tsx",
+      "destination": "client/sge/components/GanttChart.tsx",
+      "source_sha256": "1dd35ff3701daea6e31f996fedba0cb13d8632fa7e6b5857e73a3a868a1615ed",
+      "adapted_sha256": "d8e1d2d588285dacd317ec3e10a3ac48b0b1b5e2cf0962c4b0b9f7d3d249041c"
+    },
+    {
+      "source": "client/src/pages/AnaliseSwoTtows.tsx",
+      "destination": "client/sge/pages/AnaliseSwoTtows.tsx",
+      "source_sha256": "15580b9cb7ebfe146d1e290f93862a1ec1affb30625f40499c1fe2f942f4ac78",
+      "adapted_sha256": "108f45e27162e5cfffab0b3fbfe0c4c8e9ee0898192e04d9772bd38f1c5b3379"
+    }
+  ]
+}

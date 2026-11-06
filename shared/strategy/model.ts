@@ -1,4 +1,4 @@
-export const methodologies=['porter','stakeholders','vrio','bsc','okr','swot','pestel'] as const;
+export const methodologies=['porter','stakeholders','vrio','bsc','okr','swot','pestel','tows'] as const;
 export type Method=typeof methodologies[number];
 export type Plan={id:string;scope_id:string;title:string;start_year:number;end_year:number;version:number;status:'draft'|'approved'|'closed'};
 export type Cycle={id:string;kind:'annual'|'quarterly'|'monthly';year:number;period:number;closed:number};

@@ -11,7 +11,7 @@
     "dev:api": "node --env-file=.env --experimental-strip-types server/index.ts",
     "check": "tsc --noEmit",
     "build": "npm run check && vite build",
-    "test": "node --test tests/core.test.ts tests/governance-policy.test.ts tests/strategy.test.ts",
+    "test": "node --test tests/core.test.ts tests/governance-policy.test.ts tests/strategy.test.ts tests/consolidation.test.ts",
     "test:integration": "node --env-file=.env --test tests/api.test.ts",
     "migrate": "node --env-file=.env scripts/migrate.ts",
     "seed": "node --env-file=.env scripts/seed.ts",

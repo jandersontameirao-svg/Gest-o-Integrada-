@@ -11,6 +11,7 @@ function unique(items:Record<string,unknown>[]){const ids=items.map(i=>str(i.id,
 export function validateMethod(kind:string,value:unknown):Method{
  if(!methodologies.some(m=>m===kind))invalid('Metodologia inválida.');
  const validateItems=(v:unknown,check:(x:Record<string,unknown>)=>void)=>{const items=list(v).map(object);unique(items);items.forEach(check);};
+ if(kind==='tows'){const v=object(value);for(const key of ['forcas','fraquezas','oportunidades','ameacas'])for(const raw of list(v[key])){const i=object(raw);if(typeof i.descricao!=='string'||i.descricao.length>3000||typeof i.estrategia!=='string'||i.estrategia.length>3000||!['baixo','medio','alto'].includes(String(i.impacto)))invalid();}return kind as Method;}
  if(kind==='swot'){const v=object(value);for(const key of ['forcas','fraquezas','oportunidades','ameacas'])validateItems(v[key],i=>str(i.descricao));}
  else validateItems(value,i=>{
   if(kind==='porter'){str(i.tipo,40);if(!['Rivalidade','Fornecedores','Clientes','Novos Entrantes','Substitutos'].includes(String(i.tipo)))invalid();score(i.intensidade);str(i.descricao);}
@@ -23,7 +24,7 @@ export function validateMethod(kind:string,value:unknown):Method{
  if(kind==='bsc'&&!['financeira','cliente','processos','aprendizado'].every(id=>(value as Record<string,unknown>[]).some(v=>v.id===id)))invalid('Preserve as quatro perspectivas BSC.');
  return kind as Method;
 }
-export function validateEntry(kind:string,data:unknown){const d=object(data);
+export function validateEntry(kind:string,data:unknown){const d=object(data);for(const key of ['objetivoId','projetoId','metaId','kpiId'])if(d[key]==='')delete d[key];
  if(kind==='objective'){str(d.titulo,160);if(!['financeira','clientes','processos','aprendizado'].includes(String(d.perspectivaBSC)))invalid();if(!['planejado','em_andamento','concluido','cancelado'].includes(String(d.status)))invalid();}
  else if(kind==='kpi'){str(d.nome,160);if(!['mensal','trimestral','anual'].includes(String(d.frequencia)))invalid();str(d.unidadeMedida,50);}
  else if(kind==='target'){str(d.objetivoId,36);integer(d.ano,2000,2100);number(d.metaAnual);if(!['faturamento','clientes','producao','outros'].includes(String(d.tipo)))invalid();}
