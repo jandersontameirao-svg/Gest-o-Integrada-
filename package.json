@@ -11,12 +11,12 @@
     "dev:api": "node --env-file=.env --experimental-strip-types server/index.ts",
     "check": "tsc --noEmit",
     "build": "npm run check && vite build",
-    "test": "node --test tests/core.test.ts tests/governance-policy.test.ts tests/strategy.test.ts tests/consolidation.test.ts tests/contracts.test.ts",
+    "test": "node --test tests/core.test.ts tests/governance-policy.test.ts tests/strategy.test.ts tests/consolidation.test.ts tests/contracts.test.ts tests/contracts-03d.test.ts",
     "test:integration": "node --env-file=.env --test tests/api.test.ts",
     "migrate": "node --env-file=.env scripts/migrate.ts",
     "seed": "node --env-file=.env scripts/seed.ts",
     "start": "node --env-file=.env server/index.ts",
-    "test:e2e": "E2E_OUTPUT_DIR=test-results/contracts PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/contracts playwright test tests/browser/contracts.spec.ts && E2E_OUTPUT_DIR=test-results/strategy PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/strategy playwright test tests/browser/strategy.spec.ts"
+    "test:e2e": "E2E_OUTPUT_DIR=test-results/contracts PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/contracts playwright test tests/browser/contracts.spec.ts && E2E_OUTPUT_DIR=test-results/strategy PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/strategy playwright test tests/browser/strategy.spec.ts && E2E_OUTPUT_DIR=test-results/contracts-03d PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/contracts-03d playwright test tests/browser/contracts-03d.spec.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
@@ -29,6 +29,7 @@
     "clsx": "^2.1.1",
     "express": "^5.1.0",
     "express-rate-limit": "^8.2.1",
+    "fflate": "^0.8.3",
     "helmet": "^8.1.0",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.9",

@@ -280,7 +280,7 @@ export default function ContractManagement() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground text-center py-8">Gestão de riscos ainda não portada neste incremento.</p>
+                  <p className="text-sm text-muted-foreground text-center py-8">Nenhum risco contratual cadastrado. Use Novo risco contratual para registrar.</p>
                 )}
               </CardContent>
             </Card>

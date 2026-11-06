@@ -17,6 +17,7 @@ export function createApp() {
  app.disable('x-powered-by');
  app.use(helmet());
  app.use('/api/v1/strategy',express.json({limit:'128kb'}));
+ app.use('/api/v1/contracts',express.json({limit:'12mb'}));
  app.use(express.json({limit:'16kb'}));
  app.use('/api', (_req,res,next) => { res.setHeader('Cache-Control','no-store'); next(); });
  app.use('/api', rateLimit({windowMs:60_000, limit:120, standardHeaders:'draft-8', legacyHeaders:false}));
