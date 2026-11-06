@@ -1,3 +1,4 @@
+import {registerStrategyTests} from './strategy.integration.ts';
 import {test,after,before} from 'node:test';
 import assert from 'node:assert/strict';
 import {createApp} from '../server/app.ts';
@@ -5,12 +6,16 @@ import {pool,rows} from '../server/db.ts';
 import type {AddressInfo} from 'node:net';
 if (!process.env.DB_NAME?.endsWith('_demo')) throw new Error('Testes de integração exigem banco *_demo.');
 const server=createApp().listen(0,'127.0.0.1');
+const strategyServer=createApp().listen(0,'127.0.0.1');
+let strategyBase:string;
 let base:string;
 before(async()=>{
  if(!server.listening) await new Promise<void>(resolve=>server.once('listening',resolve));
+ if(!strategyServer.listening)await new Promise<void>(resolve=>strategyServer.once('listening',resolve));
+ strategyBase='http://127.0.0.1:'+(strategyServer.address() as AddressInfo).port+'/api/v1';
  base='http://127.0.0.1:'+(server.address() as AddressInfo).port+'/api/v1';
 });
-after(async()=>{await new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()));await pool.end();});
+after(async()=>{await new Promise<void>((resolve,reject)=>strategyServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()));await pool.end();});
 async function login(email:string){
  const response=await fetch(base+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:process.env.DEMO_PASSWORD})});
  assert.equal(response.status,200);return (await response.json()).token as string;
@@ -103,7 +108,7 @@ test('permissão pessoal, unitária e revogação são verificadas em sessão j�
 test('negação pessoal também remove registros da consolidação corporativa',async()=>{
  const token=await directorToken();const [u]=await rows<{id:string}>('SELECT id FROM users WHERE email=?',['holding@example.test']);
  await pool.execute('INSERT INTO scope_grants VALUES (?,?,?,?,?)',[u.id,'scope-company:arqueocean','finance','read','deny']);
- try{const data=await(await get('/modules/finance/overview?companyId=corporate',token)).json();assert.ok(data.records.every((r:{companyId:string})=>r.companyId!=='arqueocean'));assert.equal(data.records.length,4);}finally{await pool.execute('DELETE FROM scope_grants WHERE user_id=?',[u.id]);}
+ try{const data=await(await get('/modules/finance/overview?companyId=corporate',token)).json();assert.ok(data.records.every((r:{companyId:string})=>r.companyId!=='arqueocean'));assert.equal(data.records.length,4);}finally{await pool.execute('DELETE FROM scope_grants WHERE user_id=? AND scope_id=? AND module_id=? AND action=?',[u.id,'scope-company:arqueocean','finance','read']);}
 });
 test('transferências concorrentes mantêm uma unidade ativa, histórico e auditoria',async()=>{
  const token=await directorToken();const today=new Date().toISOString().slice(0,10);
@@ -124,6 +129,7 @@ test('unidades futuras e perfis possuem persistência e auditoria',async()=>{
  assert.equal((await rows<{profile:string}>('SELECT profile FROM user_profiles WHERE user_id=?',[u.id]))[0].profile,'GERENTES');
  assert.ok((await rows('SELECT id FROM governance_events WHERE action=?',['profile.configure'])).length>0);
 });
+registerStrategyTests(()=>strategyBase,directorToken,managerToken);
 test('migrações validam checksum/dirty e rollback 002 preserva 001 e usuários',async()=>{
  const {migrate}=await import('../scripts/migration-engine.ts');const c=await pool.getConnection();
  try{
@@ -141,6 +147,6 @@ test('migrações validam checksum/dirty e rollback 002 preserva 001 e usuários
  assert.equal((await rows<{n:number}>('SELECT COUNT(*) n FROM users'))[0].n,before);
  assert.equal((await rows('SELECT version FROM schema_migrations')).length,1);
  await migrate(c,'up');await migrate(c,'up');
- assert.equal((await rows('SELECT version FROM schema_migrations')).length,2);
+ assert.equal((await rows('SELECT version FROM schema_migrations')).length,3);
  }finally{c.release();}
 });

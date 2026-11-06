@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@source "../sge";
+@source "./";
+@theme inline {
+ --color-background: var(--sge-background); --color-foreground:#243447;
+ --color-card:#fff; --color-card-foreground:#243447; --color-primary:#8b1538; --color-primary-foreground:#fff;
+ --color-muted:#f1f5f9; --color-muted-foreground:#536275; --color-border:#d8e0e8;
+ --color-input:#d8e0e8; --color-ring:#ed7501; --color-accent:#fff1e5; --color-accent-foreground:#8b1538;
+ --color-secondary:#e9eff5; --color-secondary-foreground:#243447; --color-popover:#fff; --color-popover-foreground:#243447;
+ --color-destructive:#b91c1c; --color-arqueo-bordo:#8b1538; --color-arqueo-laranja:#ed7501; --color-arqueo-azul:#2c7eb3; --color-arqueo-amarelo:#f7b801;
+}
+.sge{--sge-background:#f8fafc;color:#243447;font-family:Arial,sans-serif}.sge .container{width:100%;max-width:1280px;margin-inline:auto;padding-inline:12px}.sge select{max-width:100%}.sge form{max-width:100%}.sge header{border-top:0}.sge .recharts-responsive-container{min-width:0}.sge input[type=number]{min-width:0}body [data-slot=dialog-content]{max-height:92vh;overflow-y:auto}

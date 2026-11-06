@@ -3,6 +3,7 @@ import {createRoot} from 'react-dom/client';
 import {modules,type Company,type Principal,type ModuleId} from '../shared/catalog.ts';
 import {canCorporate} from '../server/policy.ts';
 import './styles.css';
+import {Workspace} from './strategy/Workspace.tsx';
 import {Governance} from './Governance.tsx';
 type Overview = {demonstration:boolean;scope:string;records:{id:string;companyId:string;label:string}[]};
 function Panel({title,children}:{title:string;children:React.ReactNode}) {
@@ -45,14 +46,15 @@ function App() {
  {!user?<main className="login"><p className="eyebrow">UMA BASE COMUM PARA O GRUPO</p><h1>Gestão conectada.<br/>Empresas independentes.</h1><p>Acesse seu ambiente de trabalho com sua conta da Gestão Integrada.</p>
  <Panel title="Entrar na plataforma"><form onSubmit={login}><label>E-mail<input name="email" type="email" autoComplete="username" required/></label><label>Senha<input name="password" type="password" autoComplete="current-password" required maxLength={256}/></label><button className="primary" disabled={loading}>{loading?'Entrando…':'Entrar'}</button></form></Panel>
  {error&&<p role="alert" className="error">{error}</p>}</main>:<>
- <nav aria-label="Módulos">{modules.map(m=><button key={m.id} aria-current={m.id===module?'page':undefined} onClick={()=>setModule(m.id)}>{m.name}</button>)}</nav>
- <main><div className="context"><div><p className="eyebrow">SEU AMBIENTE DE TRABALHO</p><h1>{company==='corporate'?'Visão corporativa':companies.find(c=>c.id===company)?.name}</h1></div><label>Contexto de acesso<select value={company} onChange={e=>setCompany(e.target.value)}>{canCorporate(user)&&<option value="corporate">Grupo Arqueo · Visão corporativa</option>}{companies.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label></div>
+ <nav aria-label="Módulos">{modules.map(m=><button key={m.id} aria-current={m.id===module?'page':undefined} onClick={()=>{const leave=new Event('strategy:leave',{cancelable:true});if(window.dispatchEvent(leave))setModule(m.id);else setError('Aguarde o salvamento antes de mudar módulo.');}}>{m.name}</button>)}</nav>
+ <main><div className="context"><div><p className="eyebrow">SEU AMBIENTE DE TRABALHO</p><h1>{company==='corporate'?'Visão corporativa':companies.find(c=>c.id===company)?.name}</h1></div><label>Contexto de acesso<select value={company} onChange={e=>{const leave=new Event('strategy:leave',{cancelable:true});if(window.dispatchEvent(leave))setCompany(e.target.value);else setError('Aguarde o salvamento das análises antes de trocar contexto.');}}>{canCorporate(user)&&<option value="corporate">Grupo Arqueo · Visão corporativa</option>}{companies.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label></div>
  <section className="intro"><p className="eyebrow">FUNDAÇÃO MODULAR</p><h2>{active.name}</h2><p>{active.description}</p><span className="badge">Estrutura preparada · Em desenvolvimento</span></section>
  <div className="stats"><Panel title="Empresas no contexto"><strong className="number">{company==='corporate'?companies.length:company?1:0}</strong><p>Acesso conforme suas permissões.</p></Panel><Panel title="Módulos previstos"><strong className="number">05</strong><p>Uma fundação compartilhada.</p></Panel><Panel title="Dados apresentados"><strong className="number">Demo</strong><p>Conteúdo exclusivamente sintético.</p></Panel></div>
  {module==='strategy'&&<Governance token={token} initialScope={company==='corporate'?'scope-holding':'scope-company:'+company}/>}
- <Panel title="Área do módulo"><p>As funcionalidades de negócio serão implementadas nas próximas etapas. Nenhum módulo legado foi migrado.</p>
+ {module==='strategy'&&<Workspace key={company} token={token} initialScope={company==='corporate'?'scope-holding':'scope-company:'+company}/>}
+ {module!=='strategy'&&<Panel title="Área do módulo"><p>As funcionalidades de negócio serão implementadas nas próximas etapas. Nenhum módulo legado foi migrado.</p>
  <div aria-live="polite" aria-busy={loading}>{loading&&<p>Carregando contexto…</p>}{error&&<p role="alert" className="error">{error}</p>}
- {overview&&<ul className="records">{overview.records.map(r=><li key={r.id}><span className="dot" aria-hidden="true"/><div><strong>{companies.find(c=>c.id===r.companyId)?.name??r.companyId}</strong><p>{r.label}</p></div><span className="badge">Demonstração</span></li>)}</ul>}</div></Panel>
+ {overview&&<ul className="records">{overview.records.map(r=><li key={r.id}><span className="dot" aria-hidden="true"/><div><strong>{companies.find(c=>c.id===r.companyId)?.name??r.companyId}</strong><p>{r.label}</p></div><span className="badge">Demonstração</span></li>)}</ul>}</div></Panel>}
  </main></>}<footer>Grupo Arqueo · Gestão Integrada <span>Fundação multiempresa · v0.1</span></footer></>;
 }
 createRoot(document.getElementById('root')!).render(<React.StrictMode><App/></React.StrictMode>);
