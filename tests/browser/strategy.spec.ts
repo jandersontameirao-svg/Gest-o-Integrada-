@@ -1,6 +1,7 @@
 import {test,expect} from '@playwright/test';
 // Browser test is synthetic and forbids remote application calls.
 test('SGE original: objetivo, KPI, meta e Porter persistem após recarga e aprovação',async({page,context})=>{
+ const runtimeErrors:string[]=[];page.on('pageerror',error=>runtimeErrors.push(error.message));
  const external:string[]=[];await context.route('**/*',route=>{const u=new URL(route.request().url());if(!['127.0.0.1','localhost'].includes(u.hostname)){external.push(u.origin);return route.abort();}return route.continue();});
  await page.goto('/');await page.getByLabel('E-mail',{exact:true}).fill('holding@example.test');await page.getByLabel('Senha',{exact:true}).fill(process.env.DEMO_PASSWORD!);await page.getByRole('button',{name:'Entrar',exact:true}).click();
  await page.getByRole('button',{name:'Gestão e Planejamento Estratégico',exact:true}).click();
@@ -22,6 +23,6 @@ test('SGE original: objetivo, KPI, meta e Porter persistem após recarga e aprov
  await workspace.getByText('PESTEL',{exact:true}).click();await workspace.getByPlaceholder(/Ex: Nova legislação/i).fill('Fator PESTEL browser persistente');await workspace.getByRole('button',{name:'Adicionar Fator',exact:true}).click();await workspace.getByRole('button',{name:'Salvar Análise PESTEL',exact:true}).click();await expect(workspace.getByText('✓ Salvo automaticamente!',{exact:true}).last()).toBeVisible();await workspace.getByRole('button',{name:'Recarregar do banco',exact:true}).click();await workspace.getByText('PESTEL',{exact:true}).click();await expect(workspace.getByText('Fator PESTEL browser persistente',{exact:true})).toBeVisible();
  await workspace.getByRole('button',{name:'Objetivos',exact:true}).click();await expect(workspace.getByRole('heading',{name:'Objetivo original persistente',exact:true})).toBeVisible();
  await workspace.getByRole('button',{name:'Aprovar versão',exact:true}).click();await expect(workspace.getByText('Aprovado · baseline preservada',{exact:false})).toBeVisible();await expect(workspace.getByRole('button',{name:'Abrir revisão autorizada',exact:true})).toBeVisible();
- expect(external).toEqual([]);
+ expect(external).toEqual([]);expect(runtimeErrors).toEqual([]);
  await page.screenshot({path:'test-results/sge-fluxo-aprovado.png',fullPage:true});
 });

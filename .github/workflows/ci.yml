@@ -65,6 +65,14 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Paridade dos formulários no navegador
         run: npm run test:e2e
+      - name: Diagnóstico acessível de falhas sintéticas
+        if: failure()
+        run: |
+          python - <<'PYTHON'
+          from pathlib import Path
+          for p in Path('test-results').rglob('error-context.md'):
+              print(p.read_text()[:30000])
+          PYTHON
       - name: Evidências de navegador (somente dados sintéticos)
         if: always()
         uses: actions/upload-artifact@v4
