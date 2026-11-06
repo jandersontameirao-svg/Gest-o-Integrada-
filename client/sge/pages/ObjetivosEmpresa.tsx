@@ -539,6 +539,7 @@ export default function ObjetivosEmpresa({ empresaId }: ObjetivosEmpresaProps) {
                         <Button
                           variant="ghost"
                           size="sm"
+                          aria-label={'Editar objetivo '+objetivo.titulo}
                           onClick={() => handleEdit(objetivo)}
                         >
                           <Pencil className="h-4 w-4" />
@@ -546,6 +547,7 @@ export default function ObjetivosEmpresa({ empresaId }: ObjetivosEmpresaProps) {
                         <Button
                           variant="ghost"
                           size="sm"
+                          aria-label={'Excluir objetivo '+objetivo.titulo}
                           onClick={() => handleDelete(objetivo.id)}
                         >
                           <Trash2 className="h-4 w-4" />

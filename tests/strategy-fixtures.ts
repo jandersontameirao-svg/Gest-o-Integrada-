@@ -7,3 +7,12 @@ export const fixtures={
  swot:{forcas:[{id:'sw1',descricao:'Força sintética'}],fraquezas:[],oportunidades:[],ameacas:[]},
  pestel:[{id:'pe1',categoria:'Político',descricao:'Fator sintético',impacto:4,probabilidade:3}],
 };
+export const editedFixtures={
+ porter:fixtures.porter.map(v=>({...v,descricao:'Concorrência revisada sintética'})),
+ stakeholders:fixtures.stakeholders.map(v=>({...v,nome:'Parceiro revisado sintético'})),
+ vrio:fixtures.vrio.map(v=>({...v,valioso:5})),
+ bsc:fixtures.bsc.map(v=>({...v,indicadores:v.indicadores.map(i=>({...i,atual:81}))})),
+ okr:fixtures.okr.map(v=>({...v,keyResults:v.keyResults.map(i=>({...i,atual:77}))})),
+ swot:{...fixtures.swot,forcas:[{id:'sw1',descricao:'Força revisada sintética'}]},
+ pestel:fixtures.pestel.map(v=>({...v,probabilidade:4})),
+};

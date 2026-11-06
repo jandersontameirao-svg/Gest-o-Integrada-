@@ -125,7 +125,7 @@
       "source_sha256": "b6738eeeb35029dfae663da73d4e5a5a556334fda55b870a2a304b40c9e011ad",
       "source_lines": 68,
       "destination_lines": 68,
-      "adapted_sha256": "cbe141ff3ab3a18303d733b2a046001855309e0479722f1504f9862a1056a84c",
+      "adapted_sha256": "d3faac5fe8643553660774cfbd07bc728f12713fa1b5f29d04ae6cee9b64fa28",
       "adapted_lines": 68
     },
     {
@@ -215,8 +215,8 @@
       "source_sha256": "2841aff42fb04871f4666b9350e8432b980d5c83ec3271d7a5f0f6c4f5c8a289",
       "source_lines": 573,
       "destination_lines": 564,
-      "adapted_sha256": "d20e675c7ebe2d434196935ebb1a755ca15f68a71f202b7546946df299dbfb29",
-      "adapted_lines": 564
+      "adapted_sha256": "01cd60683d2518556cc30dbb3973583100444b366e4a1fefd71d7b43f7a1831a",
+      "adapted_lines": 566
     },
     {
       "source": "client/src/pages/KPIs.tsx",
@@ -224,7 +224,7 @@
       "source_sha256": "e06bf580f9746bd27130d30c2f541edf3abd08ab459d104124210df8e79fa431",
       "source_lines": 338,
       "destination_lines": 338,
-      "adapted_sha256": "f4788119637d33448b5e0157ddcd863aafc97a08832265d399323cfd8f4e5c5e",
+      "adapted_sha256": "769674c16d57c4354c81eba584d1dbda226575a8d6ea61bae0b9faebc4bb579b",
       "adapted_lines": 340
     },
     {

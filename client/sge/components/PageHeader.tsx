@@ -18,7 +18,7 @@ export default function PageHeader({
   const [, setLocation] = useLocation();
 
   const handleBack = () => {
-    window.history.back();
+    setLocation("/");
   };
 
   const handleHome = () => {

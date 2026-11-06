@@ -37,7 +37,7 @@ export default function KPIs({ empresaId }: KPIsProps) {
 
   const createMutation = trpc.kpis.create.useMutation({
     onSuccess: () => {
-      toast.success("KPI criado com sucesso!");
+      toast.success("Indicador salvo com sucesso!");
       refetch();
       setDialogOpen(false);
       resetForm();
