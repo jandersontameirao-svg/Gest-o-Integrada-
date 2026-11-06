@@ -1,0 +1,61 @@
+{
+  "sourceRepository": "jandersontameirao-svg/arqueo-fornecedores",
+  "sourceCommit": "8b5c94098333922e9dcc00ca5c67b612da24a26a",
+  "scope": "Estrutural; nenhuma aprovação jurídica ou emissão operacional",
+  "components": [
+    {
+      "source": "SupplierForm.tsx",
+      "sourceSHA256": "cd2ef3403b89bb49d9d674897f48b3299729968811df54b3a9fb1c3b36e33f05",
+      "destination": "client/suppliers/legacy/SupplierFields.tsx",
+      "destinationSHA256": "e1f727ffbf1c1fac4d15900241332ae09c0bc498e2a3ed88a874984b2d83ed77",
+      "classification": "ADAPTAR / parcial",
+      "limits": "Reutilizados dados básicos e endereço; qualificação, categorias, riscos, banco e documentos não portados.",
+      "tests": [
+        "tests/suppliers-structure.integration.ts",
+        "tests/browser/suppliers-structure.spec.ts"
+      ]
+    },
+    {
+      "source": "SupplierHistory.tsx",
+      "sourceSHA256": "a92628c30dad8719087cb5454eaa08bf855aaa813147c62c305cb71fecb6e164",
+      "destination": "client/suppliers/legacy/SupplierHistory.tsx",
+      "destinationSHA256": "28c8d2aebbd634a46cb0ea5b515cdede8e208519e850502db803887558966f82",
+      "classification": "ADAPTAR / parcial",
+      "limits": "Timeline reutilizada; consulta GI autenticada e histórico auditado; comparação visual detalhada pendente.",
+      "tests": [
+        "tests/suppliers-structure.integration.ts",
+        "tests/browser/suppliers-structure.spec.ts"
+      ]
+    }
+  ],
+  "otherFlows": [
+    {
+      "flow": "Contratos jurídicos individualizados",
+      "status": "PENDENTE / NÃO PORTADO NESTE INCREMENTO"
+    },
+    {
+      "flow": "OS operacional e mobilização",
+      "status": "PENDENTE / NÃO PORTADO NESTE INCREMENTO"
+    },
+    {
+      "flow": "Qualificação documental e uploads",
+      "status": "PENDENTE / NÃO PORTADO NESTE INCREMENTO"
+    },
+    {
+      "flow": "Clicksign",
+      "status": "PENDENTE / NÃO PORTADO NESTE INCREMENTO"
+    },
+    {
+      "flow": "Avaliações completas",
+      "status": "PENDENTE / NÃO PORTADO NESTE INCREMENTO"
+    },
+    {
+      "flow": "Medição e custos efetivos",
+      "status": "PENDENTE / NÃO PORTADO NESTE INCREMENTO"
+    },
+    {
+      "flow": "PDF jurídico e assinatura",
+      "status": "PENDENTE / NÃO PORTADO NESTE INCREMENTO"
+    }
+  ]
+}
