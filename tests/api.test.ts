@@ -1,3 +1,4 @@
+import {registerContractTests} from './contracts.integration.ts';
 import {register02cTests} from './strategy-02c.integration.ts';
 import {registerStrategyTests} from './strategy.integration.ts';
 import {test,after,before} from 'node:test';
@@ -9,6 +10,8 @@ if (!process.env.DB_NAME?.endsWith('_demo')) throw new Error('Testes de integra�
 const server=createApp().listen(0,'127.0.0.1');
 const strategyServer=createApp().listen(0,'127.0.0.1');
 const alignmentServer=createApp().listen(0,'127.0.0.1');
+const contractServer=createApp().listen(0,'127.0.0.1');
+let contractBase:string;
 let alignmentBase:string;
 let strategyBase:string;
 let base:string;
@@ -17,10 +20,12 @@ before(async()=>{
  if(!strategyServer.listening)await new Promise<void>(resolve=>strategyServer.once('listening',resolve));
  if(!alignmentServer.listening)await new Promise<void>(resolve=>alignmentServer.once('listening',resolve));
  alignmentBase='http://127.0.0.1:'+(alignmentServer.address() as AddressInfo).port+'/api/v1';
+ if(!contractServer.listening)await new Promise<void>(resolve=>contractServer.once('listening',resolve));
+ contractBase='http://127.0.0.1:'+(contractServer.address() as AddressInfo).port+'/api/v1';
  strategyBase='http://127.0.0.1:'+(strategyServer.address() as AddressInfo).port+'/api/v1';
  base='http://127.0.0.1:'+(server.address() as AddressInfo).port+'/api/v1';
 });
-after(async()=>{await new Promise<void>((resolve,reject)=>alignmentServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>strategyServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()));await pool.end();});
+after(async()=>{await new Promise<void>((resolve,reject)=>contractServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>alignmentServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>strategyServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()));await pool.end();});
 async function login(email:string){
  const response=await fetch(base+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:process.env.DEMO_PASSWORD})});
  assert.equal(response.status,200);return (await response.json()).token as string;
@@ -136,6 +141,7 @@ test('unidades futuras e perfis possuem persistência e auditoria',async()=>{
 });
 registerStrategyTests(()=>strategyBase,directorToken,managerToken);
 register02cTests(()=>alignmentBase,directorToken,managerToken);
+registerContractTests(()=>contractBase,directorToken,managerToken);
 test('migrações validam checksum/dirty e rollback 002 preserva 001 e usuários',async()=>{
  const {migrate}=await import('../scripts/migration-engine.ts');const c=await pool.getConnection();
  try{
@@ -153,6 +159,6 @@ test('migrações validam checksum/dirty e rollback 002 preserva 001 e usuários
  assert.equal((await rows<{n:number}>('SELECT COUNT(*) n FROM users'))[0].n,before);
  assert.equal((await rows('SELECT version FROM schema_migrations')).length,1);
  await migrate(c,'up');await migrate(c,'up');
- assert.equal((await rows('SELECT version FROM schema_migrations')).length,4);
+ assert.equal((await rows('SELECT version FROM schema_migrations')).length,5);
  }finally{c.release();}
 });

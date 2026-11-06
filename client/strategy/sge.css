@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @source "../sge";
 @source "./";
+@source "../contracts";
 @theme inline {
  --color-background: var(--sge-background,#f8fafc); --color-foreground:#243447;
  --color-card:#fff; --color-card-foreground:#243447; --color-primary:#8b1538; --color-primary-foreground:#fff;

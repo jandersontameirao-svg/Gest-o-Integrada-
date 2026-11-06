@@ -1,0 +1,9 @@
+DROP TABLE contract_requests;
+DROP TABLE module_event_outbox;
+DROP TABLE contract_preproject_authorizations;
+DROP TABLE client_contract_history;
+DROP TABLE client_contract_documents;
+DROP TABLE client_contract_records;
+DROP TABLE client_contracts;
+DROP TABLE customer_parties;
+DROP TABLE business_parties;

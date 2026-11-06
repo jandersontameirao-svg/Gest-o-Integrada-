@@ -1,0 +1,34 @@
+{
+  "source_repository": "jandersontameirao-svg/ARQUEO-CONTRATOS",
+  "source_sha": "c799a92100998c92a2b480c8ab8ddeb1d33ec77c",
+  "files": [
+    {
+      "source": "client/src/pages/CompanyDetails.tsx",
+      "source_sha256": "3964308a731b2fdf56ab985987aec4d3f8f7d92adeff35f1e363178ab87c5451",
+      "destination": "client/contracts/legacy/ContractFields.tsx",
+      "adapted_sha256": "afff4872b44abdee543cf15120c7df30cfe9d080c7ee854b7cefe8e7ac332a96",
+      "reuse": "JSX do formulário manual"
+    },
+    {
+      "source": "client/src/pages/ContractDetails.tsx",
+      "source_sha256": "1558671f89f0a4ed010e2d4a893fd1be744021b088ede2b9e59b2a8864ea3ab1",
+      "destination": "client/contracts/legacy/AmendmentFields.tsx",
+      "adapted_sha256": "cb5fdd64e0a1f812578f82d09b6e4f94d8318e015df9f42193133adf3813d0c2",
+      "reuse": "JSX do formulário manual"
+    },
+    {
+      "source": "client/src/components/MilestonesSection.tsx",
+      "source_sha256": "5ac2cf3e1d1a770086763c03c0feda54a968ba308733fc9356a8a4a43285d93f",
+      "destination": "client/contracts/legacy/MilestoneFields.tsx",
+      "adapted_sha256": "a05f9b426a706a7f49d7b05ffba3694db743bbf7e798070c457ba73f1baa1fd9",
+      "reuse": "JSX do formulário manual"
+    },
+    {
+      "source": "client/src/pages/ContractManagement.tsx",
+      "source_sha256": "96e42c81d77d657ca8966038962f77772f59ec3bcbd5103c2876457a0598cb5d",
+      "destination": "client/contracts/legacy/ContractManagement.tsx",
+      "adapted_sha256": "e85a95bb53c2f43bf7856db1c29944ab91b4596d521f9e1b9740f3caa602d866",
+      "reuse": "Página original adaptada"
+    }
+  ]
+}
