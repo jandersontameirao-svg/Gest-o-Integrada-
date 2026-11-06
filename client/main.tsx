@@ -3,6 +3,7 @@ import {createRoot} from 'react-dom/client';
 import {modules,type Company,type Principal,type ModuleId} from '../shared/catalog.ts';
 import {canCorporate} from '../server/policy.ts';
 import './styles.css';
+import {Governance} from './Governance.tsx';
 type Overview = {demonstration:boolean;scope:string;records:{id:string;companyId:string;label:string}[]};
 function Panel({title,children}:{title:string;children:React.ReactNode}) {
  return <section className="panel"><h2>{title}</h2>{children}</section>;
@@ -36,6 +37,7 @@ function App() {
    .finally(()=>{if(!controller.signal.aborted)setLoading(false);});
   return ()=>controller.abort();
  },[token,company,module]);
+ useEffect(()=>{if(!token)return;const controller=new AbortController();api<Company[]>('/companies?module='+module,{},token,controller.signal).then(list=>{setCompanies(list);setCompany(current=>current==='corporate'||list.some(c=>c.id===current)?current:list[0]?.id??'');}).catch(e=>{if(e.name!=='AbortError')setError(e.message);});return()=>controller.abort();},[token,module]);
  const active=modules.find(m=>m.id===module)!;
  return <><header><div className="brand"><span className="brand-mark" aria-hidden="true">A</span><div><strong>GRUPO ARQUEO</strong><small>GESTÃO INTEGRADA</small></div></div>
  {user&&<div className="account"><span>{user.name}</span><button onClick={async()=>{setError('');try{await api('/auth/logout',{method:'POST'});setToken('');setUser(null);setOverview(null);}catch(e){setError((e as Error).message);}}}>Sair</button></div>}</header>
@@ -47,9 +49,11 @@ function App() {
  <main><div className="context"><div><p className="eyebrow">SEU AMBIENTE DE TRABALHO</p><h1>{company==='corporate'?'Visão corporativa':companies.find(c=>c.id===company)?.name}</h1></div><label>Contexto de acesso<select value={company} onChange={e=>setCompany(e.target.value)}>{canCorporate(user)&&<option value="corporate">Grupo Arqueo · Visão corporativa</option>}{companies.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label></div>
  <section className="intro"><p className="eyebrow">FUNDAÇÃO MODULAR</p><h2>{active.name}</h2><p>{active.description}</p><span className="badge">Estrutura preparada · Em desenvolvimento</span></section>
  <div className="stats"><Panel title="Empresas no contexto"><strong className="number">{company==='corporate'?companies.length:company?1:0}</strong><p>Acesso conforme suas permissões.</p></Panel><Panel title="Módulos previstos"><strong className="number">05</strong><p>Uma fundação compartilhada.</p></Panel><Panel title="Dados apresentados"><strong className="number">Demo</strong><p>Conteúdo exclusivamente sintético.</p></Panel></div>
+ {module==='strategy'&&<Governance token={token} initialScope={company==='corporate'?'scope-holding':'scope-company:'+company}/>}
  <Panel title="Área do módulo"><p>As funcionalidades de negócio serão implementadas nas próximas etapas. Nenhum módulo legado foi migrado.</p>
  <div aria-live="polite" aria-busy={loading}>{loading&&<p>Carregando contexto…</p>}{error&&<p role="alert" className="error">{error}</p>}
  {overview&&<ul className="records">{overview.records.map(r=><li key={r.id}><span className="dot" aria-hidden="true"/><div><strong>{companies.find(c=>c.id===r.companyId)?.name??r.companyId}</strong><p>{r.label}</p></div><span className="badge">Demonstração</span></li>)}</ul>}</div></Panel>
  </main></>}<footer>Grupo Arqueo · Gestão Integrada <span>Fundação multiempresa · v0.1</span></footer></>;
 }
 createRoot(document.getElementById('root')!).render(<React.StrictMode><App/></React.StrictMode>);
+

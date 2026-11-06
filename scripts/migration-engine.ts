@@ -5,6 +5,7 @@ import {rows} from '../server/db.ts';
 const directory = new URL('../db/migrations/',import.meta.url);
 export async function migrationCatalog() {
  const names=(await readdir(directory)).filter(n=>/^\d{3}_[a-z_]+\.up\.sql$/.test(n)).sort();
+ if(names.some((n,i)=>Number(n.slice(0,3))!==i+1))throw new Error('Catálogo de migrações deve ser contínuo a partir de 001.');
  return Promise.all(names.map(async name=>{
   const version=name.replace('.up.sql','');
   const up=await readFile(new URL(name,directory),'utf8');

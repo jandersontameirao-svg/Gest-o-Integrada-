@@ -4,7 +4,7 @@ CREATE TABLE organization_scopes (
  id VARCHAR(90) PRIMARY KEY, kind ENUM('holding','unit','company') NOT NULL,
  company_id VARCHAR(40) NULL UNIQUE, unit_id VARCHAR(40) NULL UNIQUE,
  FOREIGN KEY(company_id) REFERENCES companies(id), FOREIGN KEY(unit_id) REFERENCES business_units(id),
- CHECK ((kind='holding' AND company_id IS NULL AND unit_id IS NULL) OR (kind='unit' AND unit_id IS NOT NULL AND company_id IS NULL) OR (kind='company' AND company_id IS NOT NULL AND unit_id IS NULL))
+ CHECK ((kind='holding' AND id='scope-holding' AND company_id IS NULL AND unit_id IS NULL) OR (kind='unit' AND unit_id IS NOT NULL AND company_id IS NULL) OR (kind='company' AND company_id IS NOT NULL AND unit_id IS NULL))
 );
 INSERT INTO organization_scopes(id,kind) VALUES ('scope-holding','holding');
 CREATE TABLE scope_provenance (

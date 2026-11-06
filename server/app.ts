@@ -6,7 +6,9 @@ import { modules, type ModuleId } from '../shared/catalog.ts';
 import { pool, rows } from './db.ts';
 import { authenticate, loadPrincipal } from './auth.ts';
 import { digestToken, newToken, verifyPassword, hashPassword } from './crypto.ts';
-import { authorize, visibleCompanyIds, HttpError } from './policy.ts';
+import { authorize, HttpError } from './policy.ts';
+import {allowedCompanies,requireAccess} from './access.ts';
+import {governanceRouter} from './governance.ts';
 const dummyHash = hashPassword('dummy-password-never-used-for-login');
 export function createApp() {
  const app = express();
@@ -51,27 +53,33 @@ export function createApp() {
   } catch (error) { await connection.rollback(); throw error; } finally { connection.release(); }
   res.status(204).end();
  });
- app.get('/api/v1/companies', async (_req,res) => {
-  const ids = visibleCompanyIds(res.locals.user);
-  const companies = ids === null ? await rows('SELECT id,name,is_holding isHolding FROM companies ORDER BY sort_order')
-   : ids.length ? await rows('SELECT id,name,is_holding isHolding FROM companies WHERE id IN ('+ids.map(()=>'?').join(',')+') ORDER BY sort_order',ids) : [];
-  res.json(companies);
+ app.use('/api/v1/governance',governanceRouter);
+ app.get('/api/v1/companies', async (req,res) => {
+  const module=typeof req.query.module==='string'?req.query.module:'projects';
+  if(!modules.some(m=>m.id===module))throw new HttpError(400,'Módulo inválido.');
+  res.json(await allowedCompanies(res.locals.user,module as ModuleId));
  });
  app.get('/api/v1/modules/:module/overview', async (req,res) => {
   const module = req.params.module as ModuleId;
   if (!modules.some(m=>m.id===module)) throw new HttpError(404,'Módulo inexistente.');
   const companyId = typeof req.query.companyId === 'string' ? req.query.companyId : undefined;
   let scope;
-  try { scope = authorize(res.locals.user,companyId,module); }
+  try {
+   if(!companyId)throw new HttpError(400,'Selecione uma empresa.');
+   if(companyId==='corporate')scope=authorize(res.locals.user,companyId,module);
+   else{await requireAccess(res.locals.user,'scope-company:'+companyId,module,'read');scope={corporate:false,companyId};}
+  }
   catch (error) {
    await pool.execute('INSERT INTO audit_events (id,actor_id,action,outcome,module_id) VALUES (?,?,?,?,?)',
     [randomUUID(),res.locals.user.id,'module.overview','denied',module]);
    throw error;
   }
   // A empresa recebida nunca é usada sem autorização; nenhuma consulta aceita SQL do cliente.
-  const records = await rows<{id:string;companyId:string;label:string}>(
-   'SELECT id,company_id companyId,label FROM demo_records WHERE module_id=?'+(scope.corporate?'':' AND company_id=?')+' ORDER BY id LIMIT 100',
-   scope.corporate ? [module] : [module,scope.companyId]);
+  const permitted=await allowedCompanies(res.locals.user,module);
+  const permittedIds=scope.corporate?permitted.map(c=>c.id):[scope.companyId];
+  const records=permittedIds.length?await rows<{id:string;companyId:string;label:string}>(
+   'SELECT id,company_id companyId,label FROM demo_records WHERE module_id=? AND company_id IN ('+permittedIds.map(()=>'?').join(',')+') ORDER BY id LIMIT 100',
+   [module,...permittedIds]):[];
   await pool.execute('INSERT INTO audit_events (id,actor_id,company_id,module_id,action,outcome) VALUES (?,?,?,?,?,?)',
    [randomUUID(),res.locals.user.id,scope.corporate?null:scope.companyId,module,'module.overview','allowed']);
   res.json({demonstration:true, module, scope:scope.companyId, records});
@@ -87,3 +95,4 @@ export function createApp() {
  });
  return app;
 }
+
