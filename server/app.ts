@@ -1,4 +1,5 @@
 import express from 'express';
+import {projectsRouter} from './projects/router.ts';
 import helmet from 'helmet';
 import { rateLimit } from 'express-rate-limit';
 import { randomUUID } from 'node:crypto';
@@ -18,6 +19,7 @@ export function createApp() {
  app.use(helmet());
  app.use('/api/v1/strategy',express.json({limit:'128kb'}));
  app.use('/api/v1/contracts',express.json({limit:'12mb'}));
+ app.use('/api/v1/projects',express.json({limit:'12mb'}));
  app.use(express.json({limit:'16kb'}));
  app.use('/api', (_req,res,next) => { res.setHeader('Cache-Control','no-store'); next(); });
  app.use('/api', rateLimit({windowMs:60_000, limit:120, standardHeaders:'draft-8', legacyHeaders:false}));
@@ -60,6 +62,7 @@ export function createApp() {
  app.use('/api/v1/governance',governanceRouter);
  app.use('/api/v1/strategy',strategyRouter);
  app.use('/api/v1/contracts',contractsRouter);
+ app.use('/api/v1/projects',projectsRouter);
  app.get('/api/v1/companies', async (req,res) => {
   const module=typeof req.query.module==='string'?req.query.module:'projects';
   if(!modules.some(m=>m.id===module))throw new HttpError(400,'Módulo inválido.');
