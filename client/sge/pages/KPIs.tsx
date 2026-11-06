@@ -140,7 +140,7 @@ export default function KPIs({ empresaId }: KPIsProps) {
               <DialogContent className="sm:max-w-[500px]">
                 <form onSubmit={handleSubmit}>
                   <DialogHeader>
-                    <DialogTitle>Novo KPI Estratégico</DialogTitle>
+                    <DialogTitle>{editingId?'Editar KPI Estratégico':'Novo KPI Estratégico'}</DialogTitle>
                     <DialogDescription>
                       Cadastre um novo indicador de desempenho
                     </DialogDescription>
@@ -230,7 +230,7 @@ export default function KPIs({ empresaId }: KPIsProps) {
                     <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                       Cancelar
                     </Button>
-                    <Button type="submit">Criar KPI</Button>
+                    <Button type="submit" disabled={createMutation.isPending}>{editingId?'Salvar KPI':'Criar KPI'}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>

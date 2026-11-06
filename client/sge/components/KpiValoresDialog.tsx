@@ -169,7 +169,7 @@ export default function KpiValoresDialog({
               <div className="space-y-2">
                 <Label htmlFor="meta">Meta</Label>
                 <Input
-                  id="meta"
+                  id="meta" disabled={!data.capabilities.edit||data.plan.status!=='draft'}
                   type="number"
                   step="0.01"
                   placeholder="Digite a meta"
@@ -181,7 +181,7 @@ export default function KpiValoresDialog({
               <div className="space-y-2">
                 <Label htmlFor="realizado">Realizado</Label>
                 <Input
-                  id="realizado"
+                  id="realizado" disabled={!data.capabilities.edit||data.plan.status==='closed'}
                   type="number"
                   step="0.01"
                   placeholder="Digite o valor realizado"
@@ -213,7 +213,7 @@ export default function KpiValoresDialog({
                 <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                   Cancelar
                 </Button>
-                <Button type="submit" disabled={upsertValor.isPending}>
+                <Button type="submit" disabled={upsertValor.isPending||!data.capabilities.edit||data.plan.status==='closed'}>
                   {upsertValor.isPending ? "Salvando..." : "Salvar"}
                 </Button>
               </DialogFooter>

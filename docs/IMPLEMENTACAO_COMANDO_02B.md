@@ -1,3 +1,120 @@
+# Implementação do Comando 02B — incremento 2
+
+**Estado geral: PARCIAL, com port funcional real do SGE. Sem encerramento do 02B.**
+Continuidade autorizada na PR #3 e mesma branch dev/comando-02b-planejamento-estrategico.
+A aprovação do incremento 1 permitiu desenvolvimento, não merge/deploy/homologação externa.
+
+## O que foi efetivamente portado
+
+Fontes do ZIP autorizado (SHA-256 0d0dbb8b44ae90f0d42a439fa2c9468e55a2cca5e6339a12b666e720c867b20e):
+DashboardGrupo, DashboardAnalisesArea, DashboardEmpresa, PlanejamentoEstrategicoEmpresa,
+ObjetivosEmpresa, KPIs, KpiValoresDialog, CincoForcasLite, StakeholdersLite, VrioLite,
+BscLite, OkrLite, SwotLite, AnalisePestelLite, componentes Radix originais, navegação
+visual, gráficos Recharts, notificações e hooks de composição/undo-redo.
+
+[Manifesto por arquivo, hashes de origem e adaptação](SGE_PORT_INCREMENTO_2.json).
+O manifesto comprova origem do código selecionado; não mede paridade por quantidade
+nem certifica o aplicativo inteiro. Código privado, dumps e consultas não foram copiados.
+
+A fachada finita client/strategy/legacy.tsx mantém os nomes dos hooks usados nos
+formulários, mas usa REST autenticado da GI, sem tRPC remoto, SDK/OAuth Manus ou IA.
+Identidade, escopo, versão e autorização são do backend. O papel gestor retornado
+pelo adaptador de UX deriva de capability; não é autoridade de autenticação.
+
+## Fatia funcional ponta a ponta
+
+1. Entrar com conta sintética autorizada; selecionar Estratégia e escopo Holding,
+   unidade ou empresa. Criar plano com horizonte de até dez anos (2000–2100).
+2. O plano gera ciclos anuais, quatro trimestrais e doze mensais por ano. Selecionar
+   ciclo e abrir os painéis originais adaptados ou formulários portados.
+3. Criar/editar objetivos com filtros e perspectivas originais; criar metas anuais
+   vinculadas (editor adicional baseado no schema SGE); criar/editar KPIs e registrar
+   meta/realizado mensal no diálogo original, com gráfico e histórico.
+4. Editar e persistir Porter, Stakeholders, VRIO, BSC, OKR, SWOT e PESTEL nos
+   componentes portados. Auto-save confirma commit; salvar/recarregar mantém campos,
+   IDs, perspectivas customizadas BSC e todos os KRs/realizados. Exclusão do último
+   item também é persistida; não ressurge após recarga.
+5. Fechar períodos, consultar histórico e aprovar baseline. Aprovação/revisão exigem
+   diretor e concessão explícita; reabertura é auditada. Versão aprovada fica em
+   strategy_approved_versions; revisão abre novo número sem apagar o snapshot.
+6. Plano aprovado bloqueia alterações de definições/análises. Observações realizadas
+   de KPI podem continuar em períodos abertos, sem alterar meta aprovada. Plano
+   encerrado bloqueia escrita. Ciclos ancestrais fechados bloqueiam meses filhos.
+7. Exportar JSON confirmado do plano somente com read + export, validado no backend
+   e auditado. PDF legado e capacidades auxiliares não portadas permanecem pendentes.
+
+Novas rotas estão em /api/v1/strategy. Cada leitura/escrita/histórico/versão/exportação
+revalida escopo. Plano/ciclo/objeto estrangeiro não pode ser ligado por ID. CAS por
+versão de plano e revisão de objeto/análise retorna 409 em conflito. Escritas,
+histórico e snapshots são transacionais e serializadas pela linha do plano.
+
+## Matriz atual de paridade funcional
+
+| Fonte SGE / capacidade | Destino | Estado comprovável | Prova e divergência |
+|---|---|---|---|
+| DashboardGrupo | client/sge/pages/DashboardGrupo.tsx | Portado, parcial em consolidação | JSX/gráficos preservados; dados do plano/ciclo selecionado. Não soma planos filhos ou financeiro real |
+| DashboardAnalisesArea | client/sge/pages/DashboardAnalisesArea.tsx | Portado por escopo de unidade | Gráficos de completude alimentados pelas análises persistidas; ID negativo removido |
+| DashboardEmpresa | client/sge/pages/DashboardEmpresa.tsx | Portado com limites | Objetivos/KPIs reais; contadores de projetos/ações leem o plano, mas formulários desses domínios ainda pendentes |
+| Hub PlanejamentoEstrategicoEmpresa | client/sge/pages/PlanejamentoEstrategicoEmpresa.tsx | Portado/adaptado para os três níveis | Expansão, cards, navegação e sete componentes preservados. Não equivale a port integral dos hubs Grupo/Área originais |
+| ObjetivosEmpresa | mesmo nome em client/sge | CRUD real | HTTP salvar/recarregar/editar/conflito; navegador cria em formulário original. Vínculo externo OrganoArq não conectado |
+| metas / metaAnual / ano / tipo | targets.tsx e entradas target | Editor novo, compatível com modelo | Associação ao objetivo/horizonte validada; outro plano recusado; navegador salva meta |
+| KPIs / KpiValoresDialog | mesmos nomes em client/sge | Definição/edição e observação reais | Mensal meta/realizado, histórico, gráfico, RAG; ano limitado ao horizonte; zero não vira vazio |
+| OkrLite | documento okr por plano/ciclo | Portado com persistência íntegra | Teste preserva 4 KRs e realizados, além do limite antigo de três. Alinhamento formal a objetivos e variante completa ainda pendentes |
+| CincoForcasLite | documento porter | Portado com persistência corrigida | Salvamento simulado substituído por commit/CAS; navegador salva e recarrega texto original |
+| StakeholdersLite | documento stakeholders | Portado com persistência corrigida | Poder/interesse, quadrantes e gráficos mantidos; leitura/edição/histórico testados via HTTP |
+| VrioLite | documento vrio | Portado com persistência corrigida | Escalas originais 0–5 e campos valioso/raro/imitavel/organizado preservados; classificação original mantida |
+| BscLite | documento bsc | Portado, perspectivas preservadas | Quatro perspectivas obrigatórias + customizadas, nomes/cores/ícones e indicadores persistidos; divisão por zero prevenida |
+| SwotLite | documento swot | Portado | Quatro quadrantes/IDs/textos/gráficos preservados; exclusões persistidas e versão por ciclo |
+| AnalisePestelLite | documento pestel | Portado | Editar impacto/probabilidade, gráficos e undo/redo preservados; hidratação não apaga dados recarregados |
+| Modelos de horizonte/ciclos | strategy_plans/cycles | Implementados no destino | Dois anos geram 34 ciclos; período fechado e reabertura de diretor exercitados |
+| Templates/versões de plano | strategy_approved_versions/history | Baseline imutável pela API | Aprovar, recusar escrita antiga, revisar, preservar snapshot e eventos auditados |
+| Exportação JSON | endpoint /export | Funcional, backend autorizado | Somente dados confirmados; usuário com read sem export é negado |
+| PDF, comentários, menções/anexos, planos auxiliares | Sem transporte ativo | Pendente | Botões PDF desabilitados; componentes auxiliares mostram pendência, nunca sucesso simulado |
+| Variantes completas PESTEL/SWOT/TOWS/Porter/VRIO/OKR | Ainda no ZIP | Pendente | Nenhuma variante removida do original; esta fatia não certifica equivalência com variantes completas |
+| Seletor de metodologias e identidade organizacional | Ainda no ZIP | Pendente | Catálogo visível para navegação; configuração/escrita não são simuladas |
+| Projetos estratégicos e ações | Entradas project/action + leituras do painel | Parcial | Contrato/persistência básica sem módulo operacional; formulários maduros/linhagem/iniciativas/riscos ainda pendentes |
+| Orçamento, DRE, balanço, capital de giro | Ainda na origem | Pendente | Não construído livro paralelo, nenhuma fórmula financeira portada neste incremento |
+| Consolidação por moeda/câmbio/unidades históricas | Ainda não implementada | Pendente | Painéis declaram o plano/ciclo, não falsa consolidação corporativa de resultados |
+| IA/serviços externos | Nenhuma conexão | Inativos | Browser bloqueia chamadas externas; nenhum provider ou SDK Manus/ATENA é carregado |
+
+## Testes e evidências do incremento 2
+
+- Testes puros: fixtures exclusivamente sintéticos para sete metodologias, integridade
+  de mais de três KRs, perspectivas customizadas, RAG 90/70, calendário e rejeição de
+  NaN/IDs duplicados/escalas inválidas. Os seis novos casos passaram localmente.
+- Integração MySQL: plano/ciclos, sete leituras/edições/revisões, CAS, objetivos/metas/
+  KPI/valores, isolamento, período fechado, aprovação/revisão/snapshot e exportação.
+- O banco é recriado somente em *_demo antes da prova de navegador para isolar as
+  fixtures das provas destrutivas de migração. Não há conexão com banco de produção.
+- Playwright exercita UI original, recarga e aprovação; screenshot/trace só contêm
+  dados sintéticos. Chamadas fora de localhost/127.0.0.1 são abortadas e testadas.
+- Primeiro build detectou aliases antigos e estreitamento de tipo MySQL; corrigidos
+  sem relaxar strict. Primeira prova browser identificou seletor ambíguo de dois
+  botões Novo KPI; o teste passa a escolher o gatilho do diálogo explicitamente.
+- Evidência da ponta final, contagens e links da CI estão no comentário da PR #3.
+  Inventário de código e testes HTTP não substituem homologação visual completa.
+
+## Limites de segurança e próximos passos
+
+A auditoria é transacional por alteração, mas append-only no banco/retention externa
+continuam pendentes. Endpoints não aceitam SQL ou troca de ownership. Usuários,
+Holding, unidades e entitlements do incremento 1 são reutilizados; UTU/Vinho não
+recebem habilitação operacional. IDs negativos só existem em proveniência.
+
+Os formulários existentes contêm tipos any herdados; strict permanece ativo e o
+backend valida tipos, escalas e relações. Refinamento adicional de DTOs e manutenção
+visual/responsiva/acessível permanecem necessários. A navegação alerta sobre
+alterações ainda não confirmadas; conflito mantém erro e exige recarga explícita.
+
+Continuar com variantes completas, alinhamento de objetivos entre níveis, catálogo
+configurável, iniciativas/projetos/planos de ação/riscos, relatórios/PDF e análises.
+O 02B NÃO está encerrado. Não houve merge, deploy, publicação automática, transferência
+de dados sensíveis ou alteração do SGE original. APIs externas permanecem desligadas.
+
+---
+
+## Registro histórico do incremento 1 (estado antes deste port)
+
 # Comando 02B — incremento 1: governança e segurança
 
 **Estado: PARCIAL. O módulo de Planejamento Estratégico NÃO está concluído.**

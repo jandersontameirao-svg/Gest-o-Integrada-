@@ -14,7 +14,7 @@ export function useDocument<T>(kind:Method,initial:T){
  const setValue:Dispatch<SetStateAction<T>>=next=>{if(!canEdit)return;const v=typeof next==='function'?(next as (v:T)=>T)(current.current):next;if(JSON.stringify(v)===JSON.stringify(current.current))return;current.current=v;state(v);ctx.dirty.add(key);setStatus('idle');bump(n=>n+1);};
  async function save(){if(inFlight.current||!canEdit)return false;const snapshot=current.current;inFlight.current=true;if(mounted.current)setStatus('saving');try{const result=await request<{revision:number}>(ctx.token,'/plans/'+ctx.data.plan.id+'/documents/'+kind,'PUT',{value:snapshot,revision:revision.current,cycleId:ctx.cycleId,planVersion:ctx.data.plan.version});revision.current=result.revision;if(JSON.stringify(current.current)===JSON.stringify(snapshot))ctx.dirty.delete(key);if(mounted.current){setStatus('saved');if(ctx.dirty.has(key))bump(n=>n+1);}await ctx.refresh();return true;}catch(e){if(mounted.current)setStatus('error');toast.error((e as Error).message);return false;}finally{inFlight.current=false;}}
  const saveRef=useRef(save);saveRef.current=save;
- useEffect(()=>{if(!ctx.dirty.has(key))return;const t=setTimeout(()=>{void saveRef.current();},1200);return()=>clearTimeout(t);},[generation]);
+ useEffect(()=>{if(!ctx.dirty.has(key))return;const t=setTimeout(()=>{if(ctx.dirty.has(key))void saveRef.current();},1200);return()=>clearTimeout(t);},[generation]);
  useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;if(ctx.dirty.has(key))void saveRef.current();};},[]);
  return {value,setValue,status,save,loaded:true};
 }
