@@ -75,3 +75,9 @@ Testes novos: `contracts-03d.test.ts`, `contracts-03d.integration.ts`, fixtures 
 - [ ] Autorizar 04B separadamente; não iniciar nova rodada de Contratos salvo bloqueio crítico comprovado.
 
 Parecer: incremento apto a revisão técnica após CI aprovada, com ressalvas de catálogo legado, inspeção de arquivos e paridade de templates. Sem homologação integral.
+
+### Evidência observada da primeira execução 03D
+
+[CI 42260964550](https://github.com/jandersontameirao-svg/Gest-o-Integrada-/actions/runs/42260964550), cabeça `71bdcf4820045bce58a0916aaa180bfca78321aa`: build/TypeScript, 31 unitários, 41 testes MySQL duas vezes (antes/depois de rollback/reaplicação), 3 cenários Playwright e auditoria com zero vulnerabilidades aprovados. [Artefato de navegador 13523814716](https://github.com/jandersontameirao-svg/Gest-o-Integrada-/actions/runs/42260964550/artifacts/13523814716), retenção de 7 dias.
+
+A revisão posterior reforça revalidação de concessões antes de replay idempotente, filtro de metadados de anexos por contrato, limites de faixa quantitativa e consistência de contagens ZIP. Transações de Contratos usam READ COMMITTED para não reutilizar uma leitura de concessões anterior à espera pelo lock do agregado; deadlock/timeout é conflito recuperável 409. O comentário final da PR registra a CI da cabeça definitiva, que deve ser verificada separadamente desta execução inicial.
