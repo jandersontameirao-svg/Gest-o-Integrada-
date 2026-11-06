@@ -25,4 +25,7 @@ test('diretor de governança requer vínculo corporativo autorizado',()=>{
  assert.equal(evaluateAccess(operator,'strategy','grants',true,['scope-holding'],[],'DIRETORES'),false);
  assert.equal(evaluateAccess(director,'strategy','grants',true,['scope-holding'],[],'DIRETORES'),true);
  assert.ok(actions.includes('reopen'));
+ const reopen:Grant={scope_id:'scope-holding',module_id:'strategy',action:'reopen',effect:'allow'};
+ assert.equal(evaluateAccess(operator,'strategy','reopen',true,['scope-holding'],[reopen],'OPERADORES'),false);
+ assert.equal(evaluateAccess(director,'strategy','reopen',true,['scope-holding'],[reopen],'DIRETORES'),true);
 });

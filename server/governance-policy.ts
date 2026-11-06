@@ -3,6 +3,7 @@ export type Grant={scope_id:string;module_id:ModuleId;action:string;effect:'allo
 export const actions=['read','export','governance','transfer','grants','units','edit','approve','reopen','attachments','jobs','ai'] as const;
 export function evaluateAccess(user:Principal,module:ModuleId,action:string,enabled:boolean,scopeIds:string[],grants:Grant[],profile?:string){
  if(!enabled)return false;
+ if(action==='reopen'&&profile!=='DIRETORES')return false;
  const matching=grants.filter(g=>scopeIds.includes(g.scope_id)&&g.module_id===module&&g.action===action);
  if(matching.some(g=>g.effect==='deny'))return false;
  if(matching.some(g=>g.effect==='allow'))return true;

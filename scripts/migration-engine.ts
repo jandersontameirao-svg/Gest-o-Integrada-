@@ -23,7 +23,7 @@ export async function migrate(connection:PoolConnection,direction:string,target?
  if(lock[0]?.acquired!==1)throw new Error('Migração concorrente.');
  try {
   await connection.execute('CREATE TABLE IF NOT EXISTS schema_migrations (version VARCHAR(40) PRIMARY KEY, dirty BOOLEAN NOT NULL DEFAULT FALSE, checksum CHAR(64) NULL)');
-  const columns=await rows('SHOW COLUMNS FROM schema_migrations LIKE ?', ['checksum'],connection);
+  const columns=await rows('SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND COLUMN_NAME=?', ['schema_migrations','checksum'],connection);
   if(!columns.length)await connection.execute('ALTER TABLE schema_migrations ADD COLUMN checksum CHAR(64) NULL');
   const applied=await rows<{version:string;dirty:number;checksum:string|null}>('SELECT version,dirty,checksum FROM schema_migrations ORDER BY version',[],connection);
   for(const [i,a] of applied.entries()){

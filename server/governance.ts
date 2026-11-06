@@ -22,7 +22,7 @@ governanceRouter.get('/snapshot',async(req,res)=>{
  const entitlements=await rows<{company_id:string;module_id:string;enabled:number}>('SELECT company_id,module_id,enabled FROM company_module_entitlements ORDER BY company_id,module_id');
  const profile=(await rows<{profile:string}>('SELECT profile FROM user_profiles WHERE user_id=?',[res.locals.user.id]))[0]?.profile??'OPERADORES';
  await pool.execute('INSERT INTO audit_events(id,actor_id,module_id,action,outcome) VALUES (?,?,?,?,?)',[randomUUID(),res.locals.user.id,'strategy','governance.snapshot','allowed']);
- res.json({scopeId:scope,asOf,profile,units:units.filter(u=>visibleUnits.some(v=>v.id===u.id)||membership.some(m=>ids.has(m.company_id)&&m.unit_id===u.id)),companies,memberships:membership.filter(m=>ids.has(m.company_id)),entitlements:entitlements.filter(e=>ids.has(e.company_id)),canManage:await checkAccess(res.locals.user,'scope-holding','strategy','governance')});
+ res.json({scopeId:scope,asOf,profile,units:units.filter(u=>visibleUnits.some(v=>v.id===u.id)||membership.some(m=>ids.has(m.company_id)&&m.unit_id===u.id)).map(u=>({...u,canRead:visibleUnits.some(v=>v.id===u.id)})),companies,memberships:membership.filter(m=>ids.has(m.company_id)),entitlements:entitlements.filter(e=>ids.has(e.company_id)),canManage:await checkAccess(res.locals.user,'scope-holding','strategy','governance')});
 });
 governanceRouter.post('/units',async(req,res)=>{
  await requireAccess(res.locals.user,'scope-holding','strategy','units');
