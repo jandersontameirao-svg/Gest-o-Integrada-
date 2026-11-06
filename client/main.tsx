@@ -1,3 +1,4 @@
+import {SuppliersWorkspace} from './suppliers/Workspace.tsx';
 import {ProjectsWorkspace} from './projects/Workspace.tsx';
 import React, {useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
@@ -54,9 +55,10 @@ function App() {
  <div className="stats"><Panel title="Empresas no contexto"><strong className="number">{company==='corporate'?companies.length:company?1:0}</strong><p>Acesso conforme suas permissões.</p></Panel><Panel title="Módulos previstos"><strong className="number">05</strong><p>Uma fundação compartilhada.</p></Panel><Panel title="Dados apresentados"><strong className="number">Demo</strong><p>Conteúdo exclusivamente sintético.</p></Panel></div>
  {module==='strategy'&&<Governance token={token} initialScope={company==='corporate'?'scope-holding':'scope-company:'+company}/>}
  {module==='strategy'&&<Workspace key={company} token={token} initialScope={company==='corporate'?'scope-holding':'scope-company:'+company}/>}
+ {module==='suppliers'&&<SuppliersWorkspace key={company} token={token} companyId={company} companies={companies}/>}
  {module==='projects'&&<ProjectsWorkspace key={company} token={token} companyId={company} companies={companies}/>}
  {module==='contracts'&&<ContractsWorkspace key={company} token={token} companyId={company} companies={companies}/>}
- {module!=='strategy'&&module!=='contracts'&&module!=='projects'&&<Panel title="Área do módulo"><p>As funcionalidades de negócio serão implementadas nas próximas etapas. Nenhum módulo legado foi migrado.</p>
+ {module!=='strategy'&&module!=='contracts'&&module!=='projects'&&module!=='suppliers'&&<Panel title="Área do módulo"><p>As funcionalidades de negócio serão implementadas nas próximas etapas. Nenhum módulo legado foi migrado.</p>
  <div aria-live="polite" aria-busy={loading}>{loading&&<p>Carregando contexto…</p>}{error&&<p role="alert" className="error">{error}</p>}
  {overview&&<ul className="records">{overview.records.map(r=><li key={r.id}><span className="dot" aria-hidden="true"/><div><strong>{companies.find(c=>c.id===r.companyId)?.name??r.companyId}</strong><p>{r.label}</p></div><span className="badge">Demonstração</span></li>)}</ul>}</div></Panel>}
  </main></>}<footer>Grupo Arqueo · Gestão Integrada <span>Fundação multiempresa · v0.1</span></footer></>;
