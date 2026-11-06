@@ -82,8 +82,10 @@ história e evento associado acontece na mesma transação.
 Chaves requestId UUID por ator: mesma requisição retorna a resposta confirmada,
 sem reaplicar efeito; chave com outro conteúdo/caminho/empresa é recusada.
 Repetir autorização de pré-projeto revalida DIRETORES antes de devolver resposta
-idempotente; rebaixamento de perfil não é contornado por replay. Lock do
-ator serializa tentativas e a constraint é proteção adicional. A UI mantém a
+idempotente; rebaixamento de perfil não é contornado por replay. Lock advisory por
+ator/banco serializa tentativas e a constraint é proteção adicional. A linha de
+users não é bloqueada por esse mecanismo: isso evita bloquear o registro de
+auditoria de uma negação de acesso que ocorre dentro da transação. A UI mantém a
 mesma chave ao repetir uma solicitação falha com conteúdo inalterado; não há
 sucesso de salvamento antes da resposta persistida. Revisão conflitante conserva
 erro/entrada até recarga explícita. Edição não salva impede troca de módulo.

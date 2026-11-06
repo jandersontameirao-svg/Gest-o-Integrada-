@@ -16,7 +16,7 @@
     "migrate": "node --env-file=.env scripts/migrate.ts",
     "seed": "node --env-file=.env scripts/seed.ts",
     "start": "node --env-file=.env server/index.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "E2E_OUTPUT_DIR=test-results/contracts PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/contracts playwright test tests/browser/contracts.spec.ts && E2E_OUTPUT_DIR=test-results/strategy PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/strategy playwright test tests/browser/strategy.spec.ts"
   },
   "dependencies": {
     "express": "^5.1.0",

@@ -64,9 +64,7 @@ jobs:
       - name: Instalar Chromium de teste
         run: npx playwright install --with-deps chromium
       - name: Paridade dos formulários no navegador
-        run: |
-          E2E_OUTPUT_DIR=test-results/contracts PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/contracts npx playwright test tests/browser/contracts.spec.ts
-          E2E_OUTPUT_DIR=test-results/strategy PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/strategy npx playwright test tests/browser/strategy.spec.ts
+        run: npm run test:e2e
       - name: Diagnóstico acessível de falhas sintéticas
         if: failure()
         run: |
