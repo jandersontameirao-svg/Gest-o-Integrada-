@@ -3,7 +3,7 @@ export type Contract={id:string;companyId:string;partyId:string;reference:string
 export type RecordKind='amendment'|'milestone'|'obligation'|'measurement';
 export type ContractRecord={id:string;kind:RecordKind;seq:number;payload:Record<string,unknown>;revision:number};
 export type Customer={id:string;name:string;taxId:string;kind:string;contact:Record<string,string>};
-export type ContractData={contract:Contract;records:ContractRecord[];effectiveValue:string;documents:{id:string;file_name:string;sha256:string}[];preproject:{project_ref:string;status:string;effectiveStatus:string;revision:number;decision:Record<string,unknown>}|null;capabilities:{edit:boolean;approve:boolean;attachments:boolean;export:boolean;director:boolean}};
+export type ContractData={contract:Contract;records:ContractRecord[];effectiveValue:string;measurements:ReturnType<typeof import('./measurements.ts').measurementSummary>;documents:{id:string;file_name:string;sha256:string;series_id:string;version:number;record_id:string|null}[];preproject:{project_ref:string;status:string;effectiveStatus:string;revision:number;decision:Record<string,unknown>}|null;capabilities:{edit:boolean;approve:boolean;attachments:boolean;export:boolean;director:boolean}};
 // Two decimal fixed point. No floating point increments or conversion between currencies.
 export function money(v:unknown,negative=false){if(typeof v!=='string'||!(/^-?\d{1,13}(?:\.\d{1,2})?$/).test(v)||(!negative&&v.startsWith('-')))throw Error('Valor decimal inválido. Use ponto e até duas casas.');const [i,d='']=v.split('.');return i+'.'+d.padEnd(2,'0');}
 export function cents(v:string){const n=money(v,true);return BigInt(n.replace('.',''));}

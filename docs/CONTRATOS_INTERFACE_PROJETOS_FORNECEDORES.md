@@ -187,3 +187,11 @@ Eventos de clientes e de prestadores têm namespaces/tipos diferentes.
   consome aprovação como caixa. Nenhuma conexão IA/Clicksign/Manus/ATENA nesta fase.
 
 Decisões em aberto e sequência concreta estão em IMPLEMENTACAO_03B_CONTRATOS.md.
+
+## 03C — fronteiras estabilizadas e endpoints reais
+
+`GET /api/v1/contracts/:id/project-reference/v1?proposedValue=100.00`: exige sessão e contracts/read no escopo da empresa. Responde schemaVersion, contractRevision, authorizationRevision, projectRef imutável, status efetivo (inclusive expired/revoked), moeda, limite informado, withinLimit (null quando não verificável), requiresHumanDecision e grantsExpenseAuthority=false. eligibleForProjectLink indica somente elegibilidade da reserva, não substitui revalidação transacional no futuro 04B nem concede despesa/mobilização. Não existe endpoint para criar projeto operacional.
+
+Medições: draft → submitted → approved → billable, com reject e request_changes autorizados. Reapresentação ocorre após edição de changes_requested. Glosas contêm índice da linha, decimal e justificativa, preservados em histórico com revisão. Aprovação/faturabilidade são decisões humanas distintas; estados invoiced/received não podem ser escritos por Contratos. Financeiro futuro deverá devolver referências canônicas e eventos idempotentes, jamais inferidos da aprovação.
+
+`GET /:id/report.pdf[?recordId=UUID]` exige read+export e valida ownership do registro. Documento TXT versionado aceita previousDocumentId e recordId do mesmo contrato; versões antigas permanecem acessíveis com read+attachments. Não há links públicos. Novos consumidores não devem ler tabelas internas nem criar cópias de mestres.

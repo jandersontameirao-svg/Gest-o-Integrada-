@@ -29,6 +29,13 @@
       "destination": "client/contracts/legacy/ContractManagement.tsx",
       "adapted_sha256": "e85a95bb53c2f43bf7856db1c29944ab91b4596d521f9e1b9740f3caa602d866",
       "reuse": "Página original adaptada"
+    },
+    {
+      "source": "client/src/lib/pdfUtils.ts",
+      "source_sha256": "40153d030e235181bb6cfe041d9df813a7c8e638f2bc46695b27631a3d112a27",
+      "destination": "server/contracts/pdf.ts",
+      "adapted_sha256": "f068acede0c0c863c7872707662829f88ecebf9057fd9608dfd178ccb0acbd8e",
+      "reuse": "generatePDF: cabeçalho, tabela, cores e rodapé originais; execução backend e decimais explícitos; demais geradores não portados"
     }
   ]
 }

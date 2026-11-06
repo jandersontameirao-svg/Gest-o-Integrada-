@@ -1,3 +1,43 @@
+# Incremento 03C — consolidação funcional (rodada concentrada)
+
+Base: PR #7, `dev/comando-03b-contratos`, cabeça anterior `f3bb303bd9094c229db84ac79d93f7691ad6f2d2`. Dependência de Estratégia PR #3 permanece; nenhuma alteração ou merge nas outras branches. Fonte Contratos preservada em `c799a92100998c92a2b480c8ab8ddeb1d33ec77c`.
+
+## Matriz incremental de paridade e evidências
+
+| Capacidade | Estado 03C | Origem → destino / prova |
+|---|---|---|
+| Contratos/aditivos/marcos e navegação madura | Preservada; paridade parcial do aplicativo | Quatro componentes de 03B mantidos; hashes em PARIDADE_03B_CONTRATOS.json; regressão Playwright |
+| Medições parciais por marco e linhas do boletim | Funcional; limites por item contratual canônico pendentes | Fluxo 03B ampliado em shared/contracts/measurements.ts e router; testes contracts-03c.integration.ts |
+| Glosa total/parcial por linha, justificativa, aceite e histórico | Funcional | Decisão backend approve com glosas limitadas ao valor de cada linha; formulário, recarga e Playwright |
+| Devolução, correção, rejeição e reapresentação | Funcional | Máquina de estados no backend, CAS agregado/registro e histórico de cada decisão |
+| Saldos e cópias integrais de boletins | Funcional com limites documentados | Submetido reserva bruto; aprovado/faturável reserva líquido; rejeitado/devolvido libera; assertBalances também protege redução de contrato/marco e cancelamento de marco comprometido |
+| Apresentado/aprovado/faturável | Funcional | Totais separados; declaração de faturabilidade exige approve e justificativa. Nenhum lançamento, nota ou recebimento |
+| Faturado/recebido | Não implementado por fronteira de autoridade | JSON usa null, não zero; Financeiro futuro será autoridade |
+| PDF tabular contratual e por registro | Reaproveitado/adaptado; outros templates pendentes | generatePDF original de client/src/lib/pdfUtils.ts → server/contracts/pdf.ts; mantém identidade/tabela/rodapé, elimina inferência monetária e gera Buffer no backend; leitura + export e auditoria |
+| Documentos privados versionados e vinculados a contrato/aditivo/medição | Funcional para TXT | Migração 006; bytes/hashes anteriores preservados, ownership composto, versão obsoleta negada, CAS/idempotência. Upload binário pendente |
+| Responsáveis/aprovadores, assinatura e obrigações | Parcial herdado de 03B | Campos existentes mantidos; listas canônicas, riscos/ocorrências e alertas avançados ainda pendentes |
+| Pré-projeto e contrato de leitura versionado | Funcional como reserva, sem projeto operacional | GET /:id/project-reference/v1 verifica autorização, expiração, revogação e limite informado; nunca concede despesa. Não materializa projeto |
+
+Glosas são decisões humanas registradas, não políticas jurídicas presumidas. Evidência textual é armazenada no histórico, não uma certificação de assinatura/aceite. Duplicidade integral é detectada por período e conjunto de linhas, normalizando descrição; textos diferentes ou boletins parcialmente sobrepostos ainda exigem conciliação. Rascunhos não consomem saldo. Os saldos refletem os estados atuais e aditivos vigentes na consulta; reconstrução de posição financeira histórica por competência fica pendente e não é inferida.
+
+## Segurança e migrações
+
+Rotas reutilizam autenticação própria, perfil e permissões contracts por empresa/ação; UTU/Vinho continuam sem habilitação operacional. Escritas preservam locks de contrato, CAS e idempotência. PDF exige read+export, documentos read+attachments. Identificadores relacionados são validados no mesmo contrato. Armazenamento segue privado no MySQL, sem URLs externas. Não há serviços externos ativados.
+
+006 acrescenta série, versão e vínculo do documento, backfill para documentos anteriores e FK composta. Down remove somente os metadados novos e preserva bytes. Reaplicação após rollback desse metadado não recupera automaticamente relações de versões: usar somente banco descartável nesta validação; reversão de ambiente com dados exige backup/procedimento aprovado. Migrações 001–005 permanecem intactas.
+
+## Validação desta rodada
+
+Build/TypeScript strict executados localmente; auditoria npm retornou zero vulnerabilidades. Testes unitários executados. Integração MySQL, rollback/reaplicação, permissões e Playwright são obrigatórios no workflow da PR, sem supressão de checks. Evidências definitivas e links de execução serão registrados no comentário de entrega após observar a conclusão da CI. Não confundir resultado local com CI aprovada.
+
+Novos testes cobrem limites/glosas, recarga, faturabilidade, edição negativa de marco, rejeição/devolução, cópias integrais, documento versionado/obsoleto/ID adulterado, PDF e exportação negada ao leitor. Playwright mantém contratos/aditivos/marcos e inclui glosa, recarga, anexo e download PDF; a suíte de Estratégia permanece obrigatória.
+
+## Transição e parecer
+
+Entregar este incremento para revisão, sem declarar conclusão integral de Contratos. Consulte [BACKLOG_CONTRATOS.md](BACKLOG_CONTRATOS.md) para melhorias e decisões do CEO. 04B deve consumir referência de projeto e eventos com idempotência e proveniência; 05B manterá autoridade de prestadores e OS, incluindo validação de desmobilização retroativa por Ana. Eventos de Contratos não autorizam mobilização, custo, despesa nem liquidação. Não houve implementação de 04B, 05B ou Financeiro, merge ou deploy.
+
+---
+
 # Comando 03B — incremento inicial de Contratos
 
 **Estado: PARCIAL, primeiro fluxo funcional para revisão. Não é homologação integral.**
