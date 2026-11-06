@@ -32,7 +32,7 @@ export async function migrate(connection:PoolConnection,direction:string,target?
    if(!source||source.version!==a.version)throw new Error('Histórico de migrações não sequencial.');
    if(a.checksum===null){
     // Somente a 001 exata, anterior ao mecanismo de checksum, pode ser adotada explicitamente.
-    if(a.version!=='001_foundation'||source.checksum!=='5fc7e7f487c5fbb9a51835e0145beae7485b855ce224ce3f8aa2e0254632d910'||process.env.ADOPT_LEGACY_001!=='yes')throw new Error('Adoção explícita da 001 necessária.');
+    if(a.version!=='001_foundation'||source.checksum!=='3459bd972c45651cd30d399bdf9290c49a9ddd406e08670dcb5f56fa8f022a46'||process.env.ADOPT_LEGACY_001!=='yes')throw new Error('Adoção explícita da 001 necessária.');
     await connection.execute('UPDATE schema_migrations SET checksum=? WHERE version=?',[source.checksum,a.version]);
    }else if(a.checksum!==source.checksum)throw new Error('Checksum divergente: '+a.version);
   }
