@@ -128,6 +128,9 @@ test('migrações validam checksum/dirty e rollback 002 preserva 001 e usuários
  const {migrate}=await import('../scripts/migration-engine.ts');const c=await pool.getConnection();
  try{
  const before=(await rows<{n:number}>('SELECT COUNT(*) n FROM users'))[0].n;
+ const [legacy]=await rows<{checksum:string}>('SELECT checksum FROM schema_migrations WHERE version=?',['001_foundation']);
+ await pool.execute('UPDATE schema_migrations SET checksum=NULL WHERE version=?',['001_foundation']);
+ try{await assert.rejects(migrate(c,'up'),/Adoção/);process.env.ADOPT_LEGACY_001='yes';await migrate(c,'up');}finally{delete process.env.ADOPT_LEGACY_001;await pool.execute('UPDATE schema_migrations SET checksum=? WHERE version=?',[legacy.checksum,'001_foundation']);}
  const [m]=await rows<{checksum:string}>('SELECT checksum FROM schema_migrations WHERE version=?',['002_governance']);
  await pool.execute('UPDATE schema_migrations SET checksum=? WHERE version=?',['0'.repeat(64),'002_governance']);
  try{await assert.rejects(migrate(c,'up'),/Checksum/);}finally{await pool.execute('UPDATE schema_migrations SET checksum=? WHERE version=?',[m.checksum,'002_governance']);}

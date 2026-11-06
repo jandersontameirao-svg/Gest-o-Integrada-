@@ -17,6 +17,7 @@ export async function migrate(connection:PoolConnection,direction:string,target?
  if(!['up','down'].includes(direction)) throw new Error('Use up ou down.');
  const catalog=await migrationCatalog();
  if(target&&!catalog.some(m=>m.version===target)) throw new Error('Versão alvo desconhecida.');
+ if(direction==='down'&&(process.env.NODE_ENV==='production'||!process.env.DB_NAME?.endsWith('_demo')))throw new Error('Rollback habilitado somente em banco descartável *_demo.');
  if(direction==='down'&&process.env.ALLOW_DESTRUCTIVE_ROLLBACK!=='yes')throw new Error('Rollback exige ALLOW_DESTRUCTIVE_ROLLBACK=yes.');
  const lock=await rows<{acquired:number}>("SELECT GET_LOCK(CONCAT(DATABASE(), ':migrations'),10) acquired",[],connection);
  if(lock[0]?.acquired!==1)throw new Error('Migração concorrente.');

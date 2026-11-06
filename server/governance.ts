@@ -13,7 +13,7 @@ governanceRouter.get('/snapshot',async(req,res)=>{
  if(!/^\d{4}-\d{2}-\d{2}$/.test(asOf)||!Number.isFinite(Date.parse(asOf))||new Date(asOf).toISOString().slice(0,10)!==asOf)throw new HttpError(400,'Data inválida.');
  await requireAccess(res.locals.user,scope,'strategy','read');
  const units=await rows<{id:string;name:string}>('SELECT id,name FROM business_units WHERE active=TRUE ORDER BY name');
- const visibleUnits=[];for(const u of units)if(await checkAccess(res.locals.user,'scope-unit:'+u.id,'strategy','read'))visibleUnits.push(u);
+ const visibleUnits:typeof units=[];for(const u of units)if(await checkAccess(res.locals.user,'scope-unit:'+u.id,'strategy','read'))visibleUnits.push(u);
  let companies=await allowedCompanies(res.locals.user,'strategy',asOf);
  if(scope.startsWith('scope-company:'))companies=companies.filter(c=>'scope-company:'+c.id===scope);
  const membership=await rows<{company_id:string;unit_id:string;valid_from:string;valid_to:string|null}>('SELECT company_id,unit_id,DATE_FORMAT(valid_from,"%Y-%m-%d") valid_from,DATE_FORMAT(valid_to,"%Y-%m-%d") valid_to FROM company_unit_history WHERE valid_from<=? AND (valid_to IS NULL OR valid_to>?)',[asOf,asOf]);
@@ -73,6 +73,8 @@ governanceRouter.put('/profile',async(req,res)=>{
  if(!['DIRETORES','GERENTES','OPERADORES'].includes(profile))throw new HttpError(400,'Perfil inválido.');
  if(userId===res.locals.user.id)throw new HttpError(409,'Alteração do próprio perfil exige outro diretor.');
  const c=await pool.getConnection();try{await c.beginTransaction();
+ const directors=await rows<{user_id:string}>("SELECT user_id FROM user_profiles WHERE profile='DIRETORES' ORDER BY user_id FOR UPDATE",[],c);
+ if(!directors.some(d=>d.user_id===res.locals.user.id))throw new HttpError(403,'Perfil de diretor revogado.');
  if(!(await rows('SELECT id FROM users WHERE id=? FOR UPDATE',[userId],c))[0])throw new HttpError(404,'Usuário inexistente.');
  const before=await rows('SELECT profile FROM user_profiles WHERE user_id=?',[userId],c);
  await c.execute('INSERT INTO user_profiles(user_id,profile) VALUES (?,?) ON DUPLICATE KEY UPDATE profile=?',[userId,profile,profile]);
