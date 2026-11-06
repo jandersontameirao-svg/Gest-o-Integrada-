@@ -195,3 +195,11 @@ Decisões em aberto e sequência concreta estão em IMPLEMENTACAO_03B_CONTRATOS.
 Medições: draft → submitted → approved → billable, com reject e request_changes autorizados. Reapresentação ocorre após edição de changes_requested. Glosas contêm índice da linha, decimal e justificativa, preservados em histórico com revisão. Aprovação/faturabilidade são decisões humanas distintas; estados invoiced/received não podem ser escritos por Contratos. Financeiro futuro deverá devolver referências canônicas e eventos idempotentes, jamais inferidos da aprovação.
 
 `GET /:id/report.pdf[?recordId=UUID]` exige read+export e valida ownership do registro. Documento TXT versionado aceita previousDocumentId e recordId do mesmo contrato; versões antigas permanecem acessíveis com read+attachments. Não há links públicos. Novos consumidores não devem ler tabelas internas nem criar cópias de mestres.
+
+## Revisão 03D — compatibilidade para materialização futura em 04B
+
+A resposta project-reference/v1 inclui scope, contractRevision, authorizationRevision e uniqueOriginKey (`contracts:<contractId>`). Elegibilidade é false quando proposta ou limite não forem verificáveis. A mesma referência é mantida após assinatura. Replay de autorização expirada/revogada é negado; não reaproveitar resposta histórica como autoridade.
+
+04B deverá impor UNIQUE de originKey/projectRef, autorização de Projetos e empresa habilitada, revalidar autorização/expiração/revogação/limite/moeda e revisões na mesma operação transacional da materialização. Repetições retornam o mesmo projeto. Nenhum endpoint de materialização ou novo cadastro mestre foi ativado em Contratos. Abertura não concede despesa, mobilização ou OS.
+
+Itens canônicos de clientes e linhas de medição são de Contratos: quantity (6 casas), unitPrice/value (2 casas), contractItemId, milestoneId, sourceRef, quantityOffset e competência. IDs não podem ser substituídos por descrição na integração. Quantidades/preços de prestadores e OS permanecem sob autoridade de Fornecedores; não mapear item de contrato cliente como contrato de prestador. Eventos de medição carregam período, glosas e financialSettlement=false. Estorno contratual não é lançamento de estorno financeiro. Estratégia deve deduplicar eventos por ID/versão e conservar proveniência, sem dupla contagem.

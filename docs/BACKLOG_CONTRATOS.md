@@ -1,24 +1,27 @@
-# Backlog de Contratos após 03C
+# Backlog de Contratos após 03D
 
-Esta rodada não homologa integralmente o módulo. Nenhum item autoriza implementar 04B, 05B ou Financeiro.
+Prioridade seguinte: Gestão de Projetos 04B, mediante autorização própria. Não propõe outra rodada de Contratos salvo bloqueio crítico comprovado. Relatório: [REVISAO_03D_CONTRATOS.md](REVISAO_03D_CONTRATOS.md).
 
-| Prioridade | Pendência | Aceite futuro |
+## Bloqueios reais para homologação ou regras específicas
+
+| Bloqueio | Decisão/evidência necessária | Partes já funcionais |
 |---|---|---|
-| Alta | Identificador de item contratual e quantidades/unidades de serviço | Limites por item canônico, medição incremental e testes de concorrência; hoje limites são monetários por marco e contrato |
-| Alta | Prevenção de duplicidade entre boletins parcialmente sobrepostos | Referência externa única e conciliação humana; hoje detecta cópias integrais ativas, não equivalência semântica de textos distintos |
-| Alta | Upload PDF/binário privado, antivírus e política documental | Tamanho, MIME/conteúdo, quarentena, ownership, retenção e download; hoje apenas TXT e PDF gerado |
-| Alta | Demais templates e relatórios especializados do legado | Inventário e homologação visual e funcional de cada template; gerador tabular reaproveitado não implica paridade de todos os relatórios |
-| Alta | Riscos/ocorrências e responsáveis/aprovadores com usuários canônicos | CRUD auditado e permissões; campos livres atuais não constituem alçadas automáticas |
-| Média | Alertas internos e painel gerencial ampliado | Alertas persistidos, regras de vencimento e confirmação, sem envio externo automático |
-| Média | Evidências estruturadas por item e assinatura documental | Anexos autorizados associados a decisões; evidência textual atual não comprova assinatura legal |
-| Média | Revogação/revalidação temporal avançada do pré-projeto | Renovação autorizada, preservação da mesma referência, integração 04B idempotente |
-| Média | Desempenho e paginação | Limites de registros, relatórios extensos e divisão do bundle frontend; build alerta bundle >500 kB |
+| Política jurídica/comercial de numeração, glosa, recurso, arredondamento e faturabilidade | CEO/comercial/jurídico homologam regras; não há padrão definitivo presumido | Numeração provisória configurável, histórico e decisões manuais |
+| Alçadas, expiração/renovação e segregação de funções | CEO define autoridade por valor/papel e tratamento de revogação com projeto já materializado | Reserva de pré-projeto, limite informado, revogação/expiração e papéis com permissões de backend |
+| Arquivos não controlados | Aprovar inspeção/quarentena antimalware/CDR, retenção, restrições e formatos antes de uso real | Formatos sintéticos privados validados, versões e downloads auditados; validação estrutural não prova ausência de malware |
+| Reconciliação do acervo monetário antigo | Identificar itens, quantidades e faixas por evidência, sem inferir de textos | Fluxo 03B/03C mantido; novos contratos com catálogo exigem itens canônicos |
+| Paridade dos demais templates do legado | Inventário visual e homologação template a template | Gerador tabular e tela original de riscos reaproveitados |
+| Materialização de projeto | 04B precisa transação/UNIQUE/revalidação de origem e autorização; não basta confiar em GET antigo | Interface v1, referência única e preservada após assinatura |
 
-## Decisões do CEO ainda necessárias
+## Melhorias futuras, sem bloquear revisão do incremento sintético
 
-- Alçadas por valor, expiração e renovação do pré-projeto. Limite informado é decisão humana individual, não política geral.
-- Numeração jurídica definitiva e tratamento de referências legadas.
-- Regras de glosa, recursos, faturabilidade, medição parcial e competências. A ferramenta registra a decisão; não define automaticamente tais políticas.
-- Quem pode atuar como responsável/aprovador, substituição e segregação de funções.
-- Retenção documental, formatos, limites, assinaturas e restrições de acesso específicas.
-- Regras de custos/competência de OS para 05B, sem implementação nesta rodada.
+- Preços por vigência para o mesmo item, conversão de unidades, composições e política para glosa de serviços de valor zero. Atualmente preço/unidade imutáveis após uso e novo item explícito para nova composição.
+- Reconciliação assistida de faixas/evidências físicas e revisão avançada de glosa parcial. Não liberar automaticamente uma faixa glosada sem corrigir/revisar o boletim original.
+- Mais templates especializados, PDFs gerenciais consolidados, layout extenso e relatórios configuráveis.
+- Alertas persistentes com confirmação de leitura e scheduler interno. Hoje há consulta derivada autorizada e antecedência configurável, sem mensagens externas.
+- Renovação de pré-projeto e workflow adicional de recursos/aprovação, após definição de política.
+- Volumetria, paginação, limites por lote, observabilidade e divisão do bundle frontend (>500 kB no build).
+- Evolução de matriz de risco/classificação e papéis; regras técnicas atuais não equivalem a alçadas jurídicas.
+- Plano de backup/restore e migrações corretivas para dados autorizados; rollback 007 apaga dados introduzidos em 03D e só foi validado no banco descartável.
+
+Não criar mestres paralelos de prestadores/projetos, Financeiro ou notificações externas para resolver estas pendências.

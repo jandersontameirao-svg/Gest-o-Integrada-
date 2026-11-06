@@ -230,3 +230,7 @@ conflitos exigem dados temporais, permissões e testes antes de inferir custo.
 
 Não há autorização implícita para executar esses módulos. Aguardar revisão do CEO;
 sem merge, deploy, publicação automática ou homologação externa.
+
+## Revisão posterior 03D
+
+Estado mais recente, matriz incremental, segurança C01–C16, compatibilidade 04B e checklist visual: [REVISAO_03D_CONTRATOS.md](REVISAO_03D_CONTRATOS.md). Este documento preserva o histórico de 03B/03C; pendências antigas foram reclassificadas em [BACKLOG_CONTRATOS.md](BACKLOG_CONTRATOS.md). A entrega 03D acrescenta catálogo quantitativo, sobreposição, snapshots, arquivos binários privados, numeração provisória, responsáveis, riscos/ocorrências e alertas internos sob demanda. Não representa homologação integral.
