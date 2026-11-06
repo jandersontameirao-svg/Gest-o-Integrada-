@@ -49,7 +49,8 @@ implementam seus aplicativos nesta entrega. O código legado não foi executado.
    de submetida/aprovada é bloqueada até devolução autorizada; história preservada.
    UI oferece submissão/aprovação/devolução; rejeição também existe na API.
 7. Anexar/baixar documento texto privado (.txt) com permissões read/edit e
-   attachments conforme ação. Somente backend entrega bytes; nenhuma URL pública
+   attachments conforme ação. Manifesto e eventos de anexação também são ocultados de leitor sem attachments.
+   Somente backend entrega bytes; nenhuma URL pública
    ou externa aceita. JSON de contrato inclui manifesto, não conteúdo do anexo.
 8. Exportar JSON confirmado com read+export; consultar história de alterações.
 9. Diretor autorizado decide pré-projeto: justificativa, limite/expiração
@@ -79,7 +80,9 @@ revisão esperada do agregado e revisão do registro; concorrência obsoleta ret
 história e evento associado acontece na mesma transação.
 
 Chaves requestId UUID por ator: mesma requisição retorna a resposta confirmada,
-sem reaplicar efeito; chave com outro conteúdo/caminho/empresa é recusada. Lock do
+sem reaplicar efeito; chave com outro conteúdo/caminho/empresa é recusada.
+Repetir autorização de pré-projeto revalida DIRETORES antes de devolver resposta
+idempotente; rebaixamento de perfil não é contornado por replay. Lock do
 ator serializa tentativas e a constraint é proteção adicional. A UI mantém a
 mesma chave ao repetir uma solicitação falha com conteúdo inalterado; não há
 sucesso de salvamento antes da resposta persistida. Revisão conflitante conserva

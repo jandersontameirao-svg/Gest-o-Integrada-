@@ -1,7 +1,9 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {money,cents,amount,effectiveValue,dateOnly,type ContractRecord} from '../shared/contracts/model.ts';
+import {money,cents,amount,effectiveValue,validateValueSchedule,dateOnly,type ContractRecord} from '../shared/contracts/model.ts';
 import {contractPayload,recordPayload} from '../server/contracts/validation.ts';
 const record=(value:string,status='active')=>({id:'a',kind:'amendment',seq:1,revision:1,payload:{additionalValue:value,status}} as ContractRecord);
 test('Contrato: decimais exatos e aditivos derivados uma única vez, incluindo concluídos',()=>{assert.equal(amount(cents('0.10')+cents('0.20')),'0.30');assert.equal(effectiveValue('1000.00',[record('0.10'),record('0.20','completed'),record('99.00','draft'),record('50.00','cancelled')]),'1000.30');assert.equal(effectiveValue('1000.00',[record('-100.50')]),'899.50');assert.throws(()=>money('1e10'));assert.throws(()=>money(1));assert.throws(()=>money('1.001'));});
 test('Contrato: datas, moeda e campos de liquidação/URL não são inferidos',()=>{assert.throws(()=>dateOnly('2026-02-30'));assert.throws(()=>contractPayload({title:'Teste',startDate:'2026-01-01',endDate:'',currency:'BRL',totalValue:'1.00',status:'draft',pdfUrl:'https://invalid.test'}));assert.throws(()=>recordPayload('milestone',{description:'Marco',dueDate:'2026-01-01',valorPrevisto:'1.00',status:'paid',valorPago:'1.00'}));assert.throws(()=>recordPayload('measurement',{title:'Boletim',periodStart:'2026-02-01',periodEnd:'2026-01-01',items:[]}));});
+
+test('Contrato: vigências futuras não adiantam valor e reduções inválidas são recusadas por período',()=>{const future={...record('100.00'),payload:{...record('100.00').payload,effectiveDate:'2099-01-01'}};assert.equal(effectiveValue('1000.00',[future],'2026-01-01'),'1000.00');assert.equal(effectiveValue('1000.00',[future],'2099-01-01'),'1100.00');const reduction={...record('-1500.00'),payload:{...record('-1500.00').payload,effectiveDate:'2026-01-01'}};assert.throws(()=>validateValueSchedule('1000.00',[reduction,future]));});
