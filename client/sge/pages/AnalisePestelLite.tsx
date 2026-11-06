@@ -56,11 +56,9 @@ function AnalisePestelLite({ empresaId }: AnalisePestelLiteProps) {
   const [fatorEmEdicao,setFatorEmEdicao]=useState<FatorPestel|null>(null);
   const [impactoEdicao,setImpactoEdicao]=useState(3);
   const [probabilidadeEdicao,setProbabilidadeEdicao]=useState(3);
-  const {state:fatores,setState:setFatores,undo,redo,canUndo,canRedo}=useUndoRedo<FatorPestel[]>([]);
   const {value,setValue,status:autoSaveStatus,save,loaded}=useDocument<FatorPestel[]>("pestel",[]);
-  const hydrated=useRef(false);
-  useEffect(()=>{if(loaded&&!hydrated.current){hydrated.current=true;setFatores(value);}},[loaded,value]);
-  useEffect(()=>{if(hydrated.current&&JSON.stringify(fatores)!==JSON.stringify(value))setValue(fatores);},[fatores]);
+  const {state:fatores,setState:setFatores,undo,redo,canUndo,canRedo}=useUndoRedo<FatorPestel[]>(value);
+  useEffect(()=>{if(JSON.stringify(fatores)!==JSON.stringify(value))setValue(fatores);},[fatores]);
   const manualSaveSuccess=autoSaveStatus==='saved';
   const salvarMutation={isPending:autoSaveStatus==='saving'};
   const hasUserChanges={current:false};

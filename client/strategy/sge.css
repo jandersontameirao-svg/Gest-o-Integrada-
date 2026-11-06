@@ -2,7 +2,7 @@
 @source "../sge";
 @source "./";
 @theme inline {
- --color-background: var(--sge-background); --color-foreground:#243447;
+ --color-background: var(--sge-background,#f8fafc); --color-foreground:#243447;
  --color-card:#fff; --color-card-foreground:#243447; --color-primary:#8b1538; --color-primary-foreground:#fff;
  --color-muted:#f1f5f9; --color-muted-foreground:#536275; --color-border:#d8e0e8;
  --color-input:#d8e0e8; --color-ring:#ed7501; --color-accent:#fff1e5; --color-accent-foreground:#8b1538;

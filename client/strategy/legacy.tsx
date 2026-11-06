@@ -19,6 +19,8 @@ export function useAuth(){const {data}=useStrategy();return {user:{role:data.cap
 export const trpc={
  empresas:{getById:{useQuery(_input:unknown){const c=useStrategy();return {data:{id:c.data.plan.scope_id,nome:c.data.name,status:'ativa',tipoAtuacao:'servicos'},refetch:c.refresh};}},list:{useQuery(){const c=useStrategy();return {data:[{id:c.data.plan.scope_id,nome:c.data.name,status:'ativa',tipoAtuacao:'servicos'}]};}}},
  objetivosGrupo:{listByEmpresa:{useQuery(_input:unknown){return list<Objective>('objective');}},create:mutation('objective'),update:mutation('objective'),delete:mutation('objective',true),vincularLider:mutation('objective')},
+ projetosGrupo:{listByEmpresa:{useQuery(_input:unknown){return list<{id:string;nome:string;status:string}>('project');}}},
+ acoesGrupo:{listByEmpresa:{useQuery(_input:unknown){return list<{id:string;descricao:string;status:string}>('action');}}},
  kpis:{listByEmpresa:{useQuery(_input:unknown){return list<KPI>('kpi');}},create:mutation('kpi')},
  kpiValores:{listByKpi:{useQuery(input:{kpiId:string},_options?:unknown){const c=useStrategy();return {data:valueRows().filter(v=>v.kpiId===input.kpiId).sort((a,b)=>b.ano-a.ano||b.mes-a.mes),refetch:c.refresh};}},getByPeriodo:{useQuery(input:{kpiId:string;ano:number;mes:number},_options?:unknown){const c=useStrategy();return {data:valueRows().find(v=>v.kpiId===input.kpiId&&v.ano===input.ano&&v.mes===input.mes),refetch:c.refresh};}},upsert:mutation('kpi-value')},
  organograma:{leaders:{useQuery(){return {data:{leaders:[] as {id:number;title:string;person:{name:string}|null}[]}};}}},

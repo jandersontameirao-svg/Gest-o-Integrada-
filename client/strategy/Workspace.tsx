@@ -3,6 +3,7 @@ import {Toaster,toast} from 'sonner';
 import type {Plan,PlanData} from '../../shared/strategy/model.ts';
 import {StrategyContext,request} from './context.tsx';
 import Dashboard from '../sge/pages/DashboardGrupo.tsx';
+import CompanyDashboard from '../sge/pages/DashboardEmpresa.tsx';
 import UnitDashboard from '../sge/pages/DashboardAnalisesArea.tsx';
 import Hub from '../sge/pages/PlanejamentoEstrategicoEmpresa.tsx';
 import Objectives from '../sge/pages/ObjetivosEmpresa.tsx';
@@ -34,7 +35,7 @@ export function Workspace({token,initialScope}:{token:string;initialScope:string
  {data.capabilities.edit&&<button disabled={pending} onClick={async()=>{if(!safe())return;const cycle=data.cycles.find(c=>c.id===cycleId)!;setPending(true);try{await request(token,'/plans/'+planId+'/cycles/'+cycleId,'PUT',{closed:!cycle.closed,planVersion:data.plan.version});await refresh();}catch(e){setError((e as Error).message);}finally{setPending(false);}}}>{data.cycles.find(c=>c.id===cycleId)?.closed?'Reabrir período (diretor)':'Fechar período'}</button>}
  {data.capabilities.export&&<button onClick={async()=>{if(!safe())return;try{const snapshot=await request(token,'/plans/'+planId+'/export');const url=URL.createObjectURL(new Blob([JSON.stringify(snapshot,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='plano-estrategico.json';a.click();URL.revokeObjectURL(url);}catch(e){setError((e as Error).message);}}}>Exportar dados confirmados (JSON)</button>}
  <button onClick={()=>{if(dirty.current.size&&!confirm('Descartar alterações locais não confirmadas?'))return;dirty.current.clear();setData(null);void refresh().catch(e=>setError(e.message));}}>Recarregar do banco</button></div>
- <div key={planId+':'+cycleId+':'+data.plan.version}>{tab==='dashboard'&&(scope.startsWith('scope-unit:')?<UnitDashboard/>:<Dashboard/>)}{tab==='methods'&&<Hub empresaId={scope} empresaNome={data.name}/>} {tab==='objectives'&&<Objectives empresaId={scope}/>} {tab==='kpis'&&<KPIs empresaId={scope}/>} {tab==='targets'&&<Targets/>}{tab==='history'&&<section><h3>Histórico e versões aprovadas (somente leitura)</h3><pre className="overflow-auto max-h-[600px] text-xs">{JSON.stringify(history,null,2)}</pre></section>}</div>
+ <div key={planId+':'+cycleId+':'+data.plan.version}>{tab==='dashboard'&&(scope.startsWith('scope-unit:')?<UnitDashboard/>:scope.startsWith('scope-company:')?<CompanyDashboard empresaId={scope}/>:<Dashboard/>)}{tab==='methods'&&<Hub empresaId={scope} empresaNome={data.name}/>} {tab==='objectives'&&<Objectives empresaId={scope}/>} {tab==='kpis'&&<KPIs empresaId={scope}/>} {tab==='targets'&&<Targets/>}{tab==='history'&&<section><h3>Histórico e versões aprovadas (somente leitura)</h3><pre className="overflow-auto max-h-[600px] text-xs">{JSON.stringify(history,null,2)}</pre></section>}</div>
  </StrategyContext.Provider>}
  </section>;
 }

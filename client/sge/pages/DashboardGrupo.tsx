@@ -95,7 +95,7 @@ export default function DashboardGrupo() {
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Total de Empresas</p>
+              <p className="text-sm text-muted-foreground">Escopos do plano</p>
               <h3 className="text-3xl font-bold mt-2">{totalEmpresas}</h3>
               <p className="text-xs text-muted-foreground mt-1">
                 {empresasAtivas} ativas
@@ -174,9 +174,9 @@ export default function DashboardGrupo() {
           </ResponsiveContainer>
         </Card>
 
-        {/* Desempenho por Empresa */}
+        {/* Desempenho neste escopo */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Desempenho por Empresa</h3>
+          <h3 className="text-lg font-semibold mb-4">Desempenho neste escopo</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={dadosEmpresas}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -191,7 +191,7 @@ export default function DashboardGrupo() {
 
       {/* Lista de Empresas */}
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Empresas do Grupo</h3>
+        <h3 className="text-lg font-semibold mb-4">Escopo e indicadores deste plano</h3>
         <div className="space-y-4">
           {empresas.map(empresa => {
             const indicadoresEmpresa = todosIndicadores.filter(ind => ind.empresaId === empresa.id);

@@ -54,3 +54,4 @@ test('tokens não são previsíveis e o banco recebe somente digest',()=>{
  const a=newToken();const b=newToken();assert.notEqual(a,b);
  assert.equal(a.length,43);assert.equal(digestToken(a).length,64);assert.notEqual(a,digestToken(a));
 });
+

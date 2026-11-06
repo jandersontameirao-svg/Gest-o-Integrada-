@@ -11,7 +11,7 @@ CREATE TABLE strategy_cycles (
  FOREIGN KEY(plan_id) REFERENCES strategy_plans(id), UNIQUE(plan_id,kind,year,period)
 );
 CREATE TABLE strategy_entries (
- id CHAR(36) PRIMARY KEY, plan_id CHAR(36) NOT NULL, kind ENUM('objective','target','kpi','kpi-value') NOT NULL,
+ id CHAR(36) PRIMARY KEY, plan_id CHAR(36) NOT NULL, kind ENUM('objective','target','kpi','kpi-value','project','action') NOT NULL,
  parent_id CHAR(36) NULL, payload JSON NOT NULL, revision INT NOT NULL DEFAULT 1,
  FOREIGN KEY(plan_id) REFERENCES strategy_plans(id), FOREIGN KEY(parent_id) REFERENCES strategy_entries(id), INDEX(plan_id,kind)
 );

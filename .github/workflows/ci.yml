@@ -34,9 +34,7 @@ jobs:
           node-version: '24'
           cache: npm
       - name: Instalar dependências
-        run: npm install --ignore-scripts
-      - name: Exportar lockfile para versionamento
-        run: node -e "console.log('LOCKFILE_BASE64='+require('fs').readFileSync('package-lock.json').toString('base64'))"
+        run: npm ci
       - name: Configuração descartável de testes
         run: touch .env
       - run: npm run build
@@ -56,6 +54,26 @@ jobs:
         run: |
           npm run seed
           npm run test:integration
+      - name: Recriar apenas o banco descartável para E2E
+        run: |
+          npm run migrate -- down
+          npm run migrate
+          npm run seed
+        env:
+          ALLOW_DESTRUCTIVE_ROLLBACK: 'yes'
+      - name: Instalar Chromium de teste
+        run: npx playwright install --with-deps chromium
+      - name: Paridade dos formulários no navegador
+        run: npm run test:e2e
+      - name: Evidências de navegador (somente dados sintéticos)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sge-browser-evidence
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
       - name: Auditoria de dependências
         run: npm audit --audit-level=high
       - name: Lockfile preservado

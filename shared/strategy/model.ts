@@ -2,7 +2,7 @@ export const methodologies=['porter','stakeholders','vrio','bsc','okr','swot','p
 export type Method=typeof methodologies[number];
 export type Plan={id:string;scope_id:string;title:string;start_year:number;end_year:number;version:number;status:'draft'|'approved'|'closed'};
 export type Cycle={id:string;kind:'annual'|'quarterly'|'monthly';year:number;period:number;closed:number};
-export type Entry={id:string;kind:'objective'|'target'|'kpi'|'kpi-value';parent_id:string|null;revision:number;payload:Record<string,unknown>};
+export type Entry={id:string;kind:'objective'|'target'|'kpi'|'kpi-value'|'project'|'action';parent_id:string|null;revision:number;payload:Record<string,unknown>};
 export type StrategyDocument={kind:Method;cycle_id:string;payload:unknown;revision:number};
 export type PlanData={plan:Plan;cycles:Cycle[];entries:Entry[];documents:StrategyDocument[];capabilities:{edit:boolean;approve:boolean;reopen:boolean;export:boolean};name:string};
 // SGE formulas: preserve thresholds, guard mathematically undefined denominators.

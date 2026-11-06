@@ -28,6 +28,8 @@ export function validateEntry(kind:string,data:unknown){const d=object(data);
  else if(kind==='kpi'){str(d.nome,160);if(!['mensal','trimestral','anual'].includes(String(d.frequencia)))invalid();str(d.unidadeMedida,50);}
  else if(kind==='target'){str(d.objetivoId,36);integer(d.ano,2000,2100);number(d.metaAnual);if(!['faturamento','clientes','producao','outros'].includes(String(d.tipo)))invalid();}
  else if(kind==='kpi-value'){str(d.kpiId,36);integer(d.ano,2000,2100);integer(d.mes,1,12);if(d.meta!==undefined)number(d.meta);if(d.realizado!==undefined)number(d.realizado);}
+ else if(kind==='project'){str(d.nome,160);if(!['planejado','em_andamento','concluido','cancelado'].includes(String(d.status)))invalid();}
+ else if(kind==='action'){str(d.descricao);if(!['pendente','em_andamento','concluida','cancelada'].includes(String(d.status)))invalid();}
  else invalid('Tipo de registro inválido.');
  if(JSON.stringify(d).length>12000)invalid();return d;
 }
