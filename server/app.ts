@@ -9,6 +9,7 @@ import { digestToken, newToken, verifyPassword, hashPassword } from './crypto.ts
 import { authorize, HttpError } from './policy.ts';
 import {allowedCompanies,requireAccess} from './access.ts';
 import {governanceRouter} from './governance.ts';
+import {contractsRouter} from './contracts/router.ts';
 import {strategyRouter} from './strategy.ts';
 const dummyHash = hashPassword('dummy-password-never-used-for-login');
 export function createApp() {
@@ -16,6 +17,7 @@ export function createApp() {
  app.disable('x-powered-by');
  app.use(helmet());
  app.use('/api/v1/strategy',express.json({limit:'128kb'}));
+ app.use('/api/v1/contracts',express.json({limit:'12mb'}));
  app.use(express.json({limit:'16kb'}));
  app.use('/api', (_req,res,next) => { res.setHeader('Cache-Control','no-store'); next(); });
  app.use('/api', rateLimit({windowMs:60_000, limit:120, standardHeaders:'draft-8', legacyHeaders:false}));
@@ -57,6 +59,7 @@ export function createApp() {
  });
  app.use('/api/v1/governance',governanceRouter);
  app.use('/api/v1/strategy',strategyRouter);
+ app.use('/api/v1/contracts',contractsRouter);
  app.get('/api/v1/companies', async (req,res) => {
   const module=typeof req.query.module==='string'?req.query.module:'projects';
   if(!modules.some(m=>m.id===module))throw new HttpError(400,'Módulo inválido.');
