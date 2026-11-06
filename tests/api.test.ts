@@ -1,3 +1,5 @@
+import {register02cTests} from './strategy-02c.integration.ts';
+import {registerStrategyTests} from './strategy.integration.ts';
 import {test,after,before} from 'node:test';
 import assert from 'node:assert/strict';
 import {createApp} from '../server/app.ts';
@@ -5,12 +7,20 @@ import {pool,rows} from '../server/db.ts';
 import type {AddressInfo} from 'node:net';
 if (!process.env.DB_NAME?.endsWith('_demo')) throw new Error('Testes de integração exigem banco *_demo.');
 const server=createApp().listen(0,'127.0.0.1');
+const strategyServer=createApp().listen(0,'127.0.0.1');
+const alignmentServer=createApp().listen(0,'127.0.0.1');
+let alignmentBase:string;
+let strategyBase:string;
 let base:string;
 before(async()=>{
  if(!server.listening) await new Promise<void>(resolve=>server.once('listening',resolve));
+ if(!strategyServer.listening)await new Promise<void>(resolve=>strategyServer.once('listening',resolve));
+ if(!alignmentServer.listening)await new Promise<void>(resolve=>alignmentServer.once('listening',resolve));
+ alignmentBase='http://127.0.0.1:'+(alignmentServer.address() as AddressInfo).port+'/api/v1';
+ strategyBase='http://127.0.0.1:'+(strategyServer.address() as AddressInfo).port+'/api/v1';
  base='http://127.0.0.1:'+(server.address() as AddressInfo).port+'/api/v1';
 });
-after(async()=>{await new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()));await pool.end();});
+after(async()=>{await new Promise<void>((resolve,reject)=>alignmentServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>strategyServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()));await pool.end();});
 async function login(email:string){
  const response=await fetch(base+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:process.env.DEMO_PASSWORD})});
  assert.equal(response.status,200);return (await response.json()).token as string;
@@ -63,4 +73,86 @@ test('logout e expiração invalidam sessão e auditoria registra acesso negado'
 test('erros não expõem SQL, senha ou stack',async()=>{
  const response=await fetch(base+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:"' OR 1=1 --",password:'invalid'})});
  assert.equal(response.status,401);assert.deepEqual(await response.json(),{error:'Credenciais inválidas.'});
+});
+
+
+let governanceDirector='';let governanceManager='';
+async function directorToken(){return governanceDirector||=await login('holding@example.test');}
+async function managerToken(){return governanceManager||=await login('projetos@example.test');}
+async function mutate(path:string,token:string,body:unknown,method='POST'){
+ return fetch(base+path,{method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
+}
+test('governança exige sessão e nega gestão a gerente',async()=>{
+ assert.equal((await fetch(base+'/governance/snapshot')).status,401);
+ assert.equal((await mutate('/governance/units',await managerToken(),{name:'Unidade sintética proibida'})).status,403);
+ assert.equal((await get('/governance/grants',await managerToken())).status,403);
+});
+test('Holding unificada preserva proveniência e inclui somente estratégia para UTU/Vinho',async()=>{
+ const token=await directorToken();
+ const provenance=await rows<{scope_id:string}>('SELECT scope_id FROM scope_provenance ORDER BY source_scope');
+ assert.equal(provenance.length,2);assert.ok(provenance.every(p=>p.scope_id==='scope-holding'));
+ const list=await(await get('/companies?module=strategy',token)).json();assert.equal(list.length,7);
+ for(const company of ['utu','vinho-24'])for(const module of ['projects','contracts','suppliers','finance'])assert.equal((await get('/modules/'+module+'/overview?companyId='+company,token)).status,403);
+ const snapshot=await(await get('/governance/snapshot',token)).json();assert.equal(snapshot.companies.length,7);assert.equal(snapshot.profile,'DIRETORES');assert.equal(snapshot.units.length,3);
+ assert.equal((await get('/governance/snapshot?scopeId=-1',token)).status,403);
+});
+test('permissão pessoal, unitária e revogação são verificadas em sessão já aberta',async()=>{
+ const director=await directorToken(),manager=await managerToken();
+ const [u]=await rows<{id:string}>('SELECT id FROM users WHERE email=?',['projetos@example.test']);
+ const permission={userId:u.id,scopeId:'scope-unit:africa',module:'strategy',action:'read',effect:'allow'};
+ assert.equal((await mutate('/governance/grants',director,permission,'PUT')).status,200);
+ assert.equal((await get('/modules/strategy/overview?companyId=utu',manager)).status,200);
+ assert.equal((await get('/modules/strategy/overview?companyId=vinho-24',manager)).status,403);
+ assert.equal((await mutate('/governance/grants',director,{...permission,scopeId:'scope-company:utu',effect:'deny'},'PUT')).status,200);
+ assert.equal((await get('/modules/strategy/overview?companyId=utu',manager)).status,403);
+ // Even an explicit operational grant cannot enable UTU finance.
+ assert.equal((await mutate('/governance/grants',director,{...permission,scopeId:'scope-company:utu',module:'finance'},'PUT')).status,200);
+ assert.equal((await get('/modules/finance/overview?companyId=utu',manager)).status,403);
+ await pool.execute('DELETE FROM scope_grants WHERE user_id=?',[u.id]);
+});
+test('negação pessoal também remove registros da consolidação corporativa',async()=>{
+ const token=await directorToken();const [u]=await rows<{id:string}>('SELECT id FROM users WHERE email=?',['holding@example.test']);
+ await pool.execute('INSERT INTO scope_grants VALUES (?,?,?,?,?)',[u.id,'scope-company:arqueocean','finance','read','deny']);
+ try{const data=await(await get('/modules/finance/overview?companyId=corporate',token)).json();assert.ok(data.records.every((r:{companyId:string})=>r.companyId!=='arqueocean'));assert.equal(data.records.length,4);}finally{await pool.execute('DELETE FROM scope_grants WHERE user_id=? AND scope_id=? AND module_id=? AND action=?',[u.id,'scope-company:arqueocean','finance','read']);}
+});
+test('transferências concorrentes mantêm uma unidade ativa, histórico e auditoria',async()=>{
+ const token=await directorToken();const today=new Date().toISOString().slice(0,10);
+ const results=await Promise.all(['africa','vinho'].map(unitId=>mutate('/governance/transfer',token,{companyId:'arqueoproject',unitId,effectiveDate:today})));
+ assert.deepEqual(results.map(r=>r.status).sort(),[200,409]);
+ const history=await(await get('/governance/history/arqueoproject',token)).json();assert.equal(history.length,2);assert.equal(history[0].unit_id,'arqueo');assert.equal(history[0].valid_to,today);assert.equal(history[1].valid_from,today);assert.equal(history[1].valid_to,null);
+ const old=await(await get('/governance/snapshot?scopeId=scope-unit:arqueo&asOf=2000-01-01',token)).json();assert.ok(old.companies.some((c:{id:string})=>c.id==='arqueoproject'));
+ const current=await(await get('/governance/snapshot?scopeId=scope-unit:arqueo',token)).json();assert.ok(!current.companies.some((c:{id:string})=>c.id==='arqueoproject'));
+ assert.equal((await mutate('/governance/transfer',token,{companyId:'utu',unitId:'arqueo',effectiveDate:'2000-01-01'})).status,400);
+ await assert.rejects(pool.execute('INSERT INTO company_unit_history(id,company_id,unit_id,valid_from) VALUES (UUID(),?,?,?)',['arqueoproject','arqueo',today]));
+ assert.equal((await rows('SELECT id FROM governance_events WHERE action=?',['company.transfer'])).length,1);
+});
+test('unidades futuras e perfis possuem persistência e auditoria',async()=>{
+ const token=await directorToken();const response=await mutate('/governance/units',token,{name:'Expansão sintética'});assert.equal(response.status,201);const unit=await response.json();
+ assert.ok((await(await get('/governance/snapshot',token)).json()).units.some((u:{id:string})=>u.id===unit.id));
+ const [u]=await rows<{id:string}>('SELECT id FROM users WHERE email=?',['oceano@example.test']);
+ assert.equal((await mutate('/governance/profile',token,{userId:u.id,profile:'GERENTES'},'PUT')).status,200);
+ assert.equal((await rows<{profile:string}>('SELECT profile FROM user_profiles WHERE user_id=?',[u.id]))[0].profile,'GERENTES');
+ assert.ok((await rows('SELECT id FROM governance_events WHERE action=?',['profile.configure'])).length>0);
+});
+registerStrategyTests(()=>strategyBase,directorToken,managerToken);
+register02cTests(()=>alignmentBase,directorToken,managerToken);
+test('migrações validam checksum/dirty e rollback 002 preserva 001 e usuários',async()=>{
+ const {migrate}=await import('../scripts/migration-engine.ts');const c=await pool.getConnection();
+ try{
+ const before=(await rows<{n:number}>('SELECT COUNT(*) n FROM users'))[0].n;
+ const [legacy]=await rows<{checksum:string}>('SELECT checksum FROM schema_migrations WHERE version=?',['001_foundation']);
+ await pool.execute('UPDATE schema_migrations SET checksum=NULL WHERE version=?',['001_foundation']);
+ try{await assert.rejects(migrate(c,'up'),/Adoção/);process.env.ADOPT_LEGACY_001='yes';await migrate(c,'up');}finally{delete process.env.ADOPT_LEGACY_001;await pool.execute('UPDATE schema_migrations SET checksum=? WHERE version=?',[legacy.checksum,'001_foundation']);}
+ const [m]=await rows<{checksum:string}>('SELECT checksum FROM schema_migrations WHERE version=?',['002_governance']);
+ await pool.execute('UPDATE schema_migrations SET checksum=? WHERE version=?',['0'.repeat(64),'002_governance']);
+ try{await assert.rejects(migrate(c,'up'),/Checksum/);}finally{await pool.execute('UPDATE schema_migrations SET checksum=? WHERE version=?',[m.checksum,'002_governance']);}
+ await pool.execute('UPDATE schema_migrations SET dirty=TRUE WHERE version=?',['002_governance']);
+ try{await assert.rejects(migrate(c,'up'),/incompleta/);}finally{await pool.execute('UPDATE schema_migrations SET dirty=FALSE WHERE version=?',['002_governance']);}
+ const old=process.env.ALLOW_DESTRUCTIVE_ROLLBACK;process.env.ALLOW_DESTRUCTIVE_ROLLBACK='yes';
+ try{await migrate(c,'down','002_governance');}finally{if(old===undefined)delete process.env.ALLOW_DESTRUCTIVE_ROLLBACK;else process.env.ALLOW_DESTRUCTIVE_ROLLBACK=old;}
+ assert.equal((await rows<{n:number}>('SELECT COUNT(*) n FROM users'))[0].n,before);
+ assert.equal((await rows('SELECT version FROM schema_migrations')).length,1);
+ await migrate(c,'up');await migrate(c,'up');
+ assert.equal((await rows('SELECT version FROM schema_migrations')).length,4);
+ }finally{c.release();}
 });

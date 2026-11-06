@@ -17,3 +17,4 @@ export function canCorporate(user: Principal) {
 export function visibleCompanyIds(user: Principal): string[] | null {
   return canCorporate(user) ? null : [...new Set(user.memberships.map(m => m.companyId))];
 }
+

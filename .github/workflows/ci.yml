@@ -54,6 +54,34 @@ jobs:
         run: |
           npm run seed
           npm run test:integration
+      - name: Recriar apenas o banco descartável para E2E
+        run: |
+          npm run migrate -- down
+          npm run migrate
+          npm run seed
+        env:
+          ALLOW_DESTRUCTIVE_ROLLBACK: 'yes'
+      - name: Instalar Chromium de teste
+        run: npx playwright install --with-deps chromium
+      - name: Paridade dos formulários no navegador
+        run: npm run test:e2e
+      - name: Diagnóstico acessível de falhas sintéticas
+        if: failure()
+        run: |
+          python - <<'PYTHON'
+          from pathlib import Path
+          for p in Path('test-results').rglob('error-context.md'):
+              print(p.read_text()[:30000])
+          PYTHON
+      - name: Evidências de navegador (somente dados sintéticos)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sge-browser-evidence
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
       - name: Auditoria de dependências
         run: npm audit --audit-level=high
       - name: Lockfile preservado

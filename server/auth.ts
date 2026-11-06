@@ -23,3 +23,4 @@ export async function authenticate(header?: string): Promise<Principal> {
  if (!sessions[0]) throw new HttpError(401, 'Sessão inválida ou expirada.');
  return loadPrincipal(sessions[0].user_id);
 }
+
