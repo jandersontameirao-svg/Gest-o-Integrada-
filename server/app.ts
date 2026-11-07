@@ -1,3 +1,4 @@
+import {supplierExecutionRouter} from './suppliers/execution-router.ts';
 import {supplierIntegrationRouter} from './suppliers/integration-router.ts';
 import {supplierLifecycleRouter} from './suppliers/lifecycle-router.ts';
 import {supplierLegalRouter} from './suppliers/legal-router.ts';
@@ -27,6 +28,7 @@ export function createApp() {
  app.use('/api/v1/strategy',express.json({limit:'128kb'}));
  app.use('/api/v1/contracts',express.json({limit:'12mb'}));
  app.use('/api/v1/projects',express.json({limit:'12mb'}));
+ app.use('/api/v1/suppliers/execution',express.json({limit:'512kb'}));
  app.use('/api/v1/suppliers/integration',express.json({limit:'1mb'}));
  app.use('/api/v1/suppliers/lifecycle',express.json({limit:'1mb'}));
  app.use('/api/v1/suppliers/legal',express.json({limit:'12mb'}));
@@ -77,6 +79,7 @@ export function createApp() {
  app.use('/api/v1/strategy',strategyRouter);
  app.use('/api/v1/contracts',contractsRouter);
  app.use('/api/v1/projects',projectsRouter);
+ app.use('/api/v1/suppliers/execution',supplierExecutionRouter);
  app.use('/api/v1/suppliers/integration',supplierIntegrationRouter);
  app.use('/api/v1/suppliers/lifecycle',supplierLifecycleRouter);
  app.use('/api/v1/suppliers/legal',supplierLegalRouter);
