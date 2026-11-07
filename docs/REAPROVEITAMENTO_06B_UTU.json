@@ -9,7 +9,7 @@
       "source": "client/src/components/financeiro/operacao.tsx",
       "sourceSHA256": "826d2930dea06c84d869897012d75a9174d0b66e2f510da705916dec1fa7e0e3",
       "destination": "client/finance/legacy/TitleFields.tsx",
-      "destinationSHA256": "bd03982a918c8e24552a2e35d018c5f0e4d59c07b7983e2f204513f7b460c5b7",
+      "destinationSHA256": "feb2fef0d2ef7af027c45a127216b577a259cebc345c80c113ea93adb8207c48",
       "classification": "ADAPTAR",
       "evidence": "Formulário substancialmente reaproveitado; props/REST GI, tipos canônicos, série exata e concessões. Anexo público não portado; privado ainda pendente.",
       "tests": [
@@ -65,7 +65,7 @@
       "source": "server/routers.ts",
       "sourceSHA256": "c9013f4b9b8e32402f6a579a8957cbf0c5faeea41e8c4861a40a747939063fb7",
       "destination": "server/finance/router.ts",
-      "destinationSHA256": "0e8134969b28e4dc04f83e241375c4254765a0960a05fe8810bac8b626c99b5c",
+      "destinationSHA256": "f6d0ffa4482c54007a748d0b5d4c6ca6024331c6805f8c45a38592b2907d8eb9",
       "classification": "RECONSTRUIR fronteira de segurança GI",
       "evidence": "REST/autenticação/escopo/auditoria existentes; sem cookie/JWT/tRPC/backend/storage externos UTU.",
       "tests": [
@@ -79,7 +79,7 @@
       "source": "client/src/components/financeiro/ContasTransferencias.tsx",
       "sourceSHA256": "b0dea2216fa207c1d5a8b5c3259ef40757c3680e36fef456e0468aab2eeb90ca",
       "destination": "client/finance/Workspace.tsx",
-      "destinationSHA256": "855c691709f407aac24d7576d6017ebdfc531c951f826097ee2596ed3888d3ff",
+      "destinationSHA256": "85f42c0e8982a3d3e4004a664915555c1493e4e38fdea6aa46bd813834741caa",
       "classification": "ADAPTAR referência de fluxo",
       "evidence": "Consulta de contas/transferências considerada; não é cópia integral. Transferências/baixas preservam decisões separadas.",
       "tests": [
@@ -93,7 +93,7 @@
       "source": "client/src/pages/FinanceiroHub.tsx",
       "sourceSHA256": "231e3d85d4bf754cf45d4da93cc4067bb061ebc7c78cca386df4d8db322804c1",
       "destination": "client/finance/Workspace.tsx",
-      "destinationSHA256": "855c691709f407aac24d7576d6017ebdfc531c951f826097ee2596ed3888d3ff",
+      "destinationSHA256": "85f42c0e8982a3d3e4004a664915555c1493e4e38fdea6aa46bd813834741caa",
       "classification": "ADAPTAR organização",
       "evidence": "Navegação Financeiro GI/Zenply; não portar heurística budget.list como orçamento empresarial.",
       "tests": [
