@@ -31,7 +31,7 @@ Mudanças limitadas em Projetos: consumir custos canônicos por atividade, prote
 
 ## Banco e migração
 
-Migração 010 incremental e reversível: contratos de prestadores, OS, histórico, competências e origens de diárias aprovadas. Não altera migrações 001–009 nem cadastros mestres. Down exige banco descartável conforme executor vigente e remove dados do incremento. Em ambiente com dados, rollback destrutivo exige plano próprio de preservação, não execução automática. Checksum, dirty state, down/reaplicação e regressão são exercitados na CI.
+Migração 010 incremental e reversível: contratos de prestadores, OS, histórico, competências, origens de diárias aprovadas e cache idempotente própria. Não altera migrações 001–009 nem cadastros mestres. Down 010 remove também a cache das operações e seus eventos locais; cache dos rascunhos 009 permanece intacta. Teste incremental prova que uma repetição após rollback/reaplicação não recebe ID fantasma de registro removido. Down exige banco descartável conforme executor vigente e remove dados do incremento. Em ambiente com dados, rollback destrutivo exige plano próprio de preservação, não execução automática. Checksum, dirty state, down/reaplicação e regressão são exercitados na CI.
 
 ## Reaproveitamento demonstrado
 

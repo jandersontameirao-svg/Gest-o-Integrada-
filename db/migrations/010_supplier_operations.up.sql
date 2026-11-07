@@ -37,3 +37,9 @@ CREATE TABLE supplier_daily_approvals (
  FOREIGN KEY(order_id,company_id) REFERENCES supplier_service_orders(id,company_id),
  FOREIGN KEY(contract_id,company_id) REFERENCES supplier_contracts(id,company_id), FOREIGN KEY(professional_id) REFERENCES business_parties(id)
 );
+
+CREATE TABLE supplier_operation_requests (
+ actor_id CHAR(36) NOT NULL, request_id CHAR(36) NOT NULL, company_id VARCHAR(40) NOT NULL,
+ hash CHAR(64) NOT NULL, response JSON NOT NULL, PRIMARY KEY(actor_id,request_id),
+ FOREIGN KEY(actor_id) REFERENCES users(id), FOREIGN KEY(company_id) REFERENCES companies(id)
+);
