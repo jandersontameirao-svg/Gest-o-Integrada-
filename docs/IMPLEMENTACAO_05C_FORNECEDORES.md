@@ -104,3 +104,7 @@ Backlog atual prevalece sobre descrições históricas dos primeiros incrementos
 A troca de empresa em Fornecedores e a troca de empresa/projeto/aba em Projetos consultam o mesmo guard de alterações pendentes, incluindo fila documental. O E2E tenta trocar contexto durante uma fila e verifica que o arquivo e o vínculo permanecem preservados.
 
 A primeira execução da nova jornada documental comprovou upload, versão, conferência e download, mas expôs ambiguidade do rótulo implícito da textarea com valor inicial durante edição. O campo passa a ter nome acessível explícito. O teste permanece integral, sem aumento de timeout ou retries.
+
+## Continuidade textual 05D
+
+A importação privada e geração versionada de textos evoluiu no [relatório 05D](IMPLEMENTACAO_05D_TEXTOS_FORNECEDORES.md). O backlog atual prevalece sobre descrições históricas. Sem publicação do compêndio privado, aprovação jurídica automática ou efeitos operacionais.

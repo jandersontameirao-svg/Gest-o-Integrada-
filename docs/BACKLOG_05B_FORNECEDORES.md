@@ -15,9 +15,11 @@ O CEO autorizou continuar o desenvolvimento sem aceite por incremento. Usar o co
 
 - Documentos PDF/DOCX/XLSX/PNG/JPEG privados, fila legada, versões, revisão de metadados, conferência/arquivamento/restauração, downloads e histórico com permissão própria. Requisitos configuráveis por serviço/projeto/empresa, vigência versionada, bloqueio de mobilização e prova congelada. Sem atestado jurídico automático. Evidência de execução da nova rodada na PR.
 
+- Textos integrais privados (05D): fonte DOCX/hash, 13 modelos/52 anexos nos cadastros existentes, versão de trabalho, editor legado, placeholders canônicos, individualização congelada, recarga/histórico e PDF/DOCX/JSON. Não equivale a aprovação jurídica nem fidelidade completa de layout. Ver relatório e evidências na PR.
+
 ## Próximos blocos técnicos — autorizados, sem novo aceite de rotina
 
-1. Textos integrais e geração dos 13 modelos/52 anexos, com fonte privada, placeholders, comparação e revisão versionada; catálogo não equivale ao texto do instrumento. Não publicar valores particulares ou dados do arquivo original.
+1. Complementar textos integrais: fidelidade gráfica Word, remissões jurídicas, comparação visual e vínculo explícito ao instrumento operacional. Importação privada dos 65 textos, edição/versionamento, individualização e exportação textual estão implementadas em 05D; não presumir parâmetros particulares como política vigente.
 2. Aditivos e encerramento de contratos/OS, limites/vigências, poderes/delegações documentais, requisitos e alçadas configuráveis por escopo.
 3. Conciliação de fatos próprios com OS, rateio entre atividades/projetos, frações da mesma diária e compensações auditadas após validação. Não somar novamente fatos com mesma origem.
 4. Distribuição comprovada por competência e unidade histórica, inclusive transferência durante uma OS. Eventos atuais são inelegíveis para consolidação monetária de Estratégia até essa prova.

@@ -47,3 +47,7 @@ Avaliação fixa empresa/fornecedor e vínculos de projeto/OS; servidor calcula 
 `/api/v1/suppliers/files` é a autoridade de arquivos de prestador/contrato/OS/boletim, por empresa. Bytes somente via `/:id/content` autenticado, nunca URL pública. Metadados retornam ID/série/versão/revisão/hash, sem conteúdo; uploads e decisões têm requestId e CAS. Projetos usa os mesmos IDs/endpoints e exige também sua concessão de anexos.
 
 `GET /qualification/:orderId?effectiveFrom=YYYY-MM-DD` informa requisitos por vigência e resultado, sem conceder autorização de mobilização/despesa. O comando canônico de mobilização refaz a verificação transacional e congela a prova. Regras não preenchidas não equivalem a dispensa jurídica; evidência de decisão humana permanece obrigatória. Trocar arquivo não modifica provas de mobilizações históricas. Os endpoints de regras requerem concessão de governança; revisão não altera registros de decisões anteriores.
+
+## Textos integrais privados v1
+
+`/api/v1/suppliers/legal` estende os mesmos IDs/revisões de modelos e rascunhos; não cria outro mestre. Importação e edição exigem governança/anexos/edição. Individualização congela texto/proveniência/bindings canônicos, sem emitir contrato, OS, assinatura ou custo. Mudança de dados cadastrais invalida a geração corrente para exportação e conserva histórico. Projetos utiliza o mesmo componente e os mesmos endpoints. O vínculo automático ao texto de contrato operacional ainda é evolução explícita.

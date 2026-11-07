@@ -64,6 +64,19 @@
         "tests/suppliers-documents.integration.ts",
         "tests/browser/suppliers-documents.spec.ts"
       ]
+    },
+    {
+      "source": "client/src/components/contracts/ContractEditor.tsx — bloco Content",
+      "sourceSHA256": "a3fd743c6a1f587dad95619ee63ffa4fbe340f7ad35b89fb9d052fe7e6df6aa0",
+      "destination": "client/suppliers/legacy/SupplierLegalContent.tsx",
+      "destinationSHA256": "5b552e6a5894d6aaa398323eaa75dd56c3d4dc9e8ef5ef2fca71c881c5af2488",
+      "classification": "ADAPTAR — editor de texto com persistência/versionamento GI",
+      "limits": "Preserva edição integral monoespaçada; modelos e seleção reutilizam cadastros canônicos. Sem IA/autofill, sem aprovação/assinatura implícita. DOCX/PDF gerados preservam texto, não todo o layout Word. Importação real validada localmente sem publicação do compêndio privado; testes de banco/navegador apenas sintéticos.",
+      "tests": [
+        "tests/suppliers-legal.test.ts",
+        "tests/suppliers-legal.integration.ts",
+        "tests/browser/suppliers-legal.spec.ts"
+      ]
     }
   ],
   "otherFlows": [
