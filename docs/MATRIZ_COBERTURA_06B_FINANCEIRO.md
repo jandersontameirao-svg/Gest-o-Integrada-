@@ -89,3 +89,15 @@ Z08/Z10/T09: importação CSV/XLSX no modelo explícito com prévia por linha, l
 | E02/E03/T14 | Naturezas patrimoniais + compensação rastreável por FK | FinanceSummary/reports/budget usam a mesma fonte; unitários conferem soma e saldo | Câmbio/interempresa não ativados |
 
 Resultado final por SHA/CI na PR #10. Testes sintéticos não equivalem a homologação de produção.
+
+
+## Delta final do tópico1 — Z03/Z04/Z13/Z14/T05/T06/T07/T10/T11
+
+| Capacidade | Destino | Prova | Situação |
+|---|---|---|---|
+| Edição financeira/datas de série | SeriesReview + server/finance/series.ts | unit/integration/browser finance-series | Implementado; rascunhos elegíveis, entrada explícita por ocorrência |
+| Cancelamento de série | Mesmo serviço, modo cancel | Parcial paga preservada; demais canceladas por evento; sem caixa | Implementado com finance.approve e concessão do tipo |
+| Prévia e confirmação | finance_requests existente, token servidor/ator/empresa/expiração | Total incorreto, CAS, período, expirado, replay e IDs adulterados | Implementado; sem esquema/migração nova |
+| Preservação | Payload/IDs/âncora/índice/origem/histórico e títulos protegidos | Snapshot antes/depois e saldo bancário no E2E | Sem redistribuição implícita ou alteração de pagos |
+
+Substitui as antigas lacunas de séries neste documento. Aprovação da CI por SHA consta na PR; homologação externa/produção e outros tópicos não são declarados concluídos.

@@ -1,5 +1,7 @@
 # Financeiro — tópico 1: operação diária
 
+**Situação mais recente:** escopo da rodada implementado, incluindo adiantamentos/prestação e revisão/cancelamento de séries. Evidências do SHA final e resultado da CI na PR #10. As seções anteriores registram os incrementos históricos; a seção de finalização abaixo substitui as antigas pendências de séries. Não representa homologação externa nem conclusão dos demais tópicos do Financeiro.
+
 Base: PR #10, dev/comando-06b-financeiro, cae5267a53ca052fd5f5b41312394dcf19605749. O usuário determinou entregas por tópico. Este documento não encerra o tópico1 nem o Financeiro. Sem merge/deploy, produção ou chamadas externas.
 
 ## Entrega desta subetapa
@@ -76,3 +78,32 @@ Testes: finance-advances.test.ts (centavos, alocação, DRE, caixa e orçamento)
 Submissão de prestação exige liberação integral nesta versão; liberações parciais são registradas sem fabricar pagamento completo. Exceções de documentos, tolerâncias, alçadas por valor, parcelamento de concessões adicionais e política fiscal/contábil definitiva não foram inventados. Lista de casos ainda sem paginação; API mantém limite técnico de120 itens/caso. Rateios com referência parcial exigem chave distinta por linha; transferência de uma origem já reservada entre casos não é automática. Ajustes financeiros/datas e cancelamento em lote de séries continuam pendentes do tópico1. Homologação visual/contábil externa e produção continuam fora da entrega.
 
 A mesma referência também é verificada contra títulos financeiros manuais/importados: uma prestação não pode reconhecer novamente documento já ativo, e um título comum não pode usar origem já reservada pela prestação. Referências diferentes para o mesmo documento exigem conciliação humana; não há inferência por descrição ou IA.
+
+
+## Finalização do tópico1 — revisão financeira e cancelamento de séries
+
+### Comportamento entregue
+
+A revisão mostra todas as ocorrências da série, seu estado, revisão e motivo de proteção. O operador escolhe esta/próximas ou todas, seleciona explicitamente os lançamentos elegíveis e informa valor, vencimento e competência por ocorrência. Não há redistribuição implícita de centavos, alteração de moeda/tipo, recriação de títulos ou reancoragem automática. Frequência, índice, âncora original, proveniência, anexos e referências permanecem preservados.
+
+Valores/datas só mudam em rascunhos manuais sem histórico de liquidação e em períodos abertos. Aprovados, cancelados, origens operacionais/adiantamentos e qualquer título com histórico de liquidação (inclusive estornado) ficam protegidos da edição financeira em lote. Revisão individual já existente e fluxos próprios da origem continuam disponíveis conforme autorização.
+
+Cancelamento em lote exige finance.approve e concessão do tipo financeiro. É permitido para rascunhos/aprovados ainda sem histórico de liquidação e em período aberto; mantém payload, IDs e versões anteriores, acrescentando evento series_cancel. Não cancela contrato jurídico, boletim ou adiantamento por esse caminho. Nenhum cancelamento ou edição em lote cria movimento de caixa.
+
+### Prévia, confirmação e concorrência
+
+- Contexto consistente inclui IDs, revisões, liquidações e períodos; moeda única por série.
+- A prévia fica persistida como metadado em finance_requests, vinculada ao ator/empresa/série e a token aleatório do servidor. Expiração técnica de15 minutos, informada na interface. Não usa segredo/serviço externo nem migração nova.
+- Tabela antes/depois, total nominal ativo antes/depois, seleção e registros preservados são exibidos. Total nominal inclui rascunhos; não equivale a pagamento ou compromisso aprovado.
+- Confirmação exige total exatamente igual ao mostrado, justificativa e evidência. O servidor recompõe o plano em transação, compara contexto, revisões e conteúdo normalizado e revalida permissões antes de qualquer gravação.
+- Qualquer conflito, período fechado, ID adulterado ou alvo protegido rejeita o lote inteiro. A tela permite atualizar o contexto e gerar nova prévia após descartar a proposta antiga. Nenhuma operação parcialmente aplicada é declarada sucesso.
+- Repetição do mesmo requestId recupera o resultado original, com permissões verificadas novamente; outro requestId não reaplica ticket já consumido, pois as revisões mudaram. Expiração não impede replay de confirmação já concluída.
+- Cada ocorrência alterada recebe revision+1, histórico com antes/depois, batchId e vínculo à prévia. Ocorrências selecionadas sem mudança são preservadas sem revisão artificial; prévia inteiramente sem mudanças é recusada.
+
+### Testes e fechamento
+
+finance-series.test.ts: critérios de elegibilidade e totais exatos (50/25/25 conserva100; alterar só uma não redistribui as demais). finance-series.integration.ts: prévia real em MySQL, total errado, CAS, replay concorrente, expiração, período fechado, usuário/empresa, concessão revogada, UTU/Vinho e alcance adulterado. Browser finance-series.spec.ts: cadastro, edição com novas datas, recarga, aprovação explícita, recebimento parcial10, proteção de saldo40 e cancelamento das outras duas ocorrências; saldo bancário preservado.
+
+Permanecem20 migrações, sem modificar checksums antigos. CI valida build/TypeScript, unitários, MySQL antes/depois de rollback/reaplicação, regressão dos outros módulos, Playwright e auditoria de dependências. Resultado/link por SHA na PR. Dados exclusivamente sintéticos; nenhum teste ou verificação de segurança desabilitado.
+
+O tópico1 fica encerrado no escopo funcional descrito após validação da CI, sem iniciar tópico2. Melhorias posteriores: operação de prestação antes da liberação integral, paginação, exceções documentais e fluxos avançados de substituição de parcelas já liquidadas. Essas melhorias não são funcionalidades entregues nem autorização para alterar histórico fechado. Políticas jurídicas/fiscais, alçadas monetárias definitivas, homologação contábil/visual e produção continuam sujeitas à governança própria; nenhuma foi inventada para concluir esta rodada.

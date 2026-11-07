@@ -53,3 +53,10 @@ Conforme orientação do usuário, a próxima entrega fica limitada à operaçã
 ## Delta — tópico1, adiantamentos/prestação
 
 Implementados para validação na mesma PR: formulário/ficha UTU adaptados, solicitação/edição/aprovação, liberação real, comprovantes privados/versionados, despesas corrigíveis, submissão/devolução/aprovação, compensação, devolução/reembolso, encerramento e reabertura auditada. Substitui o estado anterior de “não implementado”, sujeito à CI do SHA. Permanecem no tópico1: edição financeira/datas e cancelamento em lote de séries; parciais de concessão antes da submissão, exceções de documentos, paginação e transferência controlada de origens são melhorias identificadas, sem política de negócio presumida. Não iniciar tópico2 nesta entrega.
+
+
+## Fechamento do tópico1 — estado atual
+
+Séries: revisão explícita de valor/vencimento/competência por ocorrência, prévia persistida por usuário/empresa, confirmação do total, CAS/idempotência e cancelamento em lote auditado implementados. Isso substitui as antigas pendências de edição financeira/datas e cancelamento de séries acima. Parcelas aprovadas não são reescritas, parcelas com histórico de liquidação ficam protegidas e o caixa não é movimentado por esses comandos.
+
+Tópico1 encerrado no escopo documentado em FINANCEIRO_TOPICO_01_OPERACAO_DIARIA.md, condicionado ao resultado final registrado na PR. Melhorias opcionais e políticas comerciais/jurídicas não equivalem a bloqueio do incremento. Próximo tópico separado:2 — documentos e recibos; não iniciado nesta rodada. Rascunhos dos outros tópicos preservados.
