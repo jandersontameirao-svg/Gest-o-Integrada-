@@ -184,5 +184,27 @@
       "Fidelidade gráfica Word parcial",
       "Sem serviços externos/Financeiro"
     ]
+  },
+  "consolidation05G": {
+    "report": "docs/CONSOLIDACAO_05G_FORNECEDORES.md",
+    "newCapabilities": [
+      "Revisão compensatória sem alteração da validação original",
+      "Rateio exato por origem entre projetos/atividades da mesma empresa",
+      "Competência/moeda/unidade histórica congeladas",
+      "Painel por prestador com filtro e exclusão de anuladas"
+    ],
+    "reuse": "Componentes de contrato/avaliação e fluxo canônico 05B–05F preservados; revisão compensatória é extensão GI e não é atribuída falsamente a arquivo legado",
+    "tests": [
+      "tests/suppliers-execution.test.ts",
+      "tests/suppliers-execution.integration.ts",
+      "tests/browser/suppliers-execution.spec.ts"
+    ],
+    "notClaimed": [
+      "Paridade integral das variantes legadas",
+      "Layout Word integral",
+      "Rateio interempresa",
+      "Conciliação de fatos próprios ambíguos",
+      "Homologação jurídica/visual/produção"
+    ]
   }
 }

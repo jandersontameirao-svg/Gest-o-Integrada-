@@ -21,13 +21,15 @@ O CEO autorizou continuar o desenvolvimento sem aceite por incremento. Usar o co
 
 - Integração 05F: vínculo explícito do texto integral ao contrato canônico; propostas de alteração da mesma OS emitida antes da mobilização, revisão/aprovação/rebase/histórico, sem custo automático. Consulte `IMPLEMENTACAO_05F_INTEGRACAO_OPERACIONAL.md` e CI da PR.
 
-## Próximos blocos técnicos — autorizados, sem novo aceite de rotina
+- Consolidação 05G: correção compensatória de execução validada, rateio entre atividades/projetos da mesma empresa, distribuição por competência/unidade histórica, painel de avaliações e provas de persistência/concorrência/escopo. Sem ativação de Financeiro ou Estratégia monetária. Ver `CONSOLIDACAO_05G_FORNECEDORES.md`.
+
+## Melhorias após a primeira versão operacional — não equivalem a funcionalidade entregue
 
 1. Complementar textos integrais: fidelidade gráfica Word, remissões jurídicas, comparação visual. Importação privada dos 65 textos, edição/versionamento, individualização e exportação textual estão implementadas em 05D; não presumir parâmetros particulares como política vigente.
-2. Complementar ciclo operacional: compensações/correções de OS já mobilizadas ou validadas, reprogramação de versões/agendamentos e fluxo compensatório; poderes/delegações documentais e alçadas. Aditivos de contrato por vigência e encerramento operacional estão em 05E; não equivalem a quitação ou distrato jurídico automático.
-3. Conciliação de fatos próprios com OS, rateio entre atividades/projetos, frações da mesma diária e compensações auditadas após validação. Não somar novamente fatos com mesma origem.
-4. Distribuição comprovada por competência e unidade histórica, inclusive transferência durante uma OS. Eventos atuais são inelegíveis para consolidação monetária de Estratégia até essa prova.
-5. Dashboard global de avaliações e demais variantes maduras ainda não portadas; agrupar boletins multi-OS quando necessário, mantendo origens e saldos.
+2. Complementar ciclo operacional: alteração de termos/preços após mobilização, reprogramação de versões/agendamentos e reabertura contratual; poderes/delegações documentais e alçadas. Aditivos de contrato por vigência e encerramento operacional estão em 05E; não equivalem a quitação ou distrato jurídico automático.
+3. Conciliação explícita de fatos próprios com OS e rateio interempresa. Rateio entre atividades/projetos da mesma empresa, frações da mesma diária e compensações após validação estão implementados em 05G. Não somar novamente fatos com mesma origem.
+4. Consumo futuro de distribuição por competência/unidade em Estratégia. Snapshots aprovados em 05G preservam unidade por data; eventos continuam inelegíveis para soma automática até existir consumidor que selecione a última revisão por OS e trate moedas.
+5. Dashboard corporativo multiempresa e demais variantes maduras ainda não portadas (painel por empresa/prestador está em 05G); agrupar boletins multi-OS quando necessário, mantendo origens e saldos.
 6. Validação fiscal/deduplicação/correção controlada da identidade, pesquisa/paginação, comparação visual e desempenho do bundle.
 
 ## Critério de conclusão
