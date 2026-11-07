@@ -1,21 +1,24 @@
-# Pendências de Fornecedores — incremento estrutural
+# Backlog de Fornecedores
 
-## Bloqueios de decisão
+## Diretriz vigente — sem bloqueio pelo compêndio
 
-- Aprovação final do compêndio, comentários e alterações controladas; resolver referências e conflitos antes de converter cláusulas em regras.
-- Individualizar modelos por serviço e remuneração. Definir critérios de entrega/diária/mensal, competência, mínimos, pró-rata, glosa, aceite, multas e alçadas; não há valores padrão aprovados nesta entrega.
-- Aprovar responsabilidades de contratante/beneficiária, poderes de representação, retenção, documentos obrigatórios e eventual assinatura.
-- Definir concessões operacionais por cargo/pessoa/empresa sem hardcode de nome de pessoa.
+O CEO autorizou continuar com a versão enviada, ajustando depois por versões. A revisão final foi retirada dos bloqueios e pendências de continuidade. Fonte de trabalho: `grupo-arqueo-compendio` v1, SHA-256 `70c651c15eb08ec9540c086ae449ed5c6f5350052d07f424dffe1c11d8005efd`.
 
-## Desenvolvimento posterior
+## Próximos incrementos técnicos
 
-- Port completo de qualificação, categorias, avaliações, documentação privada e controles de acesso/versões de arquivos.
-- Templates jurídicos individualizados, geração PDF/DOCX e anexos efetivos; atualmente há somente estrutura e exportação JSON não emitida.
-- Contratação/OS canônica, assinatura desligada até autorização específica, reserva sem custo, mobilização efetiva, desmobilização retroativa validada e eventos idempotentes futuros.
-- Medição de fornecedor, indicadores e aditivos com regras aprovadas e testes de competência/histórico. Atualmente são famílias de rascunhos, não fluxos operacionais completos.
-- Política controlada de correção/fusão de identidade corporativa, validação fiscal e deduplicação supervisionada; não renomear automaticamente registros compartilhados.
-- Aperfeiçoar comparação visual de versões, pesquisa/paginação e divisão do bundle do frontend. Aviso de tamanho do Vite não impede build, mas permanece melhoria de desempenho.
+- Converter os 13 escopos e suas famílias de anexos em instrumentos completos, com cláusulas parametrizadas, geração documental e comparação de versões; catálogo não equivale a template jurídico completo.
+- Port completo de qualificação, categorias, avaliações e documentação privada com autorização, versões e downloads.
+- Implementar aprovação individual e emissão de contratos/OS, reserva sem custo, mobilização efetiva, desmobilização retroativa validada e eventos idempotentes futuros. Nenhum emissor paralelo em Projetos.
+- Implementar medição de fornecedor, indicadores e aditivos usando a base atual e parâmetros explícitos por regime/contratação; testar competência, saldos e histórico.
+- Tratar divergências da fonte com escolhas registradas no instrumento quando necessárias. Não aplicar pró-rata mensal universal, multas, reajustes ou aceite automático por inferência.
+- Parametrizar poderes, concessões, representantes, vigências, calendário e condições específicas no fluxo próprio. Não converter cargo de serviço em autorização de acesso/assinatura.
+- Política controlada de correção/fusão de identidade corporativa, validação fiscal e deduplicação supervisionada.
+- Aperfeiçoar comparação visual, pesquisa/paginação e divisão do bundle. Aviso de tamanho do Vite permanece melhoria de desempenho.
 
-## Restrições mantidas
+## Evoluções futuras, sem paralisar a implementação
 
-Não ativar integrações externas ou Financeiro; não transformar rascunhos em autorização; não conceder operação a UTU/Vinho; não alterar produção ou aplicativos originais. Homologação visual e jurídica permanecem pendentes.
+Revisões do compêndio serão novas versões, preservando o vínculo e o histórico dos instrumentos existentes. Dados individuais e condições comerciais não presentes no pacote serão preenchidos no ambiente autorizado; não copiar valores privados para seeds ou GitHub. Modelos de outros serviços podem ser adicionados ao catálogo sem impor os 13 escopos a todos os fornecedores.
+
+## Limites mantidos
+
+Sem merge/deploy, produção, integrações externas ou Financeiro. UTU/Vinho permanecem somente na Estratégia. Homologação dos fluxos depende de evidências; aprovação do uso da fonte não declara recursos ainda não implementados como funcionais.

@@ -1,7 +1,7 @@
 {
   "sourceRepository": "jandersontameirao-svg/arqueo-fornecedores",
   "sourceCommit": "8b5c94098333922e9dcc00ca5c67b612da24a26a",
-  "scope": "Estrutural; nenhuma aprovação jurídica ou emissão operacional",
+  "scope": "Base atual do compêndio autorizada para desenvolvimento; fluxo operacional completo ainda em implementação",
   "components": [
     {
       "source": "SupplierForm.tsx",
@@ -57,5 +57,15 @@
       "flow": "PDF jurídico e assinatura",
       "status": "PENDENTE / NÃO PORTADO NESTE INCREMENTO"
     }
-  ]
+  ],
+  "compendium": {
+    "id": "grupo-arqueo-compendio",
+    "version": 1,
+    "status": "authorized_for_development",
+    "blocksDevelopment": false,
+    "scopes": 13,
+    "annexReferences": 52,
+    "implemented": "Seleção de escopo e proveniência persistida por versão de modelo/documento",
+    "limits": "Catálogo estrutural não equivale aos textos completos dos instrumentos; não publica conteúdo privado"
+  }
 }
