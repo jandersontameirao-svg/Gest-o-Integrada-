@@ -1,3 +1,4 @@
+import {supplierReviewsRouter} from './suppliers/reviews-router.ts';
 import {supplierOperationsRouter} from './suppliers/operations-router.ts';
 import {suppliersRouter} from './suppliers/router.ts';
 import express from 'express';
@@ -22,6 +23,7 @@ export function createApp() {
  app.use('/api/v1/strategy',express.json({limit:'128kb'}));
  app.use('/api/v1/contracts',express.json({limit:'12mb'}));
  app.use('/api/v1/projects',express.json({limit:'12mb'}));
+ app.use('/api/v1/suppliers/reviews',express.json({limit:'512kb'}));
  app.use('/api/v1/suppliers/operations',express.json({limit:'192kb'}));
  app.use('/api/v1/suppliers',express.json({limit:'64kb'}));
  app.use(express.json({limit:'16kb'}));
@@ -67,6 +69,7 @@ export function createApp() {
  app.use('/api/v1/strategy',strategyRouter);
  app.use('/api/v1/contracts',contractsRouter);
  app.use('/api/v1/projects',projectsRouter);
+ app.use('/api/v1/suppliers/reviews',supplierReviewsRouter);
  app.use('/api/v1/suppliers/operations',supplierOperationsRouter);
  app.use('/api/v1/suppliers',suppliersRouter);
  app.get('/api/v1/companies', async (req,res) => {
