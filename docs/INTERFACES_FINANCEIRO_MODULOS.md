@@ -42,3 +42,5 @@ module_event_outbox: finance.<entityType>.<action>.v1, com eventId, companyId, e
 Compras gerais, adiantamentos/prestações de contas, rateios financeiros/interempresa, regras de câmbio, jobs recorrentes e consumo de indicadores precisam de contratos específicos antes da ativação. Projetos conserva seu número único/IDs; Fornecedores conserva sua OS e snapshots de rateio. O Financeiro não altera retroativamente seus resultados.
 
 A posição financeira existe por API, mas as telas reversas de Projetos/Fornecedores ainda exigem adaptação autorizada de leitura. Não apresentar campos antigos de liquidação desconhecida como se já estivessem conectados. Nenhuma regra comercial de alçada/faturabilidade foi inventada.
+
+Conclusão operacional do contrato de cliente não quita nem impede a preparação de recebível de medição faturável. Cancelamento da origem exige decisão financeira explícita. Moeda é revalidada na origem e não pode ser reinterpretada pela conciliação.

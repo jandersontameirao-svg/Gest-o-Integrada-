@@ -65,7 +65,7 @@
       "source": "server/routers.ts",
       "sourceSHA256": "c9013f4b9b8e32402f6a579a8957cbf0c5faeea41e8c4861a40a747939063fb7",
       "destination": "server/finance/router.ts",
-      "destinationSHA256": "f6d0ffa4482c54007a748d0b5d4c6ca6024331c6805f8c45a38592b2907d8eb9",
+      "destinationSHA256": "f15d0cb47f233ad094e67f560b83f6fef9d6d4cdcb4ebb29e9131e59d5ba0b70",
       "classification": "RECONSTRUIR fronteira de segurança GI",
       "evidence": "REST/autenticação/escopo/auditoria existentes; sem cookie/JWT/tRPC/backend/storage externos UTU.",
       "tests": [
