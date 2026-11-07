@@ -22,3 +22,9 @@ Revisões do compêndio serão novas versões, preservando o vínculo e o histó
 ## Limites mantidos
 
 Sem merge/deploy, produção, integrações externas ou Financeiro. UTU/Vinho permanecem somente na Estratégia. Homologação dos fluxos depende de evidências; aprovação do uso da fonte não declara recursos ainda não implementados como funcionais.
+
+## Atualização 05C — primeiro incremento operacional
+
+Entregues contrato individualizado com origem congelada, edição em rascunho, aprovação e registro de execução formal; reserva/OS canônica; emissão, mobilização, desmobilização retroativa e validação; competência/reabertura; custos canônicos em Projetos e exportação JSON. Não são mais pendências genéricas de implementação.
+
+Continuam: boletins completos/glosas/reapresentações; avaliações originais; anexos e qualificação; PDF/DOCX/textos integrais dos modelos; aditivos/encerramento formal; poderes/delegações documentais completos; frações/rateio da mesma diária entre projetos; compensação de fatos validados e conciliação com custos preexistentes. A classificação de desenvolvimento acima deve ser lida com esta atualização; revisão final do compêndio não é bloqueio.

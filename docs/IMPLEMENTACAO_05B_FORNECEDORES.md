@@ -44,3 +44,7 @@ Incremento estrutural com catálogo de origem e proveniência persistida. A revi
 Novos modelos permitem selecionar escopo de origem. O servidor grava a referência da fonte na revisão do modelo; documentos copiam a referência da versão exata escolhida e a preservam nas edições. Registros anteriores sem referência não são retroativamente atribuídos ao compêndio. Clientes não podem forjar o hash/estado da fonte. Não houve mudança de schema ou dependências.
 
 As limitações de emissão e ações operacionais permanecem descritas como desenvolvimento técnico pendente. Não dependem de nova aprovação da revisão final do compêndio. Futuras alterações da fonte devem gerar versão nova e não regravar o histórico. Testes adicionais verificam catálogo, origem inválida/forjada e preservação da versão/escopo após edição do modelo e do documento.
+
+## Evolução 05C
+
+As limitações operacionais descritas no incremento 05B são históricas para os rascunhos documentais. O novo fluxo canônico tem contrato individualizado/aprovação/execução formal, reserva e emissão de OS, mobilização, desmobilização retroativa e validação operacional. Consulte `IMPLEMENTACAO_05C_FORNECEDORES.md` para estados, critérios, testes e funcionalidades ainda parciais. Compêndio continua autorizado e sem bloqueio de revisão final.

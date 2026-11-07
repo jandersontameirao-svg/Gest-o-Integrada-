@@ -26,6 +26,18 @@
         "tests/suppliers-structure.integration.ts",
         "tests/browser/suppliers-structure.spec.ts"
       ]
+    },
+    {
+      "source": "client/src/components/contracts/ContractEditor.tsx",
+      "sourceSHA256": "91e88bd0af2906062af95588ce3cb9787a97190be6a641aaa8b78cc5bbff33b3",
+      "destination": "client/suppliers/legacy/SupplierContractFields.tsx",
+      "destinationSHA256": "c3d17bbb7843451c5cc5e97d2e193dac394a17e73c436d382da64ee61decd744",
+      "classification": "ADAPTAR / parcial",
+      "limits": "Reaproveitados Identification, Parties e Financial & Dates. Não inclui editor completo, itens, importação, anexos, PDF/assinatura/IA. Contratante canônica e estados por backend.",
+      "tests": [
+        "tests/suppliers-operations.integration.ts",
+        "tests/browser/suppliers-operations.spec.ts"
+      ]
     }
   ],
   "otherFlows": [
@@ -35,7 +47,7 @@
     },
     {
       "flow": "OS operacional e mobilização",
-      "status": "PENDENTE / NÃO PORTADO NESTE INCREMENTO"
+      "status": "ENTREGUE NO INCREMENTO 05C — ver relatório e testes"
     },
     {
       "flow": "Qualificação documental e uploads",
@@ -51,7 +63,7 @@
     },
     {
       "flow": "Medição e custos efetivos",
-      "status": "PENDENTE / NÃO PORTADO NESTE INCREMENTO"
+      "status": "PARCIAL 05C — validação operacional e custos; boletim completo pendente"
     },
     {
       "flow": "PDF jurídico e assinatura",
@@ -67,5 +79,24 @@
     "annexReferences": 52,
     "implemented": "Seleção de escopo e proveniência persistida por versão de modelo/documento",
     "limits": "Catálogo estrutural não equivale aos textos completos dos instrumentos; não publica conteúdo privado"
+  },
+  "05c": {
+    "completeIncrement": [
+      "Contrato individualizado e aprovação/registro de execução formal",
+      "Reserva e emissão de OS canônica",
+      "Mobilização e desmobilização retroativa com validação",
+      "Competências com reabertura autorizada",
+      "Custos por atividade consumidos por Projetos",
+      "Histórico e exportação JSON autorizados"
+    ],
+    "partial": [
+      "Medição representada pela validação operacional da OS; boletim completo pendente"
+    ],
+    "pending": [
+      "Avaliações originais",
+      "Qualificação/anexos",
+      "Geração dos textos integrais e PDFs",
+      "Aditivos/compensações posteriores à validação"
+    ]
   }
 }
