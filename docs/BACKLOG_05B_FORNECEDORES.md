@@ -13,15 +13,16 @@ O CEO autorizou continuar o desenvolvimento sem aceite por incremento. Usar o co
 - Avaliação contextual reaproveitada: cinco critérios/mesma média/sliders/cores/barras, evidências, edição, anulação/restauração e histórico único entre Projetos e Fornecedores. Notas não alteram remuneração automaticamente.
 - Históricos, JSON e PDF autenticados de boletins/avaliações; permissões, CAS, idempotência, cache e rollback por incremento.
 
+- Documentos PDF/DOCX/XLSX/PNG/JPEG privados, fila legada, versões, revisão de metadados, conferência/arquivamento/restauração, downloads e histórico com permissão própria. Requisitos configuráveis por serviço/projeto/empresa, vigência versionada, bloqueio de mobilização e prova congelada. Sem atestado jurídico automático. Evidência de execução da nova rodada na PR.
+
 ## Próximos blocos técnicos — autorizados, sem novo aceite de rotina
 
-1. Documentação e qualificação privada: reaproveitar cadastro documental, versões, validade, revisões e downloads autorizados; integrar verificação configurável de mobilização, sem política jurídica inventada.
-2. Textos integrais e geração dos 13 modelos/52 anexos, com fonte privada, placeholders, comparação e revisão versionada; catálogo não equivale ao texto do instrumento. Não publicar valores particulares ou dados do arquivo original.
-3. Aditivos e encerramento de contratos/OS, limites/vigências, poderes/delegações documentais, requisitos e alçadas configuráveis por escopo.
-4. Conciliação de fatos próprios com OS, rateio entre atividades/projetos, frações da mesma diária e compensações auditadas após validação. Não somar novamente fatos com mesma origem.
-5. Distribuição comprovada por competência e unidade histórica, inclusive transferência durante uma OS. Eventos atuais são inelegíveis para consolidação monetária de Estratégia até essa prova.
-6. Dashboard global de avaliações e demais variantes maduras ainda não portadas; agrupar boletins multi-OS quando necessário, mantendo origens e saldos.
-7. Validação fiscal/deduplicação/correção controlada da identidade, pesquisa/paginação, comparação visual e desempenho do bundle.
+1. Textos integrais e geração dos 13 modelos/52 anexos, com fonte privada, placeholders, comparação e revisão versionada; catálogo não equivale ao texto do instrumento. Não publicar valores particulares ou dados do arquivo original.
+2. Aditivos e encerramento de contratos/OS, limites/vigências, poderes/delegações documentais, requisitos e alçadas configuráveis por escopo.
+3. Conciliação de fatos próprios com OS, rateio entre atividades/projetos, frações da mesma diária e compensações auditadas após validação. Não somar novamente fatos com mesma origem.
+4. Distribuição comprovada por competência e unidade histórica, inclusive transferência durante uma OS. Eventos atuais são inelegíveis para consolidação monetária de Estratégia até essa prova.
+5. Dashboard global de avaliações e demais variantes maduras ainda não portadas; agrupar boletins multi-OS quando necessário, mantendo origens e saldos.
+6. Validação fiscal/deduplicação/correção controlada da identidade, pesquisa/paginação, comparação visual e desempenho do bundle.
 
 ## Critério de conclusão
 

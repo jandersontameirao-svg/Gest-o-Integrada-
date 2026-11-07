@@ -9,7 +9,7 @@
       "destination": "client/suppliers/legacy/SupplierFields.tsx",
       "destinationSHA256": "e1f727ffbf1c1fac4d15900241332ae09c0bc498e2a3ed88a874984b2d83ed77",
       "classification": "ADAPTAR / parcial",
-      "limits": "Reutilizados dados básicos e endereço; qualificação, categorias, riscos, banco e documentos não portados.",
+      "limits": "Dados básicos/endereço portados; documentação privada em componente próprio. Categorias, riscos e dados bancários avançados ainda parciais.",
       "tests": [
         "tests/suppliers-structure.integration.ts",
         "tests/browser/suppliers-structure.spec.ts"
@@ -50,6 +50,19 @@
         "tests/suppliers-reviews.test.ts",
         "tests/suppliers-reviews.integration.ts",
         "tests/browser/suppliers-reviews.spec.ts"
+      ]
+    },
+    {
+      "source": "client/src/components/supplier/SupplierDocuments.tsx",
+      "sourceSHA256": "dfbd8639d108aeece30dd3417f1c778547b846676be0dd72ccd21b8cfed8d30c",
+      "destination": "client/suppliers/legacy/SupplierDocuments.tsx",
+      "destinationSHA256": "fc78a50c34e365557effd69f3e0ea3581d0d93a014f38e18e2ea120cb80f1d3e",
+      "classification": "ADAPTAR — fila, cadastro, validade e listagem funcionais",
+      "limits": "Reaproveita drag/drop, fila, metadados, cores, ícones e validade. Storage público/R2 e exclusão física substituídos por banco privado, conferência, versões e arquivamento. Progresso real de leitura e etapa de gravação; sem percentuais simulados. DOC/XLS antigos e GIF não portados por segurança; formatos seguros PDF/DOCX/XLSX/PNG/JPEG. Sem OCR, antivírus ou certificação jurídica automática.",
+      "tests": [
+        "tests/suppliers-documents.test.ts",
+        "tests/suppliers-documents.integration.ts",
+        "tests/browser/suppliers-documents.spec.ts"
       ]
     }
   ],

@@ -41,3 +41,9 @@ API `/api/v1/suppliers/reviews`: `orders/:id/sources` (origens operacionais vali
 Boletim fixa orderId/orderRevision/currency. Linhas usam fonte canônica e faixa monetária; glosa aceita prefixo e libera apenas a parcela recusada. Estados de apresentação/aprovação/faturabilidade não adicionam custo à OS. Faturado/pago permanecem null. Fonte de diário é data operacional aprovada; mensal/entrega usa faixa do valor validado, sem duplicar por descrição ou competência.
 
 Avaliação fixa empresa/fornecedor e vínculos de projeto/OS; servidor calcula média simples dos cinco critérios originais. Chave de origem de avaliação por OS/período é derivada e única; espelhamento não duplica histórico. Anulação preserva e permite restaurar. Eventos de revisão seguem locais, financialSettlement=false e operationalCostChanged=false. Financeiro futuro deve consumir elegibilidade do boletim sem transformar a validação da OS em um segundo título ou pagamento.
+
+## Documentos privados / habilitação v1
+
+`/api/v1/suppliers/files` é a autoridade de arquivos de prestador/contrato/OS/boletim, por empresa. Bytes somente via `/:id/content` autenticado, nunca URL pública. Metadados retornam ID/série/versão/revisão/hash, sem conteúdo; uploads e decisões têm requestId e CAS. Projetos usa os mesmos IDs/endpoints e exige também sua concessão de anexos.
+
+`GET /qualification/:orderId?effectiveFrom=YYYY-MM-DD` informa requisitos por vigência e resultado, sem conceder autorização de mobilização/despesa. O comando canônico de mobilização refaz a verificação transacional e congela a prova. Regras não preenchidas não equivalem a dispensa jurídica; evidência de decisão humana permanece obrigatória. Trocar arquivo não modifica provas de mobilizações históricas. Os endpoints de regras requerem concessão de governança; revisão não altera registros de decisões anteriores.
