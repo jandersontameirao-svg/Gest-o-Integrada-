@@ -26,6 +26,7 @@ export function createApp() {
  const app = express();
  app.disable('x-powered-by');
  app.use(helmet());
+ app.use('/api/v1/finance/titles/:id/files',express.json({limit:'12mb'}));
  app.use('/api/v1/finance',express.json({limit:'256kb'}));
  app.use('/api/v1/strategy',express.json({limit:'128kb'}));
  app.use('/api/v1/contracts',express.json({limit:'12mb'}));

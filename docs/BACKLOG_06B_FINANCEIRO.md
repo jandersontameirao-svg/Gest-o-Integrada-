@@ -33,3 +33,8 @@ Migração 017 down apaga somente estruturas financeiras novas e suas notificaç
 ## Fonte adicional recebida durante o incremento 1
 
 Arqueo Financeiro, versão declarada 992e3f013886f7513a00bbc294952714d3749f11, ZIP com manifesto verificado. Priorizar reaproveitamento de DRE comparativa, análises históricas, metas/gráficos e relatórios conforme ANALISE_ARQUEO_FINANCEIRO_06B.md. Não portar autenticação, banco independente, importação dependente de LLM, IR fixo ou endpoints sem escopo. O código foi analisado estaticamente, sem executar scripts/serviços; ainda não é port funcional na GI.
+
+
+## Atualização — incremento 2
+
+Implementados para validação: catálogo de relatórios 01–20/filtros/CSV/PDF/gráficos, orçamento empresarial versionado com aprovação e proposta histórica, anexos privados versionados, recibo gerencial básico, auditoria paginada API. Substitui os estados de “não implementado” específicos acima, sem afirmar paridade visual completa. Performance ainda requer maiores gastos/receitas, distribuição e comparativos de saldo; 36 variáveis e templates completos continuam pendentes. Importação/conciliação e ensaio histórico são a próxima prioridade operacional.

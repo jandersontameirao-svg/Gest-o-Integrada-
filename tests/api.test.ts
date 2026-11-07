@@ -1,3 +1,4 @@
+import {registerFinancePlanningTests} from './finance-planning.integration.ts';
 import {registerFinanceSourceTests} from './finance-sources.integration.ts';
 import {registerFinanceTests} from './finance.integration.ts';
 import {registerSupplierExecutionTests} from './suppliers-execution.integration.ts';
@@ -28,6 +29,7 @@ const supplierOperationsServer=createApp().listen(0,'127.0.0.1');let supplierOpe
 const supplierBindingServer=createApp().listen(0,'127.0.0.1');let supplierBindingBase:string;
 const supplierExecutionServer=createApp().listen(0,'127.0.0.1');let supplierExecutionBase:string;
 const financeSourceServer=createApp().listen(0,'127.0.0.1');let financeSourceBase:string;
+const financePlanningServer=createApp().listen(0,'127.0.0.1');let financePlanningBase:string;
 const financeServer=createApp().listen(0,'127.0.0.1');let financeBase:string;
 const supplierChangeServer=createApp().listen(0,'127.0.0.1');let supplierChangeBase:string;
 const supplierLifecycleServer=createApp().listen(0,'127.0.0.1');let supplierLifecycleBase:string;
@@ -46,7 +48,8 @@ let alignmentBase:string;
 let strategyBase:string;
 let base:string;
 before(async()=>{
- for(const instance of [supplierBindingServer,supplierChangeServer,supplierExecutionServer,financeServer,financeSourceServer])if(!instance.listening)await new Promise<void>(resolve=>instance.once('listening',resolve));financeSourceBase='http://127.0.0.1:'+(financeSourceServer.address() as AddressInfo).port+'/api/v1';financeBase='http://127.0.0.1:'+(financeServer.address() as AddressInfo).port+'/api/v1';supplierExecutionBase='http://127.0.0.1:'+(supplierExecutionServer.address() as AddressInfo).port+'/api/v1';supplierBindingBase='http://127.0.0.1:'+(supplierBindingServer.address() as AddressInfo).port+'/api/v1';supplierChangeBase='http://127.0.0.1:'+(supplierChangeServer.address() as AddressInfo).port+'/api/v1';
+ if(!financePlanningServer.listening)await new Promise<void>(resolve=>financePlanningServer.once('listening',resolve));financePlanningBase='http://127.0.0.1:'+(financePlanningServer.address() as AddressInfo).port+'/api/v1';
+ for(const instance of [supplierBindingServer,supplierChangeServer,supplierExecutionServer,financePlanningServer,financeServer,financeSourceServer])if(!instance.listening)await new Promise<void>(resolve=>instance.once('listening',resolve));financeSourceBase='http://127.0.0.1:'+(financeSourceServer.address() as AddressInfo).port+'/api/v1';financeBase='http://127.0.0.1:'+(financeServer.address() as AddressInfo).port+'/api/v1';supplierExecutionBase='http://127.0.0.1:'+(supplierExecutionServer.address() as AddressInfo).port+'/api/v1';supplierBindingBase='http://127.0.0.1:'+(supplierBindingServer.address() as AddressInfo).port+'/api/v1';supplierChangeBase='http://127.0.0.1:'+(supplierChangeServer.address() as AddressInfo).port+'/api/v1';
  if(!supplierLifecycleServer.listening)await new Promise<void>(resolve=>supplierLifecycleServer.once('listening',resolve));supplierLifecycleBase='http://127.0.0.1:'+(supplierLifecycleServer.address() as AddressInfo).port+'/api/v1';
  if(!supplierLegalServer.listening)await new Promise<void>(resolve=>supplierLegalServer.once('listening',resolve));supplierLegalBase='http://127.0.0.1:'+(supplierLegalServer.address() as AddressInfo).port+'/api/v1';
  if(!supplierDocumentsServer.listening)await new Promise<void>(resolve=>supplierDocumentsServer.once('listening',resolve));supplierDocumentsBase='http://127.0.0.1:'+(supplierDocumentsServer.address() as AddressInfo).port+'/api/v1';
@@ -67,7 +70,7 @@ before(async()=>{
  strategyBase='http://127.0.0.1:'+(strategyServer.address() as AddressInfo).port+'/api/v1';
  base='http://127.0.0.1:'+(server.address() as AddressInfo).port+'/api/v1';
 });
-after(async()=>{for(const instance of [supplierBindingServer,supplierChangeServer,supplierExecutionServer,financeServer,financeSourceServer])await new Promise<void>((resolve,reject)=>instance.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierLifecycleServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierLegalServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierDocumentsServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierReviewsServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierOperationsServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>suppliersServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>projectsServer.close(error=>error?reject(error):resolve()));for(const instance of [integrityServer,filesServer])await new Promise<void>((resolve,reject)=>instance.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>consolidationServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>contractServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>alignmentServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>strategyServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()));await pool.end();});
+after(async()=>{for(const instance of [supplierBindingServer,supplierChangeServer,supplierExecutionServer,financePlanningServer,financeServer,financeSourceServer])await new Promise<void>((resolve,reject)=>instance.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierLifecycleServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierLegalServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierDocumentsServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierReviewsServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierOperationsServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>suppliersServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>projectsServer.close(error=>error?reject(error):resolve()));for(const instance of [integrityServer,filesServer])await new Promise<void>((resolve,reject)=>instance.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>consolidationServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>contractServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>alignmentServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>strategyServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()));await pool.end();});
 async function login(email:string){
  const response=await fetch(base+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:process.env.DEMO_PASSWORD})});
  assert.equal(response.status,200);return (await response.json()).token as string;
@@ -198,6 +201,7 @@ registerSupplierOrderChangeTests(()=>supplierChangeBase,directorToken);
 registerSupplierExecutionTests(()=>supplierExecutionBase,directorToken);
 registerFinanceTests(()=>financeBase,directorToken,managerToken);
 registerFinanceSourceTests(()=>financeSourceBase,directorToken);
+registerFinancePlanningTests(()=>financePlanningBase,directorToken);
 test('migrações validam checksum/dirty e rollback 002 preserva 001 e usuários',async()=>{
  const {migrate}=await import('../scripts/migration-engine.ts');const c=await pool.getConnection();
  try{
@@ -215,6 +219,6 @@ test('migrações validam checksum/dirty e rollback 002 preserva 001 e usuários
  assert.equal((await rows<{n:number}>('SELECT COUNT(*) n FROM users'))[0].n,before);
  assert.equal((await rows('SELECT version FROM schema_migrations')).length,1);
  await migrate(c,'up');await migrate(c,'up');
- assert.equal((await rows('SELECT version FROM schema_migrations')).length,17);
+ assert.equal((await rows('SELECT version FROM schema_migrations')).length,18);
  }finally{c.release();}
 });

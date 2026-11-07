@@ -56,3 +56,17 @@ Origens de medição/boletim faturável → preparação explícita de rascunho;
 ## Descoberta pendente
 
 Sem capturas completas Zenply, sem confirmação de API no plano contratado, sem conteúdo de todos os arquivos exportados e sem nomes completos das 36 variáveis. SaaS/planos/assinatura dependem de decisão de produto. Não se infere autorização para bancos/IA/cobranças/NFS-e. Não foi feito ensaio com histórico real ou homologação de produção.
+
+
+## Delta de cobertura — incremento 2
+
+| Requisito | Implementação atual | Evidência | Limite |
+|---|---|---|---|
+| Z06 | 20 seletores, agrupamentos, regime, filtros, drilldown, gráficos temporais, CSV/PDF, mês/ano normalizado e comparação anterior | finance-planning unit/integration/browser | Performance sem todos os quadros originais; paridade/homologação visual pendentes |
+| Z07/Z17 | Faixas 1–30/31–60/61–90/>90 e filtros semânticos vazio/Todos/seleção em relatórios | reports.ts + unit/integration | Busca global e tela contatos com todos os recursos pendentes |
+| Z10 | CSV e PDF de relatórios com origem/filtros | unit/integration/browser | Importação/exportação XLSX/contatos pendentes |
+| Z14 | Auditoria global paginada por concessão, além de trilha existente | integration | Console visual global pendente |
+| Z16 | Anexos privados versionados e recibo gerencial de liquidações | integration/browser | Editor completo, 36 variáveis e identidade de recibo pendentes |
+| E02/T14 | Orçamento por categoria/mês, versões, aprovação, comparação e proposta histórica determinística | budget.ts + unit/integration/browser | Rateios e IA posteriores; não duplica orçamento operacional |
+
+Estados são código implementado; a CI do SHA é evidência de comportamento testado, não homologação externa.

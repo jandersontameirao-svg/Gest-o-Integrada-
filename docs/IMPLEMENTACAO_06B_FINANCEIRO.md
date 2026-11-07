@@ -73,3 +73,19 @@ Matriz Z/E/T e backlog indicam o que falta. Não há importação histórica/OFX
 5. Indicadores completos e sugestões revisáveis; preparação IA independente. Provedor externo continua sujeito a autorização específica.
 
 Implantação futura exige revisão funcional/visual/contábil, credenciais runtime separadas, TLS, backups/restauração e ensaio de migração. Antes de pedir autorização produtiva, preparar artefatos, plano de recuperação e conciliação. Nesta rodada: nenhuma implantação ou migração real.
+
+
+## Incremento 2 — continuação autorizada
+
+Base bf716b52c30be9715422ef7526222fbd2d598bbf, mesma PR #10 em rascunho. Sem merge/deploy, dados reais ou conectores externos.
+
+- Catálogo dos 20 relatórios do Anexo A: agrupamentos de despesas/receitas, extrato, movimentos, histórico, DRE, performance mensal/anual e saldos. Filtros explícitos competência/pagamento, pago/pendente, conta, categoria, contato, tags, centro, método, plano, projeto e contrato. Vazio inclui ausentes; Todos somente preenchidos. Tags não são aditivas: total por fatos únicos. CSV com neutralização de fórmulas e PDF autenticados. Performance normaliza mês/ano e compara período anterior. Gráficos são visuais, tabelas são decimais exatas. Cobertura ainda parcial da apresentação e detalhamento completo de performance do Zenply; não há homologação visual.
+- Reaproveitamento real da estrutura de seleção/séries Receita/Despesa/Resultado de Arqueo Financeiro AnaliseHistorica.tsx em client/finance/Reports.tsx. Não copiados cálculos de EBITDA/IR, autenticação, dados privados nem dependências Manus.
+- Orçamento empresarial por categoria/mês/empresa/moeda: rascunho, edição, aprovação imutável, nova versão, aprovação substitutiva sem apagar histórico. Proposta determinística baseada em aprovados do ano anterior, revisável. Comprometido = realizado + pendente, disponível = planejado − comprometido. Regime por competência; não equivale a livro financeiro, orçamento de Projetos ou metas da Estratégia. Categorias de receita/despesa não devem ser somadas como custo único. Títulos sem categoria são sinalizados.
+- Anexos privados PDF/DOCX/XLSX/PNG/JPEG: validação compartilhada da GI, hash, limites, versões, histórico e downloads autorizados por título/empresa/ação. Sem URL pública ou storage externo. FINANCE_ATTACHMENT_MAX_BYTES padrão 2MiB, faixa técnica 1KiB–8MiB. Recibo PDF gerencial somente de liquidações ativas, com observação personalizada; editor completo/36 variáveis ainda pendentes.
+- Auditoria financeira global paginada via API, exige governança e leitura de todos os tipos.
+- Migração 018 incremental, checksum pelo engine existente. Down exige ambiente/opt-in do engine; remove estruturas novas e respostas idempotentes financeiras para evitar replay de IDs apagados. Não executar em produção.
+
+Verificação deste incremento: build/TypeScript e unitários locais; MySQL/rollback/reaplicação, segurança e Playwright na CI do SHA publicado, com resultado/evidências registrados na PR. Não confundir plano de teste com aprovação. Arquivos: tests/finance-planning.test.ts, tests/finance-planning.integration.ts, tests/browser/finance-planning.spec.ts.
+
+Permanecem pendentes: XLSX/OFX e conciliação, ensaio histórico, séries futuras, configuração versionada, adiantamentos/prestação de contas, cenários avançados/câmbio, interfaces de IA e homologação contábil/visual. Continua desenvolvimento autorizado; não declarar conclusão integral.
