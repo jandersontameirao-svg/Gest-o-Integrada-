@@ -39,3 +39,5 @@ Unitários: 65 segmentos/famílias, hash/autenticidade sintética, marcadores/li
 Resultados por SHA e artefatos serão registrados na PR #9 após execução; não confundir build local com CI aprovada.
 
 Ainda não entregue neste bloco: aditivos/encerramento operacionais, poderes/delegações, remissões jurídicas automáticas, fidelidade gráfica integral do Word, integração automática do rascunho gerado ao texto do contrato operacional, rateios/compensações e consolidação temporal. Dados cadastrais congelados e o contrato operacional não mudam por editar texto de rascunho. Esses próximos blocos continuam autorizados, sem pedir aceite de rotina e sem tratar revisão do compêndio como bloqueio. Não há homologação integral.
+
+A primeira CI 05D passou 57 unitários, 86 integrações MySQL nas duas execuções e oito jornadas anteriores. A jornada nova percorreu importação/edição/individualização/exportações/histórico, mas a etapa de reload assumiu persistência de navegação que a aplicação não oferece; o teste agora reabre Fornecedores antes de conferir os dados recarregados. Nenhuma verificação foi removida, nem timeout ou retry ampliado.
