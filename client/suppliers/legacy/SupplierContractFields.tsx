@@ -1,3 +1,4 @@
+import {legalTextLimit} from '../../../shared/suppliers/legal.ts';
 // Blocos Identification, Parties e Financial & Dates adaptados do ContractEditor original (8b5c9409).
 import {useState} from 'react';
 import {Input} from '../../sge/components/ui/input.tsx';
@@ -6,7 +7,7 @@ import {Textarea} from '../../sge/components/ui/textarea.tsx';
 import {Select,SelectTrigger,SelectContent,SelectItem,SelectValue} from '../../sge/components/ui/select.tsx';
 import type {ContractTerms} from '../../../shared/suppliers/operations.ts';
 const contractTypeLabels={service:'Serviços',supply:'Fornecimento',lease:'Locação',consulting:'Consultoria',maintenance:'Manutenção',other:'Outro'};
-export function SupplierContractFields({initial,companyName,supplierName,supplierCnpj,busy,onSave}:{initial?:ContractTerms;companyName:string;supplierName:string;supplierCnpj:string;busy:boolean;onSave:(v:ContractTerms,reason:string)=>void}){
+export function SupplierContractFields({initial,companyName,supplierName,supplierCnpj,busy,onSave,lockedInstrumentText}:{initial?:ContractTerms;companyName:string;supplierName:string;supplierCnpj:string;busy:boolean;lockedInstrumentText?:string;onSave:(v:ContractTerms,reason:string)=>void}){
 const [title,setTitle]=useState(initial?.title??''),[number,setNumber]=useState(initial?.reference??''),[contractType,setContractType]=useState(initial?.contractType??'service'),[object,setObject]=useState(initial?.object??''),[contractorRepresentative,setContractorRepresentative]=useState(initial?.representative??''),[totalValue,setTotalValue]=useState(initial?.totalValue??''),[startDate,setStartDate]=useState(initial?.startDate??''),[endDate,setEndDate]=useState(initial?.endDate??''),[paymentTerms,setPaymentTerms]=useState(initial?.paymentTerms??'');
 return <form className="space-y-4" onSubmit={e=>{e.preventDefault();const f=new FormData(e.currentTarget);onSave({title,reference:number,contractType,object,totalValue,currency:String(f.get('currency')),startDate,endDate,paymentTerms,representative:contractorRepresentative,instrumentText:String(f.get('instrumentText'))},String(f.get('reason')));}}>
               {/* Identification */}
@@ -157,5 +158,5 @@ return <form className="space-y-4" onSubmit={e=>{e.preventDefault();const f=new 
 
               <hr/>
 
-<label>Moeda do contrato de prestador<input name="currency" defaultValue={initial?.currency??''} maxLength={3} required/></label><label>Texto individualizado do instrumento<textarea aria-label="Texto individualizado do instrumento" name="instrumentText" defaultValue={initial?.instrumentText??''} maxLength={24000} required rows={8}/></label><p>Registrar o instrumento efetivamente individualizado. O cadastro não assina digitalmente nem substitui a conferência fiscal das partes. A contratante vem da empresa canônica.</p><label>Justificativa do contrato de prestador<textarea aria-label="Justificativa do contrato de prestador" name="reason" required/></label><button disabled={busy}>Salvar contrato de prestador</button></form>;}
+<label>Moeda do contrato de prestador<input name="currency" defaultValue={initial?.currency??''} maxLength={3} required/></label><label>Texto individualizado do instrumento{lockedInstrumentText!==undefined?<textarea aria-label="Texto individualizado do instrumento" name="instrumentText" value={lockedInstrumentText} readOnly maxLength={legalTextLimit} required rows={8}/>:<textarea aria-label="Texto individualizado do instrumento" name="instrumentText" defaultValue={initial?.instrumentText??''} maxLength={legalTextLimit} required rows={8}/>}</label><p>Registrar o instrumento efetivamente individualizado. O cadastro não assina digitalmente nem substitui a conferência fiscal das partes. A contratante vem da empresa canônica.</p><label>Justificativa do contrato de prestador<textarea aria-label="Justificativa do contrato de prestador" name="reason" required/></label><button disabled={busy}>Salvar contrato de prestador</button></form>;}
 

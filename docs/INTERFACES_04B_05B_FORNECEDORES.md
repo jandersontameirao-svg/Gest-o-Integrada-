@@ -50,8 +50,14 @@ Avaliação fixa empresa/fornecedor e vínculos de projeto/OS; servidor calcula 
 
 ## Textos integrais privados v1
 
-`/api/v1/suppliers/legal` estende os mesmos IDs/revisões de modelos e rascunhos; não cria outro mestre. Importação e edição exigem governança/anexos/edição. Individualização congela texto/proveniência/bindings canônicos, sem emitir contrato, OS, assinatura ou custo. Mudança de dados cadastrais invalida a geração corrente para exportação e conserva histórico. Projetos utiliza o mesmo componente e os mesmos endpoints. O vínculo automático ao texto de contrato operacional ainda é evolução explícita.
+`/api/v1/suppliers/legal` estende os mesmos IDs/revisões de modelos e rascunhos; não cria outro mestre. Importação e edição exigem governança/anexos/edição. Individualização congela texto/proveniência/bindings canônicos, sem emitir contrato, OS, assinatura ou custo. Mudança de dados cadastrais invalida a geração corrente para exportação e conserva histórico. Projetos utiliza o mesmo componente e os mesmos endpoints. O vínculo explícito ao contrato operacional está disponível em 05F, sem aprovação automática.
 
 ## Aditivos e encerramento v1
 
-`/api/v1/suppliers/lifecycle` usa o mesmo contrato canônico de prestador. Versões efetivas preservam teto/término/objeto/condições por data e revisão. Emissão da OS congela `contractAuthority`; aditivos não reprecificam OS nem alteram orçamento ou custo de Projeto. Encerramento exige resolver OS abertas, preserva fatos validados e não quita Financeiro. Fatos aplicados ficam duráveis no contrato/histórico, sem despacho externo. Reversões/reprogramação anteriores, aditivos de OS e compensações ainda exigem evolução explícita.
+`/api/v1/suppliers/lifecycle` usa o mesmo contrato canônico de prestador. Versões efetivas preservam teto/término/objeto/condições por data e revisão. Emissão da OS congela `contractAuthority`; aditivos não reprecificam OS nem alteram orçamento ou custo de Projeto. Encerramento exige resolver OS abertas, preserva fatos validados e não quita Financeiro. Fatos aplicados ficam duráveis no contrato/histórico, sem despacho externo. Reversões/reprogramação anteriores, compensações após mobilização/validação ainda exigem evolução explícita.
+
+## Integração operacional v1 (05F)
+
+`GET /api/v1/suppliers/integration/documents/:id` obtém geração vigente autorizada. Criação em `/operations/contracts` aceita `generatedDocumentRevision`; `PUT /integration/contracts/:id/document` vincula a revisão corrente do mesmo documento ao contrato rascunho com CAS e requestId. Texto/hash/proveniência vêm do servidor. Snapshot é imutável até novo vínculo explícito e nunca concede aprovação ou assinatura.
+
+`/integration/orders/:id/changes` lista/cria propostas; `/integration/changes/:id` edita/rebaseia rascunho; ações submit/approve/apply/request_changes/cancel e history preservam decisões. Aplicação exige OS emitida, revisões e orçamento atuais, mesma identidade/moeda e concessões de Fornecedores/Projetos. Mantém o ID da OS, sem custo antes de mobilização. Após mobilização ou validação, somente consulta e resolução de propostas pendentes; compensação indisponível explicitamente. Backend canônico compartilhado, sem segunda OS ou cadastro.

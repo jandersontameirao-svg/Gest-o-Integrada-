@@ -19,10 +19,12 @@ O CEO autorizou continuar o desenvolvimento sem aceite por incremento. Usar o co
 
 - Ciclo contratual (05E): formulário de aditivos do legado, revisão/aprovação/aplicação, termos por vigência, rebase/cancelamento/histórico/PDF, autoridade congelada na emissão de OS e encerramento sem quitação. Eventos/custos anteriores preservados; ver limitações e CI no relatório/PR.
 
+- Integração 05F: vínculo explícito do texto integral ao contrato canônico; propostas de alteração da mesma OS emitida antes da mobilização, revisão/aprovação/rebase/histórico, sem custo automático. Consulte `IMPLEMENTACAO_05F_INTEGRACAO_OPERACIONAL.md` e CI da PR.
+
 ## Próximos blocos técnicos — autorizados, sem novo aceite de rotina
 
-1. Complementar textos integrais: fidelidade gráfica Word, remissões jurídicas, comparação visual e vínculo explícito ao instrumento operacional. Importação privada dos 65 textos, edição/versionamento, individualização e exportação textual estão implementadas em 05D; não presumir parâmetros particulares como política vigente.
-2. Complementar ciclo operacional: aditivos/correções de OS emitidas, reprogramação de versões/agendamentos e fluxo compensatório; poderes/delegações documentais e alçadas. Aditivos de contrato por vigência e encerramento operacional estão em 05E; não equivalem a quitação ou distrato jurídico automático.
+1. Complementar textos integrais: fidelidade gráfica Word, remissões jurídicas, comparação visual. Importação privada dos 65 textos, edição/versionamento, individualização e exportação textual estão implementadas em 05D; não presumir parâmetros particulares como política vigente.
+2. Complementar ciclo operacional: compensações/correções de OS já mobilizadas ou validadas, reprogramação de versões/agendamentos e fluxo compensatório; poderes/delegações documentais e alçadas. Aditivos de contrato por vigência e encerramento operacional estão em 05E; não equivalem a quitação ou distrato jurídico automático.
 3. Conciliação de fatos próprios com OS, rateio entre atividades/projetos, frações da mesma diária e compensações auditadas após validação. Não somar novamente fatos com mesma origem.
 4. Distribuição comprovada por competência e unidade histórica, inclusive transferência durante uma OS. Eventos atuais são inelegíveis para consolidação monetária de Estratégia até essa prova.
 5. Dashboard global de avaliações e demais variantes maduras ainda não portadas; agrupar boletins multi-OS quando necessário, mantendo origens e saldos.

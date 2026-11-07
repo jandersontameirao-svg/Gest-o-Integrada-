@@ -1,3 +1,5 @@
+> Atualização 05F: descrições abaixo documentam o incremento inicial. Espelhamento canônico, OS, mobilização, custos, documentos, textos e revisões de Fornecedores foram incorporados em 05B–05F. Não estão bloqueados pela ausência de 05B. Compensações/rateios e distribuição histórica permanecem parciais; ver relatório 05F e backlog vivo de Fornecedores.
+
 # 04B — primeiro incremento funcional de Projetos
 
 Branch `dev/comando-04b-projetos`, baseada exatamente em Contratos/03D `d520f4dbb90a91780e275ffe7cdf9a8d0df4d341`, sem merge ou alteração das branches anteriores. Fundação #1, Estratégia #3, Contratos #7 e auditorias #4/#6 consultadas. ZIP acessível e hash verificado: `14a3d081ec9efe179bb8cc17ae74dc2a74dd7d325b457e97ace7f1001ce9ede1`. Nenhum código legado foi executado com providers externos; dados privados, dumps, segredos e `.manus/db` excluídos.

@@ -31,7 +31,7 @@
       "source": "client/src/components/contracts/ContractEditor.tsx",
       "sourceSHA256": "a3fd743c6a1f587dad95619ee63ffa4fbe340f7ad35b89fb9d052fe7e6df6aa0",
       "destination": "client/suppliers/legacy/SupplierContractFields.tsx",
-      "destinationSHA256": "d48c3b2dcb33b1fb7b3797ba24c9d99cafa3382a1d6f3db31efc5f8554ec1e38",
+      "destinationSHA256": "250a7382a36f030019b6e749e75b820c8876ee4b5787d80d52990b3edb9dc923",
       "classification": "ADAPTAR / parcial",
       "limits": "Reaproveitados Identification, Parties e Financial & Dates. Não inclui editor completo, itens, importação, anexos, PDF/assinatura/IA. Contratante canônica e estados por backend.",
       "tests": [
@@ -162,6 +162,27 @@
       "Aditivos/poderes",
       "Conciliação/rateios",
       "Consolidação temporal"
+    ]
+  },
+  "integration05F": {
+    "state": "Implementado; evidências por SHA na PR #9, sem homologação integral",
+    "legacyReuse": "SupplierContractFields mantém campos de ContractEditor; OrderFields extrai formulário operacional 05C, não é atribuído ao legado",
+    "newAdapters": [
+      "client/suppliers/ContractTextLink.tsx",
+      "client/suppliers/OrderChangesWorkspace.tsx",
+      "server/suppliers/bound-instrument.ts",
+      "server/suppliers/integration-router.ts"
+    ],
+    "tests": [
+      "tests/suppliers-integration.test.ts",
+      "tests/suppliers-integration-bindings.integration.ts",
+      "tests/suppliers-integration-orders.integration.ts",
+      "tests/browser/suppliers-integration.spec.ts"
+    ],
+    "limits": [
+      "Compensações após mobilização/validação indisponíveis",
+      "Fidelidade gráfica Word parcial",
+      "Sem serviços externos/Financeiro"
     ]
   }
 }
