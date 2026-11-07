@@ -1,0 +1,210 @@
+{
+  "sourceRepository": "jandersontameirao-svg/arqueo-fornecedores",
+  "sourceCommit": "8b5c94098333922e9dcc00ca5c67b612da24a26a",
+  "scope": "Base atual do compêndio autorizada para desenvolvimento; fluxo operacional completo ainda em implementação",
+  "components": [
+    {
+      "source": "SupplierForm.tsx",
+      "sourceSHA256": "cd2ef3403b89bb49d9d674897f48b3299729968811df54b3a9fb1c3b36e33f05",
+      "destination": "client/suppliers/legacy/SupplierFields.tsx",
+      "destinationSHA256": "e1f727ffbf1c1fac4d15900241332ae09c0bc498e2a3ed88a874984b2d83ed77",
+      "classification": "ADAPTAR / parcial",
+      "limits": "Dados básicos/endereço portados; documentação privada em componente próprio. Categorias, riscos e dados bancários avançados ainda parciais.",
+      "tests": [
+        "tests/suppliers-structure.integration.ts",
+        "tests/browser/suppliers-structure.spec.ts"
+      ]
+    },
+    {
+      "source": "SupplierHistory.tsx",
+      "sourceSHA256": "a92628c30dad8719087cb5454eaa08bf855aaa813147c62c305cb71fecb6e164",
+      "destination": "client/suppliers/legacy/SupplierHistory.tsx",
+      "destinationSHA256": "28c8d2aebbd634a46cb0ea5b515cdede8e208519e850502db803887558966f82",
+      "classification": "ADAPTAR / parcial",
+      "limits": "Timeline reutilizada; consulta GI autenticada e histórico auditado; comparação visual detalhada pendente.",
+      "tests": [
+        "tests/suppliers-structure.integration.ts",
+        "tests/browser/suppliers-structure.spec.ts"
+      ]
+    },
+    {
+      "source": "client/src/components/contracts/ContractEditor.tsx",
+      "sourceSHA256": "a3fd743c6a1f587dad95619ee63ffa4fbe340f7ad35b89fb9d052fe7e6df6aa0",
+      "destination": "client/suppliers/legacy/SupplierContractFields.tsx",
+      "destinationSHA256": "250a7382a36f030019b6e749e75b820c8876ee4b5787d80d52990b3edb9dc923",
+      "classification": "ADAPTAR / parcial",
+      "limits": "Blocos Identification, Parties e Financial & Dates preservados neste arquivo. Editor integral, anexos privados, histórico e PDF/DOCX disponíveis nos adaptadores 05C–05F. Itens avançados do editor original permanecem parciais; assinatura/IA externas desligadas. Contratante canônica e estados por backend.",
+      "tests": [
+        "tests/suppliers-operations.integration.ts",
+        "tests/browser/suppliers-operations.spec.ts"
+      ]
+    },
+    {
+      "source": "client/src/components/supplier/SupplierEvaluations.tsx",
+      "sourceSHA256": "2a01394f4c86b2de70049dff30162c8ae983bf3383a5d5780b4fde7d28497da8",
+      "destination": "client/suppliers/legacy/SupplierEvaluationFields.tsx",
+      "destinationSHA256": "0be899e3cbba967294adc910ea4ba4df14b91192d55ab6fa07870996b0865198",
+      "classification": "ADAPTAR — formulário e resumo funcionais",
+      "limits": "Preserva cinco critérios, média, sliders, cores, barras, pontos fortes/melhoria/comentários; API GI com escopo, evidência e versões. Exclusão física vira anulação/restauração auditada. Painel por empresa/prestador com busca, filtro, média e ranking em 05G. Dashboard corporativo multiempresa permanece melhoria futura.",
+      "tests": [
+        "tests/suppliers-reviews.test.ts",
+        "tests/suppliers-reviews.integration.ts",
+        "tests/browser/suppliers-reviews.spec.ts"
+      ]
+    },
+    {
+      "source": "client/src/components/supplier/SupplierDocuments.tsx",
+      "sourceSHA256": "dfbd8639d108aeece30dd3417f1c778547b846676be0dd72ccd21b8cfed8d30c",
+      "destination": "client/suppliers/legacy/SupplierDocuments.tsx",
+      "destinationSHA256": "e46ef94dfcabea112496765bef9864738b7305b9b90cf2be888e1e4d0bc5f72f",
+      "classification": "ADAPTAR — fila, cadastro, validade e listagem funcionais",
+      "limits": "Reaproveita drag/drop, fila, metadados, cores, ícones e validade. Storage público/R2 e exclusão física substituídos por banco privado, conferência, versões e arquivamento. Progresso real de leitura e etapa de gravação; sem percentuais simulados. DOC/XLS antigos e GIF não portados por segurança; formatos seguros PDF/DOCX/XLSX/PNG/JPEG. Sem OCR, antivírus ou certificação jurídica automática.",
+      "tests": [
+        "tests/suppliers-documents.test.ts",
+        "tests/suppliers-documents.integration.ts",
+        "tests/browser/suppliers-documents.spec.ts"
+      ]
+    },
+    {
+      "source": "client/src/components/contracts/ContractEditor.tsx — bloco Content",
+      "sourceSHA256": "a3fd743c6a1f587dad95619ee63ffa4fbe340f7ad35b89fb9d052fe7e6df6aa0",
+      "destination": "client/suppliers/legacy/SupplierLegalContent.tsx",
+      "destinationSHA256": "5b552e6a5894d6aaa398323eaa75dd56c3d4dc9e8ef5ef2fca71c881c5af2488",
+      "classification": "ADAPTAR — editor de texto com persistência/versionamento GI",
+      "limits": "Preserva edição integral monoespaçada; modelos e seleção reutilizam cadastros canônicos. Sem IA/autofill, sem aprovação/assinatura implícita. DOCX/PDF gerados preservam texto, não todo o layout Word. Importação real validada localmente sem publicação do compêndio privado; testes de banco/navegador apenas sintéticos.",
+      "tests": [
+        "tests/suppliers-legal.test.ts",
+        "tests/suppliers-legal.integration.ts",
+        "tests/browser/suppliers-legal.spec.ts"
+      ]
+    },
+    {
+      "source": "client/src/components/contracts/ContractAmendments.tsx — AmendmentFormDialog",
+      "sourceSHA256": "4c4cdd2ef91475377f6a1e0f0cee3a4a9f3858742d97abacaaccfeabdbd5a094",
+      "destination": "client/suppliers/legacy/SupplierAmendmentFields.tsx",
+      "destinationSHA256": "11ed0e1db284cb33906e93e3cd66cf4d3d00b581338937480f2539d5a3a2a183",
+      "classification": "ADAPTAR — formulário/variantes e fluxo persistido com governança GI",
+      "limits": "Preservados título/número/tipos/descrição/variação/término/cláusulas/notas e grade. Total agora derivado e validado; estado por ações no backend; exclusão física substituída por cancelamento. Sem marcos financeiros/pagamentos ou importação PDF por IA. Alteração de OS emitida antes da mobilização está em 05F; compensação da execução validada e rateio estão em 05G. Mudanças de preço/termos após mobilização exigem instrumento próprio; não são simuladas pela correção factual.",
+      "tests": [
+        "tests/suppliers-lifecycle.test.ts",
+        "tests/suppliers-lifecycle.integration.ts",
+        "tests/browser/suppliers-lifecycle.spec.ts"
+      ]
+    }
+  ],
+  "otherFlows": [
+    {
+      "flow": "Contratos jurídicos individualizados",
+      "status": "PENDENTE / NÃO PORTADO NESTE INCREMENTO"
+    },
+    {
+      "flow": "OS operacional e mobilização",
+      "status": "ENTREGUE NO INCREMENTO 05C — ver relatório e testes"
+    },
+    {
+      "flow": "Qualificação documental e uploads",
+      "status": "PENDENTE / NÃO PORTADO NESTE INCREMENTO"
+    },
+    {
+      "flow": "Clicksign",
+      "status": "PENDENTE / NÃO PORTADO NESTE INCREMENTO"
+    },
+    {
+      "flow": "Avaliações completas",
+      "status": "ADAPTADO NO CONTEXTO DO FORNECEDOR/OS — dashboard global pendente"
+    },
+    {
+      "flow": "Medição e custos efetivos",
+      "status": "Boletim por OS validada com estados e glosas; não altera custos do 05C"
+    },
+    {
+      "flow": "PDF jurídico e assinatura",
+      "status": "PENDENTE / NÃO PORTADO NESTE INCREMENTO"
+    }
+  ],
+  "compendium": {
+    "id": "grupo-arqueo-compendio",
+    "version": 1,
+    "status": "authorized_for_development",
+    "blocksDevelopment": false,
+    "scopes": 13,
+    "annexReferences": 52,
+    "implemented": "Seleção de escopo e proveniência persistida por versão de modelo/documento",
+    "limits": "Catálogo estrutural não equivale aos textos completos dos instrumentos; não publica conteúdo privado"
+  },
+  "05c": {
+    "completeIncrement": [
+      "Contrato individualizado e aprovação/registro de execução formal",
+      "Reserva e emissão de OS canônica",
+      "Mobilização e desmobilização retroativa com validação",
+      "Competências com reabertura autorizada",
+      "Custos por atividade consumidos por Projetos",
+      "Histórico e exportação JSON autorizados"
+    ],
+    "partial": [
+      "Medição representada pela validação operacional da OS; boletim completo pendente"
+    ],
+    "pending": [
+      "Avaliações originais",
+      "Qualificação/anexos",
+      "Geração dos textos integrais e PDFs",
+      "Aditivos/compensações posteriores à validação"
+    ]
+  },
+  "continuity": {
+    "authorization": "Desenvolvimento contínuo autorizado pelo CEO; sem novo aceite técnico por incremento",
+    "measurements": "Fluxo completo por uma OS validada, com faixas, glosa e reapresentação; sem alterar custo ou liquidar",
+    "evaluations": "Formulário/resumo contextual do legado portados com persistência, versões e escopo; dashboard global pendente",
+    "proof": "Resultados da CI por SHA na PR #9",
+    "remaining": [
+      "Qualificação/documentos",
+      "Textos integrais/52 anexos",
+      "Aditivos/poderes",
+      "Conciliação/rateios",
+      "Consolidação temporal"
+    ]
+  },
+  "integration05F": {
+    "state": "Implementado; evidências por SHA na PR #9, sem homologação integral",
+    "legacyReuse": "SupplierContractFields mantém campos de ContractEditor; OrderFields extrai formulário operacional 05C, não é atribuído ao legado",
+    "newAdapters": [
+      "client/suppliers/ContractTextLink.tsx",
+      "client/suppliers/OrderChangesWorkspace.tsx",
+      "server/suppliers/bound-instrument.ts",
+      "server/suppliers/integration-router.ts"
+    ],
+    "tests": [
+      "tests/suppliers-integration.test.ts",
+      "tests/suppliers-integration-bindings.integration.ts",
+      "tests/suppliers-integration-orders.integration.ts",
+      "tests/browser/suppliers-integration.spec.ts"
+    ],
+    "limits": [
+      "Compensações após mobilização/validação indisponíveis",
+      "Fidelidade gráfica Word parcial",
+      "Sem serviços externos/Financeiro"
+    ]
+  },
+  "consolidation05G": {
+    "report": "docs/CONSOLIDACAO_05G_FORNECEDORES.md",
+    "newCapabilities": [
+      "Revisão compensatória sem alteração da validação original",
+      "Rateio exato por origem entre projetos/atividades da mesma empresa",
+      "Competência/moeda/unidade histórica congeladas",
+      "Painel por prestador com filtro e exclusão de anuladas"
+    ],
+    "reuse": "Componentes de contrato/avaliação e fluxo canônico 05B–05F preservados; revisão compensatória é extensão GI e não é atribuída falsamente a arquivo legado",
+    "tests": [
+      "tests/suppliers-execution.test.ts",
+      "tests/suppliers-execution.integration.ts",
+      "tests/browser/suppliers-execution.spec.ts"
+    ],
+    "notClaimed": [
+      "Paridade integral das variantes legadas",
+      "Layout Word integral",
+      "Rateio interempresa",
+      "Conciliação de fatos próprios ambíguos",
+      "Homologação jurídica/visual/produção"
+    ]
+  }
+}

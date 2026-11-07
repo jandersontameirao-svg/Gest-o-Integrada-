@@ -1,3 +1,5 @@
+> Atualização 05F: descrições abaixo documentam o incremento inicial. Espelhamento canônico, OS, mobilização, custos, documentos, textos e revisões de Fornecedores foram incorporados em 05B–05F. Não estão bloqueados pela ausência de 05B. Compensações/rateios e distribuição histórica permanecem parciais; ver relatório 05F e backlog vivo de Fornecedores.
+
 # Backlog após primeiro incremento 04B
 
 Bloqueios: 05B para novos prestadores/PII/contratos/OS/compromissos/mobilização; Arqueo Comercial para futura fonte de orçamento aprovado; decisões de alçadas/reabertura/mínimos/sobrecusto; inspeção/quarentena antes de arquivos não controlados.

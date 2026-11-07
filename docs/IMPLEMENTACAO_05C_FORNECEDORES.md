@@ -1,0 +1,114 @@
+# 05C — primeiro fluxo operacional de contratação e OS
+
+## Base e limites
+
+Continuidade na PR #9, branch `dev/comando-05b-fornecedores`, base `f7b126c4ae3566162f328d0f10599233593e358b`. Compêndio atual autorizado como referência de trabalho v1; revisão final não bloqueia o desenvolvimento. Sem merge, deploy, produção, Financeiro, Clicksign, IA ou outros conectores externos.
+
+Esta entrega é um incremento vertical. Não conclui o módulo de Fornecedores nem todos os itens do 05C. A aprovação individual registrada é uma decisão interna com evidência; ativação registra execução formal informada pelo usuário. Nenhuma assinatura digital é executada ou inferida. Não emitir documento jurídico completo a partir de um catálogo estrutural.
+
+## Funcionalidades persistidas
+
+1. Individualizar contrato de prestador a partir de rascunho existente, com identidade/empresa canônicas, referência histórica, tipo, objeto, representante, valor, moeda, vigência, condições e texto do instrumento. Origem e revisões são congeladas. Um rascunho não cria dois contratos canônicos.
+2. Salvar/editar contrato ainda em rascunho, aprovar com concessão `suppliers:approve` e evidência dos poderes, registrar execução formal e data. Contrato aprovado fica imutável neste incremento; alteração formal futura exige instrumento próprio.
+3. Criar reserva de contratação/OS vinculada ao contrato, profissional individual canônico, projeto e atividade. Sem outro mestre de prestadores/profissionais. Referência de origem única por empresa, idempotência e CAS. Uma pessoa pode estar vinculada a mais de empresa/projeto; não há bloqueio universal de sobreposição de disponibilidade.
+4. Emitir OS somente com contrato ativo e execução formal registrada, moeda/vigência compatíveis e teto contratual disponível. Emissão não inicia custo ou compromisso operacional. Cancelar somente antes da mobilização.
+5. Confirmar mobilização efetiva com evidência e poderes de Gerência/delegado (`projects:approve` e acesso de Fornecedores), sem nome de pessoa hardcoded. Conferir orçamento aprovado por projeto/atividade/moeda. A partir daqui surge compromisso operacional.
+6. Registrar desmobilização, inclusive retroativa, com data efetiva e data de registro distintas, motivo, autoria e histórico. Enquanto aguarda validação, o compromisso original permanece visível; não há ajuste silencioso.
+7. Validar execução. Diária exige datas efetivamente prestadas, evidência e valor compatível com tarifa/mínimo explícitos; não presume dias corridos trabalhados. Mínimo não informado pelo contrato não é inventado. Mesma diária integral não é aprovada duas vezes para contrato/profissional/data na mesma empresa. Mensal/entrega exige valor específico validado, dentro do teto; não aplica pró-rata 20/30 automático nem converte em diária.
+8. Após validação, realizado substitui a parcela comprometida da OS. Não há pagamento, faturamento, NF ou lançamento financeiro. Valor liquidado é desconhecido (`settled=null`, `settlementStatus=not_integrated`), sem inferir recebimento/pagamento zero a partir de dados operacionais. Eventos versionados ficam em outbox local com autoria, revisão, data efetiva e unidade histórica; nenhum dispatcher externo é ativado. `unitId` situa o evento na data efetiva e não distribui o valor entre competências/unidades. Consolidação estratégica fica explicitamente inelegível (`strategyConsolidationEligible=false`) até existir alocação comprovada por período/unidade, evitando atribuir toda OS à unidade atual após uma transferência.
+9. Encerrar/reabrir competências explicitamente. Reabertura exige DIRETORES e concessão `projects:reopen`, motivo e auditoria. Alterações de custo em competência encerrada são recusadas; não há flag de bypass no cliente.
+10. Consultar, recarregar, ler histórico e exportar JSON autenticado de contratos/OS, inclusive pela área espelhada em Projetos. Não há emissor ou banco de OS paralelo.
+
+## Segurança, concorrência e Core
+
+`/api/v1/suppliers/operations` pertence ao módulo Fornecedores e usa a autenticação GI. Leituras, exportações, histórias, referências filhas e escritas verificam empresa/módulo/ação; OS exige acesso ao projeto/atividade. Criar/editar reserva exige `projects:edit`; emitir/cancelar exige `suppliers:approve`; mobilizar/desmobilizar/validar exige `projects:approve`. Toda escrita também exige `suppliers:read/edit`.
+
+Permissões atuais são revalidadas antes do replay idempotente. Revisões CAS, locks transacionais e serialização por empresa evitam corrida entre tetos, competências e aprovadores diferentes. A serialização por empresa é opção conservadora inicial, passível de otimização com medição. Tabelas e FKs preservam empresa, contrato, profissional, projeto e atividade.
+
+UTU/Vinho continuam sem acesso operacional. Não se copiam bootstrap, OAuth, login privilegiado ou tokens do legado. Seeds de novos direitos são exclusivamente sintéticos no banco `_demo`.
+
+Mudanças limitadas em Projetos: consumir custos canônicos por atividade, proteger remanejamentos contra compromissos/realizados, negar reinterpretação da moeda e impedir que fatos próprios e OS representem custos na mesma atividade sem conciliação explícita. Antes de existir OS em projeto legado, os campos de compromisso continuam sem cálculo; com OS, o orçamento usa a fonte canônica. Não mistura moedas. Reserva/confirmação de equipe continua sem custo.
+
+## Banco e migração
+
+Migração 010 incremental e reversível: contratos de prestadores, OS, histórico, competências, origens de diárias aprovadas e cache idempotente própria. Não altera migrações 001–009 nem cadastros mestres. Down 010 remove também a cache das operações e seus eventos locais; cache dos rascunhos 009 permanece intacta. Teste incremental prova que uma repetição após rollback/reaplicação não recebe ID fantasma de registro removido. Down exige banco descartável conforme executor vigente e remove dados do incremento. Em ambiente com dados, rollback destrutivo exige plano próprio de preservação, não execução automática. Checksum, dirty state, down/reaplicação e regressão são exercitados na CI.
+
+## Reaproveitamento demonstrado
+
+Fonte `arqueo-fornecedores@8b5c94098333922e9dcc00ca5c67b612da24a26a`, `ContractEditor.tsx`: blocos Identification, Parties e Financial & Dates adaptados em `SupplierContractFields.tsx`, mantendo campos e hierarquia visual. Contratante é somente leitura e canônica; removidos desse trecho o escopo inseguro all_group, status arbitrário e premissa de moeda BRL. Autorização e transições ficam no backend. Não se declara port do editor inteiro, itens, importadores, IA, assinatura, anexos ou PDFs. Blocos existentes de cadastro e histórico de 05B continuam em uso.
+
+Não foi localizada na árvore auditada uma interface madura específica de mobilização/OS para copiar. Fluxo novo atende o contrato interno aprovado. Matriz JSON traz hashes e estados, sem confundir cópia de arquivo com paridade funcional.
+
+## Testes e evidências
+
+Build/TypeScript estrito e unitários locais. CI: npm ci, MySQL isolado, idempotência, migrações/checksum, rollback/reaplicação, regressão de Estratégia/Contratos/Projetos/05B, Playwright e auditoria de dependências. Evidência final vinculada ao SHA no comentário da PR #9; não presumir aprovação de execução em andamento.
+
+Novos testes: reserva/emissão sem custo, precisão decimal, datas/minímo e regimes distintos, edição concorrente, referência única, replay/revogação, duas aprovações em corrida contra um teto, orçamento por atividade, competência encerrada/reaberta, data retroativa, diária duplicada, IDs adulterados, empresa alheia, UTU/Vinho e exportação. E2E percorre contrato → edição → aprovação → execução formal → reserva → emissão → mobilização → desmobilização → validação → histórico/exportação no espelhamento do projeto.
+
+## Parcial e futuro
+
+Boletim de fornecedor completo (linhas, glosas, rejeição/correção/reapresentação e faturabilidade), avaliações originais e anexos/qualificação documental não estão completos neste incremento. A validação da OS não deve ser chamada de boletim completo. Textos integrais dos 13 modelos, 52 anexos individualizados, PDF/DOCX, aditivos operacionais, procurações/delegações documentais com validade/limite, reconciliação de custos preexistentes e eventos compensatórios pós-validação ficam no backlog.
+
+O texto individualizado é informado pelo usuário e auditado; não há atestado automático de regularidade fiscal, validade jurídica ou veracidade da execução formal. Referências e numeração são manuais, sem padrão jurídico inventado. Limite técnico deste incremento: OS de até 366 dias, sem afirmar que esse seja um limite jurídico; períodos maiores exigem evolução do validador. Validação de diária integral por data não contempla fracionamento/rateio multiprojeto da mesma diária neste incremento. Ordens já validadas são imutáveis; correções futuras exigirão fluxo compensatório.
+
+## Correção de regressão de Contratos
+
+A CI revelou corrida entre configurar e consultar alertas na interface existente. ContractTools agora bloqueia consultas enquanto gravação/recarregamento estão em andamento; o E2E 03D retém deliberadamente a resposta real da configuração e verifica que a consulta aguarda. Não houve redução de assertions, aumento de timeout ou alteração de backend/permissões de Contratos para contornar a regressão.
+
+## Continuidade autorizada — boletins e avaliações
+
+O CEO autorizou seguir o desenvolvimento sem aceite por incremento. Essa autorização não aprova automaticamente decisões operacionais ou documentos em seu nome. `CONTINUIDADE_AUTORIZADA.md` registra os limites. Revisão do compêndio não é bloqueio.
+
+### Boletim do prestador
+
+Nova migração 011 e API canônica `/api/v1/suppliers/reviews`. O boletim vincula OS com execução validada e sua revisão, moeda e origens monetárias: diárias efetivamente aprovadas, mínimo validado residual ou valor validado mensal/entrega. Linhas têm ID, origem, descrição, início da faixa monetária e valor; descrições e competências diferentes não permitem reutilizar faixa já apresentada/aprovada. O início da faixa representa parcela monetária da origem, não fração de jornada PJ.
+
+Estados persistidos: rascunho → apresentado → aprovado tecnicamente → autorizado para faturar; também rejeição, devolução, correção, reapresentação, cancelamento e estorno da elegibilidade. Glosa exige valor/justificativa por linha e evidência da decisão. A parcela aceita permanece reservada; somente a cauda glosada pode ser reapresentada. Devolver/estornar preserva todas as versões. Alteração em competência encerrada exige reabertura autorizada. Nenhuma dessas operações altera o custo já validado da OS ou lança Financeiro.
+
+Apresentar/editar exige `suppliers:edit` e `projects:edit`; aprovação técnica/rejeição/devolução exige `projects:approve`; autorizar faturamento exige `suppliers:approve`; estorno e devolução de elegibilidade já faturável requerem as duas aprovações. Toda operação exige leitura de Fornecedores e projeto de origem. Faturado e pago permanecem desconhecidos, sob autoridade futura do Financeiro.
+
+### Avaliações reaproveitadas
+
+`SupplierEvaluations.tsx` do legado 8b5c9409 forneceu o formulário, cinco critérios, sliders, cores, barras e cartões de resultado adaptados em `SupplierEvaluationFields.tsx`. Preservados qualidade, entrega, preço, comunicação e conformidade, escala 0–100 e média simples arredondada; sem pesos novos. Notas não aplicam multas, descontos ou sanções. Texto de período livre do legado permanece disponível. Evidências objetivas e motivo são registrados.
+
+Há cadastro, recarga, edição CAS, versões, anulação/restauração e exportação autenticada. Anular substitui a exclusão física irreversível do legado, preservando consulta e restauração. Autor edita com concessão; editar avaliação de outro autor exige aprovação no escopo correspondente. Projeto e OS são vínculos canônicos opcionais; se informada OS, fornecedor/projeto devem corresponder. Para OS/período, a chave de origem é derivada no servidor (período normalizado/hash), evitando duplicação entre Projetos e Fornecedores; edição do período atualiza essa chave com auditoria e unicidade. Não há segundo histórico.
+
+### Relatórios, testes e segurança
+
+Boletins e avaliações possuem histórico completo e exportação JSON/PDF autorizada; PDF reutiliza o gerador maduro de Contratos, com identidade do Grupo. São registros internos, sem assinatura digital, NF ou liquidação. Fonte do fornecedor, empresa e projeto são revalidadas antes de acesso, inclusive exportações. UTU/Vinho permanecem sem operação. Payloads rejeitam campos financeiros, notas calculadas no cliente, IDs de linhas alheias e origens não validadas. Limite HTTP de revisão: 512 KiB; até 100 linhas com descrição limitada, sem upload nesse endpoint.
+
+Migração 011 tem cache idempotente e histórico próprios. Down remove seus eventos e cache, preservando OS/custos/cache 010; replay após reaplicação não devolve ID fantasma. Migrações 001–010 permanecem inalteradas. Sliders compartilhados passam a propagar rótulos acessíveis aos controles; demais componentes não mudam seu comportamento.
+
+Testes unitários: fórmula original, origens de medição, sobreposição, glosa, mínimo e ausência de efeitos financeiros. Integração: CRUD/CAS, glosa/reapresentação, rejeição/correção, duas apresentações concorrentes, fechamento/reabertura, origem única da avaliação, anulação/restauração, escopo/exportação/revogação e rollback 011. E2E: salvar/editar/recarregar boletim, aprovar com glosa, autorizar faturamento, reapresentar cauda, avaliar com sliders originais, editar, exportar PDFs e consultar o mesmo registro em Projetos. Resultados finais vinculados ao SHA no comentário da PR #9, sem presumir CI pendente aprovada.
+
+### Limitações remanescentes
+
+Cada boletim reúne uma OS; agrupamento multi-OS, rateios e compensação posterior de custo operacional seguem como evolução explícita. Avaliação contextual do fornecedor/OS está portada; o dashboard global da página legada de avaliações ainda exige inventário/paridade próprios. A geração dos textos integrais dos 13 contratos e 52 anexos, qualificação privada, aditivos, poderes documentais, conciliação e consolidação temporal continuam no próximo backlog. Isso é desenvolvimento restante, não espera pela revisão do compêndio.
+
+## Continuidade — documentos privados e habilitação
+
+A continuidade acrescenta migração 012, sem alterar SQL já validado, e API `/api/v1/suppliers/files`. `SupplierDocuments.tsx` da origem 8b5c9409 foi adaptado substancialmente: fila, arrastar/soltar, tipos, validade, ícones e listagem. A gravação usa confirmação do backend; leitura tem progresso real e a gravação é indeterminada. Não são mantidos percentuais fictícios nem URLs públicas. Matriz registra hashes de origem/destino.
+
+Arquivos PDF, DOCX, XLSX, PNG e JPEG são validados pelo conteúdo, extensão/MIME e limite configurável `SUPPLIER_ATTACHMENT_MAX_BYTES` (2 MiB padrão; 8 MiB técnico). O validador maduro de Contratos é reutilizado, com parâmetro opcional de limite independente; o comportamento padrão de Contratos permanece igual. Office com macros, entidades externas, vínculos externos ou ZIP abusivo é recusado. Formatos antigos DOC/XLS e GIF não são portados sem uma estratégia segura. Não há promessa de antivírus/OCR automático.
+
+Conteúdo imutável em BLOB privado, SHA-256, séries/versionamento e metadados auditados. Download requer sessão e nova autorização em cada acesso e gera registro próprio. Substituição preserva bytes antigos e inicia conferência pendente. Metadados têm revisão CAS e também reiniciam conferência. Aceitar, rejeitar, arquivar e restaurar exigem evidência; restaurar não significa aceitar. Apenas a última versão de cada série pode ser alterada ou qualificar nova mobilização; anteriores continuam consultáveis com autorização. Sem exclusão física na aplicação.
+
+Vínculos canônicos: prestador, contrato de prestador, OS e boletim. A empresa, prestador e projeto são derivados e revalidados no backend; não são aceitos como autoridade do cliente. Exige `suppliers:attachments` além de leitura; gravação exige edição; conferência exige aprovação; regras exigem `suppliers:governance`; anexos de OS/boletim também exigem `projects:attachments` e leitura do projeto. Regras ligadas a projeto revalidam o vínculo antigo e o novo antes de edição. Concessões do seed existem somente em banco sintético, sem ampliar perfis reais.
+
+Regras documentais não vêm preenchidas com política jurídica presumida. A governança escolhe chave/tipo/vínculo, obrigatório/opcional, início da vigência, validade no início ou até fim da OS, escopos do compêndio e projeto opcional. Revisões são imutáveis e consideradas por início de vigência. A mobilização verifica as regras, a versão documental atual, aceitação, emissão e validade dentro da mesma transação/lock da empresa, antes de criar compromisso. Guarda snapshot de regras/revisões/hashes na decisão; atualização posterior não reescreve a prova histórica. Sem requisitos configurados, permanece a evidência de validação humana exigida no fluxo anterior; isso não significa certificação de regularidade. Dispensas individualizadas e poderes documentais avançados permanecem evolução explícita, sem simulação.
+
+A interface é a mesma no módulo Fornecedores e no espelhamento de Projetos. Não há segundo banco de documentos, prestadores ou OS. Testes novos cobrem formatos sintéticos, conservação de bytes, falsificação/tamanho, concorrência de versão, revisões/restauração, vigência de requisitos, bloqueio documental na mobilização, histórico congelado, UTU/Vinho, concessões revogadas e rollback 012 preservando 010/011. E2E exercita upload, recarga, edição, conferência, substituição, download exato, histórico e espelhamento. Resultados da CI devem ser consultados no SHA final da PR, sem confundir testes locais com prova MySQL/Playwright.
+
+Backlog atual prevalece sobre descrições históricas dos primeiros incrementos. Textos integrais privados, aditivos/encerramento, poderes, rateios, compensações e consolidação temporal continuam abertos; a revisão do compêndio não impede continuidade.
+
+A troca de empresa em Fornecedores e a troca de empresa/projeto/aba em Projetos consultam o mesmo guard de alterações pendentes, incluindo fila documental. O E2E tenta trocar contexto durante uma fila e verifica que o arquivo e o vínculo permanecem preservados.
+
+A primeira execução da nova jornada documental comprovou upload, versão, conferência e download, mas expôs ambiguidade do rótulo implícito da textarea com valor inicial durante edição. O campo passa a ter nome acessível explícito. O teste permanece integral, sem aumento de timeout ou retries.
+
+## Continuidade textual 05D
+
+A importação privada e geração versionada de textos evoluiu no [relatório 05D](IMPLEMENTACAO_05D_TEXTOS_FORNECEDORES.md). O backlog atual prevalece sobre descrições históricas. Sem publicação do compêndio privado, aprovação jurídica automática ou efeitos operacionais.
+
+## Continuidade 05E
+
+Aditivos/encerramento de prestadores evoluíram no [relatório 05E](IMPLEMENTACAO_05E_ADITIVOS_ENCERRAMENTO.md). Condições originais e OS existentes são preservadas; consulte a matriz/backlog atuais e evidências por SHA na PR #9.
