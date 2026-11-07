@@ -29,3 +29,7 @@ Contas/categorias/classificações iniciais; título manual sem projeto obrigat�
 ## Recuperação e implantação futura
 
 Migração 017 down apaga somente estruturas financeiras novas e suas notificações; exige opt-in e backup e não é estorno de negócio. Preparar backup/restauração, conciliação de saldos/títulos, runtime sem DDL, TLS/segredos, observabilidade e procedimento de retorno antes de pedir autorização para produção. Nenhum ensaio de migração histórica foi aprovado neste incremento.
+
+## Fonte adicional recebida durante o incremento 1
+
+Arqueo Financeiro, versão declarada 992e3f013886f7513a00bbc294952714d3749f11, ZIP com manifesto verificado. Priorizar reaproveitamento de DRE comparativa, análises históricas, metas/gráficos e relatórios conforme ANALISE_ARQUEO_FINANCEIRO_06B.md. Não portar autenticação, banco independente, importação dependente de LLM, IR fixo ou endpoints sem escopo. O código foi analisado estaticamente, sem executar scripts/serviços; ainda não é port funcional na GI.
