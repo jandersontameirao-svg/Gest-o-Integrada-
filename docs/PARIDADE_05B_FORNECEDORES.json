@@ -56,7 +56,7 @@
       "source": "client/src/components/supplier/SupplierDocuments.tsx",
       "sourceSHA256": "dfbd8639d108aeece30dd3417f1c778547b846676be0dd72ccd21b8cfed8d30c",
       "destination": "client/suppliers/legacy/SupplierDocuments.tsx",
-      "destinationSHA256": "fc78a50c34e365557effd69f3e0ea3581d0d93a014f38e18e2ea120cb80f1d3e",
+      "destinationSHA256": "e46ef94dfcabea112496765bef9864738b7305b9b90cf2be888e1e4d0bc5f72f",
       "classification": "ADAPTAR — fila, cadastro, validade e listagem funcionais",
       "limits": "Reaproveita drag/drop, fila, metadados, cores, ícones e validade. Storage público/R2 e exclusão física substituídos por banco privado, conferência, versões e arquivamento. Progresso real de leitura e etapa de gravação; sem percentuais simulados. DOC/XLS antigos e GIF não portados por segurança; formatos seguros PDF/DOCX/XLSX/PNG/JPEG. Sem OCR, antivírus ou certificação jurídica automática.",
       "tests": [

@@ -100,3 +100,7 @@ Regras documentais não vêm preenchidas com política jurídica presumida. A go
 A interface é a mesma no módulo Fornecedores e no espelhamento de Projetos. Não há segundo banco de documentos, prestadores ou OS. Testes novos cobrem formatos sintéticos, conservação de bytes, falsificação/tamanho, concorrência de versão, revisões/restauração, vigência de requisitos, bloqueio documental na mobilização, histórico congelado, UTU/Vinho, concessões revogadas e rollback 012 preservando 010/011. E2E exercita upload, recarga, edição, conferência, substituição, download exato, histórico e espelhamento. Resultados da CI devem ser consultados no SHA final da PR, sem confundir testes locais com prova MySQL/Playwright.
 
 Backlog atual prevalece sobre descrições históricas dos primeiros incrementos. Textos integrais privados, aditivos/encerramento, poderes, rateios, compensações e consolidação temporal continuam abertos; a revisão do compêndio não impede continuidade.
+
+A troca de empresa em Fornecedores e a troca de empresa/projeto/aba em Projetos consultam o mesmo guard de alterações pendentes, incluindo fila documental. O E2E tenta trocar contexto durante uma fila e verifica que o arquivo e o vínculo permanecem preservados.
+
+A primeira execução da nova jornada documental comprovou upload, versão, conferência e download, mas expôs ambiguidade do rótulo implícito da textarea com valor inicial durante edição. O campo passa a ter nome acessível explícito. O teste permanece integral, sem aumento de timeout ou retries.

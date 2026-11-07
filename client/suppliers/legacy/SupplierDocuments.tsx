@@ -436,13 +436,13 @@ useEffect(()=>{onPendingChange(files.some(f=>f.status!=='success'));},[files]);
                   >
                     <Download className="h-4 w-4" />
                   </Button>
-                  <Button disabled={busy} onClick={()=>onHistory(item.document.raw)}>Histórico {item.document.fileName} v{item.document.raw.version}</Button><Button disabled={busy||!canEdit||records.some(f=>f.seriesId===item.document.raw.seriesId&&f.version>item.document.raw.version)} onClick={()=>onVersion(item.document.raw)}>Nova versão {item.document.fileName} v{item.document.raw.version}</Button>{canReview&&!records.some(f=>f.seriesId===item.document.raw.seriesId&&f.version>item.document.raw.version)&&<><Button disabled={busy} onClick={()=>onReview(item.document.raw,"accept")}>Aceitar {item.document.fileName} v{item.document.raw.version}</Button><Button disabled={busy} onClick={()=>onReview(item.document.raw,"reject")}>Rejeitar {item.document.fileName} v{item.document.raw.version}</Button>{item.document.raw.status==="archived"&&<Button disabled={busy} onClick={()=>onReview(item.document.raw,"restore")}>Restaurar {item.document.fileName} v{item.document.raw.version}</Button>}</>}
+                  <Button disabled={busy} onClick={()=>onHistory(item.document.raw)}>Histórico {item.document.fileName} v{item.document.raw.version}</Button><Button disabled={busy||!canEdit||records.some(f=>f.seriesId===item.document.raw.seriesId&&f.version>item.document.raw.version)} onClick={()=>onVersion(item.document.raw)}>Nova versão {item.document.fileName} v{item.document.raw.version}</Button>{canReview&&!records.some(f=>f.seriesId===item.document.raw.seriesId&&f.version>item.document.raw.version)&&<><Button disabled={busy||item.document.raw.status==="accepted"||item.document.raw.status==="archived"} onClick={()=>onReview(item.document.raw,"accept")}>Aceitar {item.document.fileName} v{item.document.raw.version}</Button><Button disabled={busy||item.document.raw.status==="rejected"||item.document.raw.status==="archived"} onClick={()=>onReview(item.document.raw,"reject")}>Rejeitar {item.document.fileName} v{item.document.raw.version}</Button>{item.document.raw.status==="archived"&&<Button disabled={busy} onClick={()=>onReview(item.document.raw,"restore")}>Restaurar {item.document.fileName} v{item.document.raw.version}</Button>}</>}
                   {canEdit&&!records.some(f=>f.seriesId===item.document.raw.seriesId&&f.version>item.document.raw.version) && (
                     <Button
                       variant="ghost"
                       size="icon"
                       className="text-destructive hover:text-destructive"
-                      aria-label={"Arquivar documento "+item.document.fileName+" v"+item.document.raw.version} disabled={busy||!canReview}
+                      aria-label={"Arquivar documento "+item.document.fileName+" v"+item.document.raw.version} disabled={busy||!canReview||item.document.raw.status==="archived"}
                       onClick={() => onReview(item.document.raw,"archive")}
                     >
                       <Trash2 className="h-4 w-4" />
