@@ -108,3 +108,7 @@ A primeira execução da nova jornada documental comprovou upload, versão, conf
 ## Continuidade textual 05D
 
 A importação privada e geração versionada de textos evoluiu no [relatório 05D](IMPLEMENTACAO_05D_TEXTOS_FORNECEDORES.md). O backlog atual prevalece sobre descrições históricas. Sem publicação do compêndio privado, aprovação jurídica automática ou efeitos operacionais.
+
+## Continuidade 05E
+
+Aditivos/encerramento de prestadores evoluíram no [relatório 05E](IMPLEMENTACAO_05E_ADITIVOS_ENCERRAMENTO.md). Condições originais e OS existentes são preservadas; consulte a matriz/backlog atuais e evidências por SHA na PR #9.

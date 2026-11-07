@@ -51,3 +51,7 @@ Avaliação fixa empresa/fornecedor e vínculos de projeto/OS; servidor calcula 
 ## Textos integrais privados v1
 
 `/api/v1/suppliers/legal` estende os mesmos IDs/revisões de modelos e rascunhos; não cria outro mestre. Importação e edição exigem governança/anexos/edição. Individualização congela texto/proveniência/bindings canônicos, sem emitir contrato, OS, assinatura ou custo. Mudança de dados cadastrais invalida a geração corrente para exportação e conserva histórico. Projetos utiliza o mesmo componente e os mesmos endpoints. O vínculo automático ao texto de contrato operacional ainda é evolução explícita.
+
+## Aditivos e encerramento v1
+
+`/api/v1/suppliers/lifecycle` usa o mesmo contrato canônico de prestador. Versões efetivas preservam teto/término/objeto/condições por data e revisão. Emissão da OS congela `contractAuthority`; aditivos não reprecificam OS nem alteram orçamento ou custo de Projeto. Encerramento exige resolver OS abertas, preserva fatos validados e não quita Financeiro. Fatos aplicados ficam duráveis no contrato/histórico, sem despacho externo. Reversões/reprogramação anteriores, aditivos de OS e compensações ainda exigem evolução explícita.

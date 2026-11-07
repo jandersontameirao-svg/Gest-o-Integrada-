@@ -77,6 +77,19 @@
         "tests/suppliers-legal.integration.ts",
         "tests/browser/suppliers-legal.spec.ts"
       ]
+    },
+    {
+      "source": "client/src/components/contracts/ContractAmendments.tsx — AmendmentFormDialog",
+      "sourceSHA256": "4c4cdd2ef91475377f6a1e0f0cee3a4a9f3858742d97abacaaccfeabdbd5a094",
+      "destination": "client/suppliers/legacy/SupplierAmendmentFields.tsx",
+      "destinationSHA256": "11ed0e1db284cb33906e93e3cd66cf4d3d00b581338937480f2539d5a3a2a183",
+      "classification": "ADAPTAR — formulário/variantes e fluxo persistido com governança GI",
+      "limits": "Preservados título/número/tipos/descrição/variação/término/cláusulas/notas e grade. Total agora derivado e validado; estado por ações no backend; exclusão física substituída por cancelamento. Sem marcos financeiros/pagamentos ou importação PDF por IA. Aditivos de OS e compensações ainda pendentes.",
+      "tests": [
+        "tests/suppliers-lifecycle.test.ts",
+        "tests/suppliers-lifecycle.integration.ts",
+        "tests/browser/suppliers-lifecycle.spec.ts"
+      ]
     }
   ],
   "otherFlows": [
