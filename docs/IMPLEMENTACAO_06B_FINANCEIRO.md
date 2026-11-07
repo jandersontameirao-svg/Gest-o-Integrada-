@@ -52,6 +52,8 @@ O arquivo UTU `server/financeCalc.ts` foi inspecionado como módulo puro, sem im
 
 Migração 017 cria estruturas financeiras específicas com chaves por empresa, precisão DECIMAL(15,2), versões, razão/ator e caixa rastreável. Journal/checksum/dirty/down do runner existente preservados. Down é destrutivo e só deve ocorrer com backup/banco descartável e opt-in; remove dados financeiros e suas notificações, não representa estorno de negócio.
 
+Consultas compostas de títulos, posições, exportações e indicadores usam transação REPEATABLE READ com snapshot consistente, evitando combinar caixa posterior com saldo pendente anterior durante uma liquidação concorrente. Há prova de banco do saldo projetado invariável sob leituras e baixa em paralelo.
+
 Backend nega por padrão. Concessões por empresa/módulo/ação e aba; leitura da aba é pré-requisito para sua escrita. Saldos têm concessão separada. Seed acrescenta somente concessões sintéticas em banco *_demo. Nenhum bootstrap público ou elevação automática no runtime. UTU/Vinho permanecem sem Financeiro operacional; reaproveitar código UTU não habilita essas empresas.
 
 Locks de ator/empresa, transações, CAS, IDs validados e cache por hash/requestId; permissões revalidadas antes do replay. Contatos, projetos e contratos são validados na autoridade existente, incluindo participantes de Contratos. Notificações usam `module_event_outbox`, sem despacho externo ou elegibilidade automática para consolidação monetária de Estratégia.
