@@ -75,3 +75,17 @@ Estados são código implementado; a CI do SHA é evidência de comportamento te
 ## Delta de cobertura — incremento 3
 
 Z08/Z10/T09: importação CSV/XLSX no modelo explícito com prévia por linha, lote atômico, origem estável, hash, totais e rejeição de duplicidades. Z09: OFX UTF-8 XML/SGML, conta/FITID, conciliação manual com liquidação já existente e sinalização de estorno. T11: bloqueio de período revalidado na carga. T10: escopos/grants revalidados. Estado parcial funcional até validar CI do SHA; não equivale a importador de qualquer layout ou migração histórica homologada. Evidências: tests/finance-imports.test.ts, tests/finance-imports.integration.ts, tests/browser/finance-imports.spec.ts.
+
+
+## Delta — tópico1, adiantamentos e prestação
+
+| Frente | Origem → destino | Estado e evidência | Limites |
+|---|---|---|---|
+| Adiantamentos | UTU Adiantamentos.tsx AdvanceForm/lista/ficha → legacy/AdvanceForm.tsx + FinanceAdvances; backend adaptado para GI | Implementado para validação: solicitar/editar/aprovar/baixar; fonte SHA c63ad1c | Submissão exige liberação integral; não homologa alçadas |
+| Prestação | UTU advanceExpenses/AdvanceDetail → finance_advances.payload.expenses e origens únicas | Itens/comprovantes/correção/aprovação/reembolso/devolução/histórico; integração + E2E | Paginação e exceções documentais futuras |
+| Z03/T01/T02 | Liquidação real e compensação separadas | finance-advances unit/integration:1000/700/300 e1000/1200/200, caixa/DRE sem dupla contagem | Não é demonstração contábil fiscal homologada |
+| Z13/Z14/T10/T11 | Concessões/escopo/período/CAS/idempotência GI | Segurança e reabertura por diretor; testes negativos de empresa, pessoa, moeda e documento | Sem convites/notificações externas |
+| Z16/T12/T13 | Comprovantes privados e exportação do caso | Hash, versões, autorização, PDF/JSON; integração/E2E | Editor geral de recibos/36 variáveis permanece em outro tópico |
+| E02/E03/T14 | Naturezas patrimoniais + compensação rastreável por FK | FinanceSummary/reports/budget usam a mesma fonte; unitários conferem soma e saldo | Câmbio/interempresa não ativados |
+
+Resultado final por SHA/CI na PR #10. Testes sintéticos não equivalem a homologação de produção.

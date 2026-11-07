@@ -48,3 +48,8 @@ CSV/XLSX modelo estrito com prévia/linha/lote/hash/origem única e OFX com dedu
 ## Execução por tópicos — tópico1
 
 Conforme orientação do usuário, a próxima entrega fica limitada à operação diária. Correções de edição em Todos, filtro de parcial vencida, validação de parcelas, regra de período do evento de caixa e edição transacional de metadados de rascunhos de série estão descritas em FINANCEIRO_TOPICO_01_OPERACAO_DIARIA.md. Tópico1 permanece aberto: adiantamentos/prestação de contas e edição financeira/cancelamento de séries em lote ainda não entregues. Não iniciar tópico2 antes de apresentar a evolução do tópico1. Rascunhos locais dos demais tópicos foram preservados, sem publicá-los nesta subetapa.
+
+
+## Delta — tópico1, adiantamentos/prestação
+
+Implementados para validação na mesma PR: formulário/ficha UTU adaptados, solicitação/edição/aprovação, liberação real, comprovantes privados/versionados, despesas corrigíveis, submissão/devolução/aprovação, compensação, devolução/reembolso, encerramento e reabertura auditada. Substitui o estado anterior de “não implementado”, sujeito à CI do SHA. Permanecem no tópico1: edição financeira/datas e cancelamento em lote de séries; parciais de concessão antes da submissão, exceções de documentos, paginação e transferência controlada de origens são melhorias identificadas, sem política de negócio presumida. Não iniciar tópico2 nesta entrega.

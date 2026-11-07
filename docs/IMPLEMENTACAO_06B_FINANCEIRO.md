@@ -107,3 +107,8 @@ Modelo CSV: externalId;description;bucket;amount;currency;dueDate;competenceDate
 ## Continuidade por tópicos — tópico1, operação diária
 
 Consultar FINANCEIRO_TOPICO_01_OPERACAO_DIARIA.md. Correções e testes focados em pagamentos/recebimentos, parciais vencidas, edição via Todos, erro de parcelamento e metadados de série. Baixa/estorno em período de caixa aberto não reescrevem competência/vencimento de título encerrado. Sem migração adicional, permanece catálogo019; sem merge/deploy/serviços externos. Tópico1 ainda parcial; não declarar conclusão de adiantamentos/prestação de contas.
+
+
+## Tópico1 — adiantamentos/prestação
+
+Consultar FINANCEIRO_TOPICO_01_OPERACAO_DIARIA.md, subetapa de adiantamentos. Reaproveitamento do formulário/ficha UTU com persistência GI, pessoa corporativa canônica, liberação comprovada, compensação sem segunda saída, devolução/reembolso, provas privadas, versões, auditoria e reabertura por diretor. Migração020, sem alterações nas019 anteriores. DRE e orçamento não tratam liberação/devolução patrimonial como nova despesa/receita. Não ativadas APIs externas. Homologação e limitações documentadas; tópico1 ainda não encerra o Financeiro.
