@@ -1,3 +1,4 @@
+import {financeRouter} from './finance/router.ts';
 import {supplierExecutionRouter} from './suppliers/execution-router.ts';
 import {supplierIntegrationRouter} from './suppliers/integration-router.ts';
 import {supplierLifecycleRouter} from './suppliers/lifecycle-router.ts';
@@ -25,6 +26,7 @@ export function createApp() {
  const app = express();
  app.disable('x-powered-by');
  app.use(helmet());
+ app.use('/api/v1/finance',express.json({limit:'256kb'}));
  app.use('/api/v1/strategy',express.json({limit:'128kb'}));
  app.use('/api/v1/contracts',express.json({limit:'12mb'}));
  app.use('/api/v1/projects',express.json({limit:'12mb'}));
@@ -75,6 +77,7 @@ export function createApp() {
   } catch (error) { await connection.rollback(); throw error; } finally { connection.release(); }
   res.status(204).end();
  });
+ app.use('/api/v1/finance',financeRouter);
  app.use('/api/v1/governance',governanceRouter);
  app.use('/api/v1/strategy',strategyRouter);
  app.use('/api/v1/contracts',contractsRouter);
