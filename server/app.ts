@@ -27,6 +27,7 @@ export function createApp() {
  app.disable('x-powered-by');
  app.use(helmet());
  app.use('/api/v1/finance/imports',express.json({limit:'4mb'}));
+ app.use('/api/v1/finance/advances/:id/files',express.json({limit:'12mb'}));
  app.use('/api/v1/finance/titles/:id/files',express.json({limit:'12mb'}));
  app.use('/api/v1/finance',express.json({limit:'256kb'}));
  app.use('/api/v1/strategy',express.json({limit:'128kb'}));
