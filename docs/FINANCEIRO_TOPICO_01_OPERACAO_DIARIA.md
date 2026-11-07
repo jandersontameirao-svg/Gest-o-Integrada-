@@ -74,3 +74,5 @@ Testes: finance-advances.test.ts (centavos, alocação, DRE, caixa e orçamento)
 ### Limites ainda explícitos
 
 Submissão de prestação exige liberação integral nesta versão; liberações parciais são registradas sem fabricar pagamento completo. Exceções de documentos, tolerâncias, alçadas por valor, parcelamento de concessões adicionais e política fiscal/contábil definitiva não foram inventados. Lista de casos ainda sem paginação; API mantém limite técnico de120 itens/caso. Rateios com referência parcial exigem chave distinta por linha; transferência de uma origem já reservada entre casos não é automática. Ajustes financeiros/datas e cancelamento em lote de séries continuam pendentes do tópico1. Homologação visual/contábil externa e produção continuam fora da entrega.
+
+A mesma referência também é verificada contra títulos financeiros manuais/importados: uma prestação não pode reconhecer novamente documento já ativo, e um título comum não pode usar origem já reservada pela prestação. Referências diferentes para o mesmo documento exigem conciliação humana; não há inferência por descrição ou IA.
