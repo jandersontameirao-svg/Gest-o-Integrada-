@@ -1,0 +1,3 @@
+// Bloco Content adaptado de ContractEditor.tsx, origem 8b5c9409. IA removida; gravação GI confirmada.
+import {Textarea} from '../../sge/components/ui/textarea.tsx';
+export function SupplierLegalContent({content,onChange}:{content:string;onChange:(v:string)=>void}){return <div><h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2"><span className="h-5 w-5 rounded-full bg-primary text-white text-xs flex items-center justify-center">5</span>Conteúdo do Contrato / Anexo</h3><Textarea aria-label="Texto integral do modelo" value={content} onChange={e=>onChange(e.target.value)} placeholder="Texto completo do contrato, cláusulas, condições..." rows={12} className="font-mono text-sm"/></div>;}
