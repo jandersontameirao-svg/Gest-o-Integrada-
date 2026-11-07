@@ -38,8 +38,8 @@ try {
   await connection.execute('INSERT INTO users(id,email,name,password_hash) VALUES (?,?,?,?)',[id,email,name,hash]);
   await connection.execute('INSERT INTO user_profiles(user_id,profile) VALUES (?,?)',[id,email==='holding@example.test'?'DIRETORES':email==='projetos@example.test'?'GERENTES':'OPERADORES']);
   if(email==='holding@example.test')for(const action of ['edit','approve','reopen','export'])await connection.execute('INSERT INTO scope_grants VALUES (?,?,?,?,?)',[id,'scope-holding','strategy',action,'allow']);
-  if(email==='holding@example.test')for(const action of ['edit','approve','export','attachments'])await connection.execute('INSERT INTO scope_grants VALUES (?,?,?,?,?)',[id,'scope-holding','projects',action,'allow']);
-  if(email==='holding@example.test')for(const action of ['edit','export'])await connection.execute('INSERT INTO scope_grants VALUES (?,?,?,?,?)',[id,'scope-holding','suppliers',action,'allow']);
+  if(email==='holding@example.test')for(const action of ['edit','approve','reopen','export','attachments'])await connection.execute('INSERT INTO scope_grants VALUES (?,?,?,?,?)',[id,'scope-holding','projects',action,'allow']);
+  if(email==='holding@example.test')for(const action of ['edit','approve','export'])await connection.execute('INSERT INTO scope_grants VALUES (?,?,?,?,?)',[id,'scope-holding','suppliers',action,'allow']);
   if(email==='holding@example.test')for(const action of ['edit','approve','export','attachments'])await connection.execute('INSERT INTO scope_grants VALUES (?,?,?,?,?)',[id,'scope-holding','contracts',action,'allow']);
   await connection.execute('INSERT INTO memberships(user_id,company_id,role_id,corporate) VALUES (?,?,?,?)',[id,company,role,corporate]);
  }

@@ -1,3 +1,4 @@
+import {supplierOperationsRouter} from './suppliers/operations-router.ts';
 import {suppliersRouter} from './suppliers/router.ts';
 import express from 'express';
 import {projectsRouter} from './projects/router.ts';
@@ -21,6 +22,7 @@ export function createApp() {
  app.use('/api/v1/strategy',express.json({limit:'128kb'}));
  app.use('/api/v1/contracts',express.json({limit:'12mb'}));
  app.use('/api/v1/projects',express.json({limit:'12mb'}));
+ app.use('/api/v1/suppliers/operations',express.json({limit:'192kb'}));
  app.use('/api/v1/suppliers',express.json({limit:'64kb'}));
  app.use(express.json({limit:'16kb'}));
  app.use('/api', (_req,res,next) => { res.setHeader('Cache-Control','no-store'); next(); });
@@ -65,6 +67,7 @@ export function createApp() {
  app.use('/api/v1/strategy',strategyRouter);
  app.use('/api/v1/contracts',contractsRouter);
  app.use('/api/v1/projects',projectsRouter);
+ app.use('/api/v1/suppliers/operations',supplierOperationsRouter);
  app.use('/api/v1/suppliers',suppliersRouter);
  app.get('/api/v1/companies', async (req,res) => {
   const module=typeof req.query.module==='string'?req.query.module:'projects';
