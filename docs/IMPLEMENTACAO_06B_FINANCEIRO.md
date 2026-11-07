@@ -89,3 +89,16 @@ Base bf716b52c30be9715422ef7526222fbd2d598bbf, mesma PR #10 em rascunho. Sem mer
 Verificação deste incremento: build/TypeScript e unitários locais; MySQL/rollback/reaplicação, segurança e Playwright na CI do SHA publicado, com resultado/evidências registrados na PR. Não confundir plano de teste com aprovação. Arquivos: tests/finance-planning.test.ts, tests/finance-planning.integration.ts, tests/browser/finance-planning.spec.ts.
 
 Permanecem pendentes: XLSX/OFX e conciliação, ensaio histórico, séries futuras, configuração versionada, adiantamentos/prestação de contas, cenários avançados/câmbio, interfaces de IA e homologação contábil/visual. Continua desenvolvimento autorizado; não declarar conclusão integral.
+
+
+## Incremento 3 — importação e conciliação isoladas
+
+Incremento 2 validado na CI #67, commit bb98a3e8cceeae7eefcf10b094180106d2920e80: build, unitários, MySQL antes/depois de rollback e Playwright aprovados; zero vulnerabilidades. Link: https://github.com/jandersontameirao-svg/Gest-o-Integrada-/actions/runs/42417516980 .
+
+Importação CSV UTF-8/XLSX no modelo explícito, até500 linhas/2MiB, cabeçalho estrito, valores decimais, datas ISO textuais e IDs canônicos. XLSX sem fórmulas/macros/links externos, uma planilha. Sem inferência por IA ou associação automática de homônimos. Prévia mostra erros por linha, valores e duplicidades; confirmação reprocessa o mesmo hash em transação e revalida vínculos/permissões/competências. Uma linha inválida/duplicada rejeita o lote inteiro. Importação cria rascunhos, não aprova nem liquida. Namespace estável e externalId obrigatório compõem origem única por empresa; proveniência/hash/linha/lote preservados inclusive na edição. Não trocar namespace para contornar duplicidade.
+
+OFX XML/SGML UTF-8: um extrato, moeda e ACCTID confirmados pelo operador, FITID obrigatório, datas/valores exatos, deduplicação por conta/FITID. Mesmo FITID com data/valor diferente exige tratamento humano. Somente movimentos efetivos não futuros, após abertura da conta. A carga não modifica caixa/títulos/liquidações; conciliação associa liquidação existente com conta, data, sinal e valor idênticos. Estorno posterior é sinalizado como vínculo inválido; desfazer vínculo exige auditoria. Não há tolerância/inferência automática nem conexão bancária. Transferências e conciliação de muitos movimentos para muitas liquidações permanecem pendentes.
+
+Migração019 acrescenta lotes e extratos privados segregados por empresa. Tests finance-imports unit/integration/browser cobrem parsing sintético, repetição, fechamento, concorrência idempotente, conciliação/estorno, persistência e ausência de chamadas externas. CI do SHA final documentará aprovação; o ensaio sintético não é migração histórica homologada. Arquivos reais não foram usados.
+
+Modelo CSV: externalId;description;bucket;amount;currency;dueDate;competenceDate;categoryId;accountId;contactId;projectId;contractId;documentNumber;paymentMethod;costCenterId;notes. Tipo: income/fixed/variable/people/tax. Vínculos opcionais devem ficar vazios ou conter ID canônico autorizado. Datas AAAA-MM-DD, valor decimal positivo com ponto. Contatos devem ser resolvidos no cadastro oficial antes da carga; importação de contatos não cria mestre concorrente.

@@ -38,3 +38,8 @@ Arqueo Financeiro, versão declarada 992e3f013886f7513a00bbc294952714d3749f11, Z
 ## Atualização — incremento 2
 
 Implementados para validação: catálogo de relatórios 01–20/filtros/CSV/PDF/gráficos, orçamento empresarial versionado com aprovação e proposta histórica, anexos privados versionados, recibo gerencial básico, auditoria paginada API. Substitui os estados de “não implementado” específicos acima, sem afirmar paridade visual completa. Performance ainda requer maiores gastos/receitas, distribuição e comparativos de saldo; 36 variáveis e templates completos continuam pendentes. Importação/conciliação e ensaio histórico são a próxima prioridade operacional.
+
+
+## Atualização — incremento 3
+
+CSV/XLSX modelo estrito com prévia/linha/lote/hash/origem única e OFX com deduplicação/conciliação manual de liquidação existente implementados para validação. Pendentes: mapeador visual de layouts Zenply/outros, contatos/ambiguidade assistida, datas seriais Excel, encodings OFX além deUTF-8, conciliação de transferências/agrupamentos/taxas, exportação XLSX integral e ensaio histórico completo homologado. Nenhum desses limites autoriza inferência ou sucesso simulado.

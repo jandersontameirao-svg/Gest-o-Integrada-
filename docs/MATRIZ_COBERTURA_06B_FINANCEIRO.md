@@ -70,3 +70,8 @@ Sem capturas completas Zenply, sem confirmação de API no plano contratado, sem
 | E02/T14 | Orçamento por categoria/mês, versões, aprovação, comparação e proposta histórica determinística | budget.ts + unit/integration/browser | Rateios e IA posteriores; não duplica orçamento operacional |
 
 Estados são código implementado; a CI do SHA é evidência de comportamento testado, não homologação externa.
+
+
+## Delta de cobertura — incremento 3
+
+Z08/Z10/T09: importação CSV/XLSX no modelo explícito com prévia por linha, lote atômico, origem estável, hash, totais e rejeição de duplicidades. Z09: OFX UTF-8 XML/SGML, conta/FITID, conciliação manual com liquidação já existente e sinalização de estorno. T11: bloqueio de período revalidado na carga. T10: escopos/grants revalidados. Estado parcial funcional até validar CI do SHA; não equivale a importador de qualquer layout ou migração histórica homologada. Evidências: tests/finance-imports.test.ts, tests/finance-imports.integration.ts, tests/browser/finance-imports.spec.ts.
