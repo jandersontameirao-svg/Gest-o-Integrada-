@@ -1,3 +1,4 @@
+import {supplierIntegrationRouter} from './suppliers/integration-router.ts';
 import {supplierLifecycleRouter} from './suppliers/lifecycle-router.ts';
 import {supplierLegalRouter} from './suppliers/legal-router.ts';
 import {supplierFilesRouter} from './suppliers/documents-router.ts';
@@ -26,11 +27,12 @@ export function createApp() {
  app.use('/api/v1/strategy',express.json({limit:'128kb'}));
  app.use('/api/v1/contracts',express.json({limit:'12mb'}));
  app.use('/api/v1/projects',express.json({limit:'12mb'}));
+ app.use('/api/v1/suppliers/integration',express.json({limit:'1mb'}));
  app.use('/api/v1/suppliers/lifecycle',express.json({limit:'1mb'}));
  app.use('/api/v1/suppliers/legal',express.json({limit:'12mb'}));
  app.use('/api/v1/suppliers/files',express.json({limit:'12mb'}));
  app.use('/api/v1/suppliers/reviews',express.json({limit:'512kb'}));
- app.use('/api/v1/suppliers/operations',express.json({limit:'192kb'}));
+ app.use('/api/v1/suppliers/operations',express.json({limit:'1mb'}));
  app.use('/api/v1/suppliers',express.json({limit:'64kb'}));
  app.use(express.json({limit:'16kb'}));
  app.use('/api', (_req,res,next) => { res.setHeader('Cache-Control','no-store'); next(); });
@@ -75,6 +77,7 @@ export function createApp() {
  app.use('/api/v1/strategy',strategyRouter);
  app.use('/api/v1/contracts',contractsRouter);
  app.use('/api/v1/projects',projectsRouter);
+ app.use('/api/v1/suppliers/integration',supplierIntegrationRouter);
  app.use('/api/v1/suppliers/lifecycle',supplierLifecycleRouter);
  app.use('/api/v1/suppliers/legal',supplierLegalRouter);
  app.use('/api/v1/suppliers/files',supplierFilesRouter);
