@@ -33,7 +33,7 @@
       "destination": "client/suppliers/legacy/SupplierContractFields.tsx",
       "destinationSHA256": "250a7382a36f030019b6e749e75b820c8876ee4b5787d80d52990b3edb9dc923",
       "classification": "ADAPTAR / parcial",
-      "limits": "Reaproveitados Identification, Parties e Financial & Dates. Não inclui editor completo, itens, importação, anexos, PDF/assinatura/IA. Contratante canônica e estados por backend.",
+      "limits": "Blocos Identification, Parties e Financial & Dates preservados neste arquivo. Editor integral, anexos privados, histórico e PDF/DOCX disponíveis nos adaptadores 05C–05F. Itens avançados do editor original permanecem parciais; assinatura/IA externas desligadas. Contratante canônica e estados por backend.",
       "tests": [
         "tests/suppliers-operations.integration.ts",
         "tests/browser/suppliers-operations.spec.ts"
@@ -45,7 +45,7 @@
       "destination": "client/suppliers/legacy/SupplierEvaluationFields.tsx",
       "destinationSHA256": "0be899e3cbba967294adc910ea4ba4df14b91192d55ab6fa07870996b0865198",
       "classification": "ADAPTAR — formulário e resumo funcionais",
-      "limits": "Preserva cinco critérios, média, sliders, cores, barras, pontos fortes/melhoria/comentários; API GI com escopo, evidência e versões. Exclusão física vira anulação/restauração auditada. Dashboard global separado ainda pendente.",
+      "limits": "Preserva cinco critérios, média, sliders, cores, barras, pontos fortes/melhoria/comentários; API GI com escopo, evidência e versões. Exclusão física vira anulação/restauração auditada. Painel por empresa/prestador com busca, filtro, média e ranking em 05G. Dashboard corporativo multiempresa permanece melhoria futura.",
       "tests": [
         "tests/suppliers-reviews.test.ts",
         "tests/suppliers-reviews.integration.ts",
@@ -84,7 +84,7 @@
       "destination": "client/suppliers/legacy/SupplierAmendmentFields.tsx",
       "destinationSHA256": "11ed0e1db284cb33906e93e3cd66cf4d3d00b581338937480f2539d5a3a2a183",
       "classification": "ADAPTAR — formulário/variantes e fluxo persistido com governança GI",
-      "limits": "Preservados título/número/tipos/descrição/variação/término/cláusulas/notas e grade. Total agora derivado e validado; estado por ações no backend; exclusão física substituída por cancelamento. Sem marcos financeiros/pagamentos ou importação PDF por IA. Aditivos de OS e compensações ainda pendentes.",
+      "limits": "Preservados título/número/tipos/descrição/variação/término/cláusulas/notas e grade. Total agora derivado e validado; estado por ações no backend; exclusão física substituída por cancelamento. Sem marcos financeiros/pagamentos ou importação PDF por IA. Alteração de OS emitida antes da mobilização está em 05F; compensação da execução validada e rateio estão em 05G. Mudanças de preço/termos após mobilização exigem instrumento próprio; não são simuladas pela correção factual.",
       "tests": [
         "tests/suppliers-lifecycle.test.ts",
         "tests/suppliers-lifecycle.integration.ts",
