@@ -11,7 +11,7 @@ export function registerFinanceAdvanceTests(base:()=>string,director:()=>Promise
  async function upload(id:string,previousId?:string){const bytes=await generatePDF({title:'Comprovante sintético',filename:'demo.pdf',columns:[{header:'Campo',dataKey:'v'}],data:[{v:'Sem dados reais'}]});return ok(await api('/advances/'+id+'/files','POST',{fileName:'comprovante.pdf',mimeType:'application/pdf',contentBase64:Buffer.from(bytes).toString('base64'),...(previousId?{previousId}:{})}),201);}
  const expenseData=(externalRef:string,value='700.00',proof=file)=>({externalRef,description:'Despesa comprovada sintética',amount:value,date,categoryId:category,fileId:proof,evidence:'Comprovante privado conferido'});
  test('adiantamentos: pessoa canônica, solicitação/edit/recarga, aprovação sem caixa e liberação parcial comprovada',async()=>{
-  const [p]=await rows<{id:string}>('SELECT id FROM business_parties WHERE tax_id=?',['99000000001']);person=p.id;
+  const [p]=await rows<{id:string}>('SELECT id FROM business_parties WHERE tax_id=?',['99706123440']);person=p.id;
   account=(await ok(await api('/accounts','POST',{data:{name:'Banco de adiantamentos sintético',kind:'Conta Corrente',currency:'BRL',openingBalance:'5000.00',openingDate:date}}),201)).id;
   category=(await ok(await api('/categories','POST',{data:{name:'Despesas de campo sintéticas',bucket:'variable',nature:'opex'}}),201)).id;
   const body={requestId:randomUUID(),data:data('Adiantamento devolução')},pair=await Promise.all([api('/advances','POST',body),api('/advances','POST',body)]);first=(await ok(pair[0],201)).id;assert.equal((await ok(pair[1],201)).id,first);
