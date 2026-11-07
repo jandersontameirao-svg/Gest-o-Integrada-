@@ -102,3 +102,8 @@ OFX XML/SGML UTF-8: um extrato, moeda e ACCTID confirmados pelo operador, FITID 
 Migração019 acrescenta lotes e extratos privados segregados por empresa. Tests finance-imports unit/integration/browser cobrem parsing sintético, repetição, fechamento, concorrência idempotente, conciliação/estorno, persistência e ausência de chamadas externas. CI do SHA final documentará aprovação; o ensaio sintético não é migração histórica homologada. Arquivos reais não foram usados.
 
 Modelo CSV: externalId;description;bucket;amount;currency;dueDate;competenceDate;categoryId;accountId;contactId;projectId;contractId;documentNumber;paymentMethod;costCenterId;notes. Tipo: income/fixed/variable/people/tax. Vínculos opcionais devem ficar vazios ou conter ID canônico autorizado. Datas AAAA-MM-DD, valor decimal positivo com ponto. Contatos devem ser resolvidos no cadastro oficial antes da carga; importação de contatos não cria mestre concorrente.
+
+
+## Continuidade por tópicos — tópico1, operação diária
+
+Consultar FINANCEIRO_TOPICO_01_OPERACAO_DIARIA.md. Correções e testes focados em pagamentos/recebimentos, parciais vencidas, edição via Todos, erro de parcelamento e metadados de série. Baixa/estorno em período de caixa aberto não reescrevem competência/vencimento de título encerrado. Sem migração adicional, permanece catálogo019; sem merge/deploy/serviços externos. Tópico1 ainda parcial; não declarar conclusão de adiantamentos/prestação de contas.
