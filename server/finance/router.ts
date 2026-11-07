@@ -1,3 +1,4 @@
+import {registerSeriesReview} from './series.ts';
 import {registerAdvances,checkAdvanceSource,guardAdvanceReversal} from './advances.ts';
 import {parseTitleFile,parseOfx,type ImportRow} from './import-files.ts';
 import {validateFile} from '../contracts/files.ts';
@@ -105,6 +106,7 @@ router.put('/series/:id/drafts',async(req,res)=>{
  },async c=>{const anchor=await title(obj(req.body).anchorId,company,c);if(anchor.seriesId!==seriesId)throw new HttpError(404,'Série fora da empresa.');await bucketAccess(u,company,anchor.payload.bucket,'edit',c);}));
 });
 
+registerSeriesReview(router,{access,bucketAccess,title,titles,settlements,write,history,readAudit,openPeriods,validateLinks,consistentRead,cas});
 registerAdvances(router,{write,access,bucketAccess,accounts,categories,title,titles,settlements,history,readAudit,openPeriods,validateLinks,consistentRead,cas});
 export {router as financeRouter,write,access,bucketAccess,accounts,categories,title,titles,settlements,history,readAudit,openPeriods,validateLinks,consistentRead,cas};
 
