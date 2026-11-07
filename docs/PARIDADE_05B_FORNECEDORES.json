@@ -29,7 +29,7 @@
     },
     {
       "source": "client/src/components/contracts/ContractEditor.tsx",
-      "sourceSHA256": "91e88bd0af2906062af95588ce3cb9787a97190be6a641aaa8b78cc5bbff33b3",
+      "sourceSHA256": "a3fd743c6a1f587dad95619ee63ffa4fbe340f7ad35b89fb9d052fe7e6df6aa0",
       "destination": "client/suppliers/legacy/SupplierContractFields.tsx",
       "destinationSHA256": "c3d17bbb7843451c5cc5e97d2e193dac394a17e73c436d382da64ee61decd744",
       "classification": "ADAPTAR / parcial",

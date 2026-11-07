@@ -28,3 +28,5 @@ Sem merge/deploy, produção, integrações externas ou Financeiro. UTU/Vinho pe
 Entregues contrato individualizado com origem congelada, edição em rascunho, aprovação e registro de execução formal; reserva/OS canônica; emissão, mobilização, desmobilização retroativa e validação; competência/reabertura; custos canônicos em Projetos e exportação JSON. Não são mais pendências genéricas de implementação.
 
 Continuam: boletins completos/glosas/reapresentações; avaliações originais; anexos e qualificação; PDF/DOCX/textos integrais dos modelos; aditivos/encerramento formal; poderes/delegações documentais completos; frações/rateio da mesma diária entre projetos; compensação de fatos validados e conciliação com custos preexistentes. A classificação de desenvolvimento acima deve ser lida com esta atualização; revisão final do compêndio não é bloqueio.
+
+Antes de consolidar custos de OS em Estratégia: distribuir por competência/unidade histórica com evidência, inclusive transferências e mínimos contratuais. Eventos atuais são explicitamente inelegíveis para consolidação monetária; nenhuma alocação retroativa à unidade atual é presumida.
