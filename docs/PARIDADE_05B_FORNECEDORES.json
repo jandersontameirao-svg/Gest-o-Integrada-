@@ -31,7 +31,7 @@
       "source": "client/src/components/contracts/ContractEditor.tsx",
       "sourceSHA256": "a3fd743c6a1f587dad95619ee63ffa4fbe340f7ad35b89fb9d052fe7e6df6aa0",
       "destination": "client/suppliers/legacy/SupplierContractFields.tsx",
-      "destinationSHA256": "c3d17bbb7843451c5cc5e97d2e193dac394a17e73c436d382da64ee61decd744",
+      "destinationSHA256": "d48c3b2dcb33b1fb7b3797ba24c9d99cafa3382a1d6f3db31efc5f8554ec1e38",
       "classification": "ADAPTAR / parcial",
       "limits": "Reaproveitados Identification, Parties e Financial & Dates. Não inclui editor completo, itens, importação, anexos, PDF/assinatura/IA. Contratante canônica e estados por backend.",
       "tests": [
