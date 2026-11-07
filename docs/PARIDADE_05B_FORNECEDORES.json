@@ -38,6 +38,19 @@
         "tests/suppliers-operations.integration.ts",
         "tests/browser/suppliers-operations.spec.ts"
       ]
+    },
+    {
+      "source": "client/src/components/supplier/SupplierEvaluations.tsx",
+      "sourceSHA256": "2a01394f4c86b2de70049dff30162c8ae983bf3383a5d5780b4fde7d28497da8",
+      "destination": "client/suppliers/legacy/SupplierEvaluationFields.tsx",
+      "destinationSHA256": "0be899e3cbba967294adc910ea4ba4df14b91192d55ab6fa07870996b0865198",
+      "classification": "ADAPTAR — formulário e resumo funcionais",
+      "limits": "Preserva cinco critérios, média, sliders, cores, barras, pontos fortes/melhoria/comentários; API GI com escopo, evidência e versões. Exclusão física vira anulação/restauração auditada. Dashboard global separado ainda pendente.",
+      "tests": [
+        "tests/suppliers-reviews.test.ts",
+        "tests/suppliers-reviews.integration.ts",
+        "tests/browser/suppliers-reviews.spec.ts"
+      ]
     }
   ],
   "otherFlows": [
@@ -59,11 +72,11 @@
     },
     {
       "flow": "Avaliações completas",
-      "status": "PENDENTE / NÃO PORTADO NESTE INCREMENTO"
+      "status": "ADAPTADO NO CONTEXTO DO FORNECEDOR/OS — dashboard global pendente"
     },
     {
       "flow": "Medição e custos efetivos",
-      "status": "PARCIAL 05C — validação operacional e custos; boletim completo pendente"
+      "status": "Boletim por OS validada com estados e glosas; não altera custos do 05C"
     },
     {
       "flow": "PDF jurídico e assinatura",
@@ -97,6 +110,19 @@
       "Qualificação/anexos",
       "Geração dos textos integrais e PDFs",
       "Aditivos/compensações posteriores à validação"
+    ]
+  },
+  "continuity": {
+    "authorization": "Desenvolvimento contínuo autorizado pelo CEO; sem novo aceite técnico por incremento",
+    "measurements": "Fluxo completo por uma OS validada, com faixas, glosa e reapresentação; sem alterar custo ou liquidar",
+    "evaluations": "Formulário/resumo contextual do legado portados com persistência, versões e escopo; dashboard global pendente",
+    "proof": "Resultados da CI por SHA na PR #9",
+    "remaining": [
+      "Qualificação/documentos",
+      "Textos integrais/52 anexos",
+      "Aditivos/poderes",
+      "Conciliação/rateios",
+      "Consolidação temporal"
     ]
   }
 }

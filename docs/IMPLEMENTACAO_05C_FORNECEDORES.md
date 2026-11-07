@@ -54,3 +54,33 @@ O texto individualizado é informado pelo usuário e auditado; não há atestado
 ## Correção de regressão de Contratos
 
 A CI revelou corrida entre configurar e consultar alertas na interface existente. ContractTools agora bloqueia consultas enquanto gravação/recarregamento estão em andamento; o E2E 03D retém deliberadamente a resposta real da configuração e verifica que a consulta aguarda. Não houve redução de assertions, aumento de timeout ou alteração de backend/permissões de Contratos para contornar a regressão.
+
+## Continuidade autorizada — boletins e avaliações
+
+O CEO autorizou seguir o desenvolvimento sem aceite por incremento. Essa autorização não aprova automaticamente decisões operacionais ou documentos em seu nome. `CONTINUIDADE_AUTORIZADA.md` registra os limites. Revisão do compêndio não é bloqueio.
+
+### Boletim do prestador
+
+Nova migração 011 e API canônica `/api/v1/suppliers/reviews`. O boletim vincula OS com execução validada e sua revisão, moeda e origens monetárias: diárias efetivamente aprovadas, mínimo validado residual ou valor validado mensal/entrega. Linhas têm ID, origem, descrição, início da faixa monetária e valor; descrições e competências diferentes não permitem reutilizar faixa já apresentada/aprovada. O início da faixa representa parcela monetária da origem, não fração de jornada PJ.
+
+Estados persistidos: rascunho → apresentado → aprovado tecnicamente → autorizado para faturar; também rejeição, devolução, correção, reapresentação, cancelamento e estorno da elegibilidade. Glosa exige valor/justificativa por linha e evidência da decisão. A parcela aceita permanece reservada; somente a cauda glosada pode ser reapresentada. Devolver/estornar preserva todas as versões. Alteração em competência encerrada exige reabertura autorizada. Nenhuma dessas operações altera o custo já validado da OS ou lança Financeiro.
+
+Apresentar/editar exige `suppliers:edit` e `projects:edit`; aprovação técnica/rejeição/devolução exige `projects:approve`; autorizar faturamento exige `suppliers:approve`; estorno e devolução de elegibilidade já faturável requerem as duas aprovações. Toda operação exige leitura de Fornecedores e projeto de origem. Faturado e pago permanecem desconhecidos, sob autoridade futura do Financeiro.
+
+### Avaliações reaproveitadas
+
+`SupplierEvaluations.tsx` do legado 8b5c9409 forneceu o formulário, cinco critérios, sliders, cores, barras e cartões de resultado adaptados em `SupplierEvaluationFields.tsx`. Preservados qualidade, entrega, preço, comunicação e conformidade, escala 0–100 e média simples arredondada; sem pesos novos. Notas não aplicam multas, descontos ou sanções. Texto de período livre do legado permanece disponível. Evidências objetivas e motivo são registrados.
+
+Há cadastro, recarga, edição CAS, versões, anulação/restauração e exportação autenticada. Anular substitui a exclusão física irreversível do legado, preservando consulta e restauração. Autor edita com concessão; editar avaliação de outro autor exige aprovação no escopo correspondente. Projeto e OS são vínculos canônicos opcionais; se informada OS, fornecedor/projeto devem corresponder. Para OS/período, a chave de origem é derivada no servidor (período normalizado/hash), evitando duplicação entre Projetos e Fornecedores; edição do período atualiza essa chave com auditoria e unicidade. Não há segundo histórico.
+
+### Relatórios, testes e segurança
+
+Boletins e avaliações possuem histórico completo e exportação JSON/PDF autorizada; PDF reutiliza o gerador maduro de Contratos, com identidade do Grupo. São registros internos, sem assinatura digital, NF ou liquidação. Fonte do fornecedor, empresa e projeto são revalidadas antes de acesso, inclusive exportações. UTU/Vinho permanecem sem operação. Payloads rejeitam campos financeiros, notas calculadas no cliente, IDs de linhas alheias e origens não validadas. Limite HTTP de revisão: 512 KiB; até 100 linhas com descrição limitada, sem upload nesse endpoint.
+
+Migração 011 tem cache idempotente e histórico próprios. Down remove seus eventos e cache, preservando OS/custos/cache 010; replay após reaplicação não devolve ID fantasma. Migrações 001–010 permanecem inalteradas. Sliders compartilhados passam a propagar rótulos acessíveis aos controles; demais componentes não mudam seu comportamento.
+
+Testes unitários: fórmula original, origens de medição, sobreposição, glosa, mínimo e ausência de efeitos financeiros. Integração: CRUD/CAS, glosa/reapresentação, rejeição/correção, duas apresentações concorrentes, fechamento/reabertura, origem única da avaliação, anulação/restauração, escopo/exportação/revogação e rollback 011. E2E: salvar/editar/recarregar boletim, aprovar com glosa, autorizar faturamento, reapresentar cauda, avaliar com sliders originais, editar, exportar PDFs e consultar o mesmo registro em Projetos. Resultados finais vinculados ao SHA no comentário da PR #9, sem presumir CI pendente aprovada.
+
+### Limitações remanescentes
+
+Cada boletim reúne uma OS; agrupamento multi-OS, rateios e compensação posterior de custo operacional seguem como evolução explícita. Avaliação contextual do fornecedor/OS está portada; o dashboard global da página legada de avaliações ainda exige inventário/paridade próprios. A geração dos textos integrais dos 13 contratos e 52 anexos, qualificação privada, aditivos, poderes documentais, conciliação e consolidação temporal continuam no próximo backlog. Isso é desenvolvimento restante, não espera pela revisão do compêndio.

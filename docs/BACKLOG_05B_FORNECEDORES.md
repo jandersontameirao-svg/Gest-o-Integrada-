@@ -1,32 +1,28 @@
-# Backlog de Fornecedores
+# Backlog vivo de Fornecedores
 
-## Diretriz vigente — sem bloqueio pelo compêndio
+## Autorização e limites
 
-O CEO autorizou continuar com a versão enviada, ajustando depois por versões. A revisão final foi retirada dos bloqueios e pendências de continuidade. Fonte de trabalho: `grupo-arqueo-compendio` v1, SHA-256 `70c651c15eb08ec9540c086ae449ed5c6f5350052d07f424dffe1c11d8005efd`.
+O CEO autorizou continuar o desenvolvimento sem aceite por incremento. Usar o compêndio atual como base v1, ajustando por versões; revisão final não é pendência ou bloqueio. A autorização de desenvolvimento não aprova automaticamente contratos, gastos ou medições de pessoas reais. Sem merge/deploy, produção, alterações dos aplicativos originais ou serviços externos. Financeiro operacional permanece fora deste incremento; sua fase própria segue o planejamento de integração.
 
-## Próximos incrementos técnicos
+## Implementado — consultar evidências por SHA na PR #9
 
-- Converter os 13 escopos e suas famílias de anexos em instrumentos completos, com cláusulas parametrizadas, geração documental e comparação de versões; catálogo não equivale a template jurídico completo.
-- Port completo de qualificação, categorias, avaliações e documentação privada com autorização, versões e downloads.
-- Implementar aprovação individual e emissão de contratos/OS, reserva sem custo, mobilização efetiva, desmobilização retroativa validada e eventos idempotentes futuros. Nenhum emissor paralelo em Projetos.
-- Implementar medição de fornecedor, indicadores e aditivos usando a base atual e parâmetros explícitos por regime/contratação; testar competência, saldos e histórico.
-- Tratar divergências da fonte com escolhas registradas no instrumento quando necessárias. Não aplicar pró-rata mensal universal, multas, reajustes ou aceite automático por inferência.
-- Parametrizar poderes, concessões, representantes, vigências, calendário e condições específicas no fluxo próprio. Não converter cargo de serviço em autorização de acesso/assinatura.
-- Política controlada de correção/fusão de identidade corporativa, validação fiscal e deduplicação supervisionada.
-- Aperfeiçoar comparação visual, pesquisa/paginação e divisão do bundle. Aviso de tamanho do Vite permanece melhoria de desempenho.
+- Cadastro canônico e vínculo por empresa, formulários/histórico reaproveitados, modelos e rascunhos com versão de origem, catálogo de 13 escopos/52 referências de anexos.
+- Contrato individualizado: origem congelada, edição em rascunho, aprovação e registro de execução formal. Reserva e OS canônica, emissão interna, mobilização, desmobilização retroativa e validação operacional.
+- Competências e reabertura por diretor/concessão; custos canônicos por atividade em Projetos; sem custo em reserva ou emissão sem mobilização; valor liquidado desconhecido.
+- Boletins por OS validada: salvar/editar/recarregar, apresentar, glosar, aprovar tecnicamente, autorizar faturamento, rejeitar, devolver, corrigir, reapresentar, cancelar/estornar elegibilidade. Faixas canônicas impedem dupla medição mesmo com descrição/competência diferentes. Boletim não duplica custo operacional.
+- Avaliação contextual reaproveitada: cinco critérios/mesma média/sliders/cores/barras, evidências, edição, anulação/restauração e histórico único entre Projetos e Fornecedores. Notas não alteram remuneração automaticamente.
+- Históricos, JSON e PDF autenticados de boletins/avaliações; permissões, CAS, idempotência, cache e rollback por incremento.
 
-## Evoluções futuras, sem paralisar a implementação
+## Próximos blocos técnicos — autorizados, sem novo aceite de rotina
 
-Revisões do compêndio serão novas versões, preservando o vínculo e o histórico dos instrumentos existentes. Dados individuais e condições comerciais não presentes no pacote serão preenchidos no ambiente autorizado; não copiar valores privados para seeds ou GitHub. Modelos de outros serviços podem ser adicionados ao catálogo sem impor os 13 escopos a todos os fornecedores.
+1. Documentação e qualificação privada: reaproveitar cadastro documental, versões, validade, revisões e downloads autorizados; integrar verificação configurável de mobilização, sem política jurídica inventada.
+2. Textos integrais e geração dos 13 modelos/52 anexos, com fonte privada, placeholders, comparação e revisão versionada; catálogo não equivale ao texto do instrumento. Não publicar valores particulares ou dados do arquivo original.
+3. Aditivos e encerramento de contratos/OS, limites/vigências, poderes/delegações documentais, requisitos e alçadas configuráveis por escopo.
+4. Conciliação de fatos próprios com OS, rateio entre atividades/projetos, frações da mesma diária e compensações auditadas após validação. Não somar novamente fatos com mesma origem.
+5. Distribuição comprovada por competência e unidade histórica, inclusive transferência durante uma OS. Eventos atuais são inelegíveis para consolidação monetária de Estratégia até essa prova.
+6. Dashboard global de avaliações e demais variantes maduras ainda não portadas; agrupar boletins multi-OS quando necessário, mantendo origens e saldos.
+7. Validação fiscal/deduplicação/correção controlada da identidade, pesquisa/paginação, comparação visual e desempenho do bundle.
 
-## Limites mantidos
+## Critério de conclusão
 
-Sem merge/deploy, produção, integrações externas ou Financeiro. UTU/Vinho permanecem somente na Estratégia. Homologação dos fluxos depende de evidências; aprovação do uso da fonte não declara recursos ainda não implementados como funcionais.
-
-## Atualização 05C — primeiro incremento operacional
-
-Entregues contrato individualizado com origem congelada, edição em rascunho, aprovação e registro de execução formal; reserva/OS canônica; emissão, mobilização, desmobilização retroativa e validação; competência/reabertura; custos canônicos em Projetos e exportação JSON. Não são mais pendências genéricas de implementação.
-
-Continuam: boletins completos/glosas/reapresentações; avaliações originais; anexos e qualificação; PDF/DOCX/textos integrais dos modelos; aditivos/encerramento formal; poderes/delegações documentais completos; frações/rateio da mesma diária entre projetos; compensação de fatos validados e conciliação com custos preexistentes. A classificação de desenvolvimento acima deve ser lida com esta atualização; revisão final do compêndio não é bloqueio.
-
-Antes de consolidar custos de OS em Estratégia: distribuir por competência/unidade histórica com evidência, inclusive transferências e mínimos contratuais. Eventos atuais são explicitamente inelegíveis para consolidação monetária; nenhuma alocação retroativa à unidade atual é presumida.
+Não classificar interface ou arquivo copiado como funcionalidade concluída. Cada bloco exige persistência/recarga/edição/histórico, autorização, testes negativos, banco isolado, migração reversível e regressão. Manter limitações explícitas e atualizar evidências, sem declarar homologação integral antes dos fluxos completos. A cadência de dez minutos vale durante execução ativa; não é promessa de atividade em segundo plano após encerramento.

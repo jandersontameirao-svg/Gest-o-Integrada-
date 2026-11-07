@@ -33,3 +33,11 @@ Diárias integrais são datas únicas aprovadas por contrato/profissional/empres
 Orçamento de Projetos consome os custos das OS existentes. Mudanças de orçamento não podem reduzir saldo abaixo de custos canônicos. Fatos próprios e OS na mesma atividade exigem conciliação explícita ainda não entregue, evitando somar duas origens para a mesma atividade sem prova de independência. Boletins completos, avaliações e compensações pós-validação permanecem técnicos futuros, sem relação com revisão do compêndio.
 
 Eventos 05C trazem strategyConsolidationEligible=false e unitIdIsEventScopeOnly=true. O unitId é proveniência do evento, não rateio monetário de toda a OS. Antes de consumo por Estratégia, implementar alocação por competência e unidade histórica (inclusive transferência durante a OS), sem presumir distribuição ou consolidar valores incompletos.
+
+## Continuidade — boletins e avaliações
+
+API `/api/v1/suppliers/reviews`: `orders/:id/sources` (origens operacionais validadas), `measurements` (GET/POST), `measurements/:id` (PUT), `measurements/:id/submit|approve|reject|request_changes|mark_billable|cancel|reverse` (POST), `evaluations` (GET/POST), `evaluations/:id` (PUT), `evaluations/:id/void|restore` (POST), `measurements|evaluations/:id/history|export` (GET, export format=json/pdf).
+
+Boletim fixa orderId/orderRevision/currency. Linhas usam fonte canônica e faixa monetária; glosa aceita prefixo e libera apenas a parcela recusada. Estados de apresentação/aprovação/faturabilidade não adicionam custo à OS. Faturado/pago permanecem null. Fonte de diário é data operacional aprovada; mensal/entrega usa faixa do valor validado, sem duplicar por descrição ou competência.
+
+Avaliação fixa empresa/fornecedor e vínculos de projeto/OS; servidor calcula média simples dos cinco critérios originais. Chave de origem de avaliação por OS/período é derivada e única; espelhamento não duplica histórico. Anulação preserva e permite restaurar. Eventos de revisão seguem locais, financialSettlement=false e operationalCostChanged=false. Financeiro futuro deve consumir elegibilidade do boletim sem transformar a validação da OS em um segundo título ou pagamento.
