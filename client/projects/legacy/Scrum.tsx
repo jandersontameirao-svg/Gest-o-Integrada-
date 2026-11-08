@@ -64,7 +64,7 @@ export default function Scrum({data,busy,run,api,back}:{
 
   const formatDate = (date: Date | string | null | undefined) => {
     if (!date) return "—";
-    return new Date(date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+    return new Date(date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', timeZone: 'UTC' });
   };
 
   const getPriorityBadge = (priority: string) => {

@@ -34,7 +34,7 @@
       "source": "client/src/pages/Scrum.tsx",
       "source_sha256": "1d9141098edf3bd271dd50f12a3dfdd4eabad9626dac66132f84db1011d1806e",
       "destination": "client/projects/legacy/Scrum.tsx",
-      "adapted_sha256": "e8a774034246e7dd2bcc3e971848304ebd8c11b818ffec9187c71f5f3a491f32",
+      "adapted_sha256": "63c1e7d6c86bacf7ce7564f6c71656320c6566ebb8b78775582338e2d9666a0b",
       "status": "ADAPTAR — 08A: tela global funcional; fases e jobs diários não portados",
       "evidence": [
         "tests/projects-scrum.test.ts",
