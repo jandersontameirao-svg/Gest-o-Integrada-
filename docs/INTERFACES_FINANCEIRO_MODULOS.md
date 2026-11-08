@@ -1,3 +1,5 @@
+> Atualização07B: consulta financeira por empresa em Estratégia implementada, sem publicação ou consolidação monetária automática. Ver IMPLEMENTACAO_07B_ESTRATEGIA_FINANCEIRO.md.
+
 > Estado07A: a consulta inversa nas telas de Contratos/Fornecedores/Projetos foi implementada; ver IMPLEMENTACAO_07A_INTEGRACAO.md. As descrições06B abaixo são históricas. Adiantamentos/rateios/câmbio evoluíram no próprio Financeiro, conforme ENCERRAMENTO_PENDENCIAS_FINANCEIRO.md; não foram ativados provedores externos ou consolidação monetária automática em Estratégia.
 
 # Interfaces internas — Financeiro v1 (06B)
@@ -51,3 +53,8 @@ Conclusão operacional do contrato de cliente não quita nem impede a preparaç�
 ## Consulta inversa07A v1
 
 GET /api/v1/finance/origin-position?companyId=...&kind=customer_measurement|supplier_measurement&sourceId=UUID. Exige acesso financeiro à aba e leitura da origem/contrato ou OS/projeto. Snapshot consistente, auditoria de leitura, projeção mínima sem anexos/contas/notas. position=null significa título não preparado; não significa liquidação zero. Retorna posição vigente, origem/revisão/estado, checkedAt e invoicingStatus=not_tracked. Atualização explícita pelo usuário; sem polling. Reutilizado nas telas canônicas e no espelhamento existente em Projetos, sem duplicar títulos ou eventos.
+
+
+## Indicadores para Estratégia07B v1
+
+GET /api/v1/finance/strategy-indicators, com empresa/scope-company correspondente, moeda, from/to/asOf e horizonte explícitos. Mesmas fórmulas canônicas do Financeiro; leitura conjunta de Estratégia e de todas as abas financeiras/balances. Exportação exige export nos dois módulos. Sem escrita em contribuições estratégicas/outbox, unitAggregation=false e publishedToStrategy=false. Identifica classificação ausente, consulta vazia e origens divergentes. Mantém resultado por competência separado de caixa/projeção. Consolidação monetária de unidade/Holding e mapeamento a KPIs não estão implementados neste incremento.
