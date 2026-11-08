@@ -122,3 +122,8 @@ Revisão financeira e cancelamento em lote de séries entregues com prévia pers
 ## Tópico2 — documentos e recibos
 
 Implementação revisável em FINANCEIRO_TOPICO_02_DOCUMENTOS_RECIBOS.md: modelos estruturados versionados, prévia/token, emissão a partir de liquidações com snapshot/PDF privado, origem única, cancelamento/cópias históricas e arquivamento/restauração de anexos. Migração021 e testes unitários/MySQL/Playwright adicionados. CI e evidências por SHA na PR10. Não equivale à conclusão integral do Financeiro ou paridade das36 variáveis não comprovadas.
+
+
+## Rodada dos tópicos3,4,5,6 — estado atual
+
+Consultar FINANCEIRO_TOPICOS_03_04_05_06.md. Mapeamento explícito CSV/XLSX (datas/valores), exportação de títulos e relatórios XLSX, performance diária/rankings/distribuição, posição das liquidações orçamentárias, cenários persistidos/revisados, configuração auditada de cadastros, preferências pessoais e alertas internos implementados para validação. Migração022. Não substitui os fluxos validados dos tópicos1/2. Não declara ensaio integral de migração, conciliação avançada, rateios, consolidação cambial/interempresa ou homologação visual/contábil concluídos. Resultados por SHA na PR10.
