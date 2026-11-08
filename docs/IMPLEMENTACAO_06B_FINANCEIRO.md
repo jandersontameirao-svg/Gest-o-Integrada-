@@ -127,3 +127,8 @@ Implementação revisável em FINANCEIRO_TOPICO_02_DOCUMENTOS_RECIBOS.md: modelo
 ## Rodada dos tópicos3,4,5,6 — estado atual
 
 Consultar FINANCEIRO_TOPICOS_03_04_05_06.md. Mapeamento explícito CSV/XLSX (datas/valores), exportação de títulos e relatórios XLSX, performance diária/rankings/distribuição, posição das liquidações orçamentárias, cenários persistidos/revisados, configuração auditada de cadastros, preferências pessoais e alertas internos implementados para validação. Migração022. Não substitui os fluxos validados dos tópicos1/2. Não declara ensaio integral de migração, conciliação avançada, rateios, consolidação cambial/interempresa ou homologação visual/contábil concluídos. Resultados por SHA na PR10.
+
+
+## Encerramento técnico das pendências — estado atual
+
+ENCERRAMENTO_PENDENCIAS_FINANCEIRO.md registra histórico/baixas/estornos por posição, ensaio privado e restauração vazia reconciliada, conciliação agrupada, rateios/resultados, cotações e transferências interempresa, consolidação de caixa com proveniência, dados legais canônicos e correção de auditoria das preferências. Migração023; testes/CI por SHA na PR10. Substitui as pendências técnicas correspondentes anteriores. Não autoriza produção nem declara homologação humana, catálogo Zenply não fornecido ou histórico real/API disponível como comprovados. Checklist de homologação e limites explícitos no relatório.

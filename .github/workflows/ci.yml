@@ -23,6 +23,7 @@ jobs:
     env:
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
+      NODE_ENV: test
       DB_NAME: arqueo_demo
       DB_USER: arqueo_app
       DB_PASSWORD: ci-disposable-app
