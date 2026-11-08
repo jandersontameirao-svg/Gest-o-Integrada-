@@ -72,3 +72,6 @@ Esses itens não são falhas de persistência pendentes nem bloqueiam o teste da
 ## Correção necessária identificada na regressão de Estratégia
 
 O trace da CI83 registrou120 chamadas e HTTP429 na leitura após salvar o KPI. O frontend repetia GETs idênticos em paralelo. O helper de Estratégia passa a compartilhar somente consultas em voo por token+caminho, sem cache de resposta concluída. Escritas invalidam o contexto antes/depois, preservando a recarga após gravação e o isolamento entre usuários/planos. O limite120/min, as permissões e os testes permanecem ativos. Testes unitários verificam concorrência, tokens/planos, invalidação por escrita e propagação de429; a jornada SGE também verifica ausência de429 no fluxo normal. Nenhuma alteração dos aplicativos originais ou integração externa.
+
+
+O mesmo diagnóstico em Fornecedores/Projetos registrou28 GETs simultâneos duplicados, incluindo a mesma consulta com ordem diferente dos filtros. O helper foi compartilhado entre os adaptadores JSON desses módulos, normalizando somente a ordem das chaves da query (preservando valores/empresa/projeto/token). Downloads e gravações não são deduplicados; não há cache concluído nem aumento de limite. A regressão completa continua obrigatória.

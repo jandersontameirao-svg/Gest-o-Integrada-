@@ -1,3 +1,4 @@
+import {scopedJson} from '../shared/requests.ts';
 import {useEffect,useRef,useState} from 'react';
 import type {Template,Draft} from '../../shared/suppliers/model.ts';
 import {canonicalLegalKeys,legalPlaceholders} from '../../shared/suppliers/legal.ts';
@@ -5,7 +6,7 @@ import {SupplierLegalContent} from './legacy/SupplierLegalContent.tsx';
 type Props={token:string;companyId:string;templates:Template[];documents:Draft[];onReload:()=>Promise<void>};
 export function SupplierLegalWorkspace(p:Props){
  const [catalog,setCatalog]=useState<any>(null),[tid,setTid]=useState(''),[did,setDid]=useState(''),[model,setModel]=useState<any>(null),[doc,setDoc]=useState<any>(null),[body,setBody]=useState(''),[bindings,setBindings]=useState<Record<string,string>>({}),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState(''),[history,setHistory]=useState<any>(null),[preview,setPreview]=useState('');const dirty=useRef(false),pending=useRef(new Map<string,string>()),generation=useRef(0);
- async function api(path:string,method='GET',data?:unknown){const r=await fetch('/api/v1/suppliers/legal'+path+(path.includes('?')?'&':'?')+'companyId='+p.companyId,{method,headers:{Authorization:'Bearer '+p.token,'Content-Type':'application/json'},...(data!==undefined?{body:JSON.stringify(data)}:{})});const v=await r.json();if(!r.ok)throw Error(v.error??'Falha no texto documental.');return v;}
+ async function api(path:string,method='GET',data?:unknown){return scopedJson<any>(p.token,'/suppliers/legal'+path+(path.includes('?')?'&':'?')+'companyId='+p.companyId,method,body);}
  async function reload(){const g=++generation.current;const [c,m,d]=await Promise.all([api('/catalog'),tid?api('/templates/'+tid).catch(e=>({missing:e.message})):null,did?api('/documents/'+did).catch(e=>({missing:e.message})):null]);if(g!==generation.current)return;setCatalog(c);setModel(m);setBody(m?.version?.body??'');setDoc(d);setBindings({});}
  useEffect(()=>{setModel(null);setDoc(null);void reload().catch(e=>setError(e.message));return()=>{generation.current++;};},[p.companyId,p.token,tid,did]);
  useEffect(()=>{const leave=(e:Event)=>{if(dirty.current||busy)e.preventDefault();},unload=(e:BeforeUnloadEvent)=>{if(dirty.current||busy){e.preventDefault();e.returnValue='';}};window.addEventListener('strategy:leave',leave);window.addEventListener('beforeunload',unload);return()=>{window.removeEventListener('strategy:leave',leave);window.removeEventListener('beforeunload',unload);};},[busy]);

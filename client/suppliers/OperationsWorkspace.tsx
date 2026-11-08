@@ -1,3 +1,4 @@
+import {scopedJson} from '../shared/requests.ts';
 import {SupplierExecutionWorkspace} from './ExecutionWorkspace.tsx';
 import {SupplierOrderFields} from './OrderFields.tsx';
 import {ContractTextLinkWorkspace} from './ContractTextLink.tsx';
@@ -18,7 +19,7 @@ type Editor={kind:'contract';entity?:SupplierContract}|{kind:'order';entity?:Ser
 export function SupplierOperationsWorkspace({token,companyId,companies,suppliers,documents,projectId}:{token:string;companyId:string;companies:Company[];suppliers:Supplier[];documents:Draft[];projectId?:string}){
  const [contracts,setContracts]=useState<ContractRow[]>([]),[orders,setOrders]=useState<OrderRow[]>([]),[catalog,setCatalog]=useState<Catalog|null>(null),[editor,setEditor]=useState<Editor>(null),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState(''),[history,setHistory]=useState<unknown>(null);const generation=useRef(0),pending=useRef(new Map<string,string>()),dirty=useRef(false);
  const safe=()=>!dirty.current||confirm('Descartar alterações operacionais não salvas?');
- async function api<T=any>(path:string,method='GET',body?:unknown):Promise<T>{const r=await fetch('/api/v1/suppliers/operations'+path+(path.includes('?')?'&':'?')+'companyId='+encodeURIComponent(companyId),{method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},...(body!==undefined?{body:JSON.stringify(body)}:{})});const v=await r.json();if(!r.ok)throw Error(v.error??'Falha operacional.');return v;}
+ async function api<T=any>(path:string,method='GET',body?:unknown):Promise<T>{return scopedJson<T>(token,'/suppliers/operations'+path+(path.includes('?')?'&':'?')+'companyId='+encodeURIComponent(companyId),method,body);}
  async function reload(){const g=++generation.current;const [c,o,k]=await Promise.all([api<ContractRow[]>('/contracts'),api<OrderRow[]>('/orders'+(projectId?'?projectId='+projectId:'')),api<Catalog>('/catalog')]);if(g!==generation.current)return;setContracts(c);setOrders(o);setCatalog(k);}
  useEffect(()=>{void reload().catch(e=>setError(e.message));return()=>{generation.current++;};},[companyId,projectId,token]);
  useEffect(()=>{const leave=(e:Event)=>{if(dirty.current)e.preventDefault();},unload=(e:BeforeUnloadEvent)=>{if(dirty.current){e.preventDefault();e.returnValue='';}};window.addEventListener('strategy:leave',leave);window.addEventListener('beforeunload',unload);return()=>{window.removeEventListener('strategy:leave',leave);window.removeEventListener('beforeunload',unload);};},[]);
