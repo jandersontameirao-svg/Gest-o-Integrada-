@@ -1,3 +1,5 @@
+import {FinancialKpiSeries} from '../../strategy/FinancialKpiSeries.tsx';
+import {KpiEvolutionChart} from './KpiEvolutionChart.tsx';
 import {useStrategy} from "../../strategy/context.tsx";
 import { useState, useEffect } from "react";
 import { trpc } from "../../strategy/legacy.tsx";
@@ -21,7 +23,7 @@ import {
 } from "./ui/select.tsx";
 import { Card, CardContent } from "./ui/card.tsx";
 import { toast } from "sonner";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+
 
 interface KpiValoresDialogProps {
   kpiId: string;
@@ -51,7 +53,8 @@ export default function KpiValoresDialog({
   open,
   onOpenChange,
 }: KpiValoresDialogProps) {
-  const {data}=useStrategy();
+  const {data,token}=useStrategy();
+  const [seriesSource,setSeriesSource]=useState<'manual'|'financial'>('manual');useEffect(()=>{setSeriesSource('manual');},[kpiId,open,token]);
   const currentYear = Math.min(Math.max(new Date().getFullYear(),data.plan.start_year),data.plan.end_year);
   const currentMonth = new Date().getMonth() + 1;
 
@@ -92,9 +95,10 @@ export default function KpiValoresDialog({
     }
   }, [valorAtual]);
 
+  const financialBound=(data.financialBindings??[]).some(b=>b.kpiId===kpiId&&b.periodStart.slice(0,7)===String(ano)+'-'+String(mes).padStart(2,'0'));
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+    if(financialBound){toast.error('Competência vinculada a apuração financeira; use o fluxo de revisão.');return;}
     upsertValor.mutate({
       kpiId,
       ano,
@@ -122,6 +126,9 @@ export default function KpiValoresDialog({
           </DialogDescription>
         </DialogHeader>
 
+        <label>Origem da série do KPI<select aria-label="Origem da série do KPI" value={seriesSource} onChange={e=>setSeriesSource(e.target.value as 'manual'|'financial')}><option value="manual">Observações manuais</option><option value="financial">Apurações financeiras aprovadas</option></select></label>
+        {seriesSource==='financial'?<FinancialKpiSeries key={kpiId} kpiId={kpiId}/>:<>
+        {financialBound&&<p role="status">Competência vinculada a apuração financeira. Edição manual bloqueada; use o fluxo de revisão financeira.</p>}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Formulário de Lançamento */}
           <div>
@@ -169,7 +176,7 @@ export default function KpiValoresDialog({
               <div className="space-y-2">
                 <Label htmlFor="meta">Meta</Label>
                 <Input
-                  id="meta" disabled={!data.capabilities.edit||data.plan.status!=='draft'}
+                  id="meta" disabled={financialBound||!data.capabilities.edit||data.plan.status!=='draft'}
                   type="number"
                   step="0.01"
                   placeholder="Digite a meta"
@@ -181,7 +188,7 @@ export default function KpiValoresDialog({
               <div className="space-y-2">
                 <Label htmlFor="realizado">Realizado</Label>
                 <Input
-                  id="realizado" disabled={!data.capabilities.edit||data.plan.status==='closed'}
+                  id="realizado" disabled={financialBound||!data.capabilities.edit||data.plan.status==='closed'}
                   type="number"
                   step="0.01"
                   placeholder="Digite o valor realizado"
@@ -213,7 +220,7 @@ export default function KpiValoresDialog({
                 <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                   Cancelar
                 </Button>
-                <Button type="submit" disabled={upsertValor.isPending||!data.capabilities.edit||data.plan.status==='closed'}>
+                <Button type="submit" disabled={financialBound||upsertValor.isPending||!data.capabilities.edit||data.plan.status==='closed'}>
                   {upsertValor.isPending ? "Salvando..." : "Salvar"}
                 </Button>
               </DialogFooter>
@@ -225,37 +232,8 @@ export default function KpiValoresDialog({
             <h3 className="font-semibold mb-4">Evolução Temporal</h3>
             {valores && valores.length > 0 ? (
               <div className="mb-6">
-                <ResponsiveContainer width="100%" height={250}>
-                  <LineChart data={valores.slice().reverse()}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      dataKey={(v) => `${meses.find((m) => m.value === v.mes)?.label.substring(0, 3)}/${v.ano}`}
-                      tick={{ fontSize: 12 }}
-                    />
-                    <YAxis tick={{ fontSize: 12 }} />
-                    <Tooltip 
-                      formatter={(value: number) => value.toFixed(2)}
-                      labelFormatter={(label) => `Período: ${label}`}
-                    />
-                    <Legend />
-                    <Line 
-                      type="monotone" 
-                      dataKey={(v) => v.meta ? parseFloat(v.meta) : 0} 
-                      name="Meta"
-                      stroke="#f97316" 
-                      strokeWidth={2}
-                      dot={{ r: 4 }}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey={(v) => v.realizado ? parseFloat(v.realizado) : 0}
-                      name="Realizado"
-                      stroke="#3b82f6" 
-                      strokeWidth={2}
-                      dot={{ r: 4 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+                <KpiEvolutionChart points={valores.slice().reverse().map(v=>({period:v.ano+'-'+String(v.mes).padStart(2,'0'),label:`${meses.find(m=>m.value===v.mes)?.label.substring(0,3)}/${v.ano}`,meta:v.meta,actual:v.realizado}))}/>
+
               </div>
             ) : null}
             
@@ -294,6 +272,7 @@ export default function KpiValoresDialog({
             </div>
           </div>
         </div>
+        </>}
       </DialogContent>
     </Dialog>
   );

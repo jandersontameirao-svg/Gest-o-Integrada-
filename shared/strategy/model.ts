@@ -4,7 +4,7 @@ export type Plan={id:string;scope_id:string;title:string;start_year:number;end_y
 export type Cycle={id:string;kind:'annual'|'quarterly'|'monthly';year:number;period:number;closed:number};
 export type Entry={id:string;kind:'objective'|'target'|'kpi'|'kpi-value'|'project'|'action';parent_id:string|null;revision:number;payload:Record<string,unknown>};
 export type StrategyDocument={kind:Method;cycle_id:string;payload:unknown;revision:number};
-export type PlanData={plan:Plan;cycles:Cycle[];entries:Entry[];documents:StrategyDocument[];capabilities:{edit:boolean;approve:boolean;reopen:boolean;export:boolean};name:string};
+export type PlanData={financialBindings?:{id:string;kpiId:string;periodStart:string;currency:string;metricKey:string}[];plan:Plan;cycles:Cycle[];entries:Entry[];documents:StrategyDocument[];capabilities:{edit:boolean;approve:boolean;reopen:boolean;export:boolean};name:string};
 // SGE formulas: preserve thresholds, guard mathematically undefined denominators.
 export function attainment(actual:number,target:number){return target>0?(actual/target)*100:null;}
 export function rag(percent:number|null){return percent===null?null:percent>=90?'verde':percent>=70?'amarelo':'vermelho';}
