@@ -101,3 +101,15 @@ Resultado final por SHA/CI na PR #10. Testes sintéticos não equivalem a homolo
 | Preservação | Payload/IDs/âncora/índice/origem/histórico e títulos protegidos | Snapshot antes/depois e saldo bancário no E2E | Sem redistribuição implícita ou alteração de pagos |
 
 Substitui as antigas lacunas de séries neste documento. Aprovação da CI por SHA consta na PR; homologação externa/produção e outros tópicos não são declarados concluídos.
+
+
+## Delta tópico2 — Z16/T12/T13
+
+| Requisito | Origem → destino / estado | Critério e evidência | Limite |
+|---|---|---|---|
+| Modelos recebimento/pagamento | PDF Z16; equivalente UTU não encontrado → Receipts.tsx + shared/finance/receipts | Salvar/recarga/editar/versionar/duplicar/arquivar/restaurar; unit/API/browser | Editor próprio por blocos, não port alegado |
+| Editor | Parágrafos/listas/tabelas/quebras/estilos/busca/ampliação | JSON validado; HTML não executado; Render/PDF | Tipografia parcial explicitada no relatório |
+| Variáveis |10 nomes observados + extensões GI com origem | Ausentes bloqueiam emissão; nomes inventados negados |26 nomes não disponíveis; semântica ITEM_VALOR não comprovada |
+| Emissão | Liquidações canônicas → snapshot/PDF/versionamento |400 de1000, saldo600, cobertura única, idempotência/hash/histórico | Sem emissão fiscal ou quitação jurídica automática |
+| Anexos | FinanceDocuments/validador Contratos → estado/revisão/histórico privado | Arquivar/restaurar, acesso histórico explícito e IDs adulterados | Sem storage externo/antivírus remoto |
+| Segurança | Core GI + novas concessões por ação | Escopos, UTU/Vinho, replay negado após revogação; regressão existente | CI por SHA na PR10; não homologação de produção |

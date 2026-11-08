@@ -60,3 +60,8 @@ Implementados para validação na mesma PR: formulário/ficha UTU adaptados, sol
 Séries: revisão explícita de valor/vencimento/competência por ocorrência, prévia persistida por usuário/empresa, confirmação do total, CAS/idempotência e cancelamento em lote auditado implementados. Isso substitui as antigas pendências de edição financeira/datas e cancelamento de séries acima. Parcelas aprovadas não são reescritas, parcelas com histórico de liquidação ficam protegidas e o caixa não é movimentado por esses comandos.
 
 Tópico1 encerrado no escopo documentado em FINANCEIRO_TOPICO_01_OPERACAO_DIARIA.md, condicionado ao resultado final registrado na PR. Melhorias opcionais e políticas comerciais/jurídicas não equivalem a bloqueio do incremento. Próximo tópico separado:2 — documentos e recibos; não iniciado nesta rodada. Rascunhos dos outros tópicos preservados.
+
+
+## Tópico2 — estado que substitui as pendências anteriores de recibos
+
+Modelos/editor por blocos, salvar/recarregar/editar/versionar/duplicar/arquivar/restaurar, prévia e emissão persistida de recibos, PDF privado/hash/histórico e arquivos arquiváveis implementados para validação. Detalhes e evidências: FINANCEIRO_TOPICO_02_DOCUMENTOS_RECIBOS.md. Mantêm-se limitações específicas do catálogo Zenply (10 nomes disponíveis de36), dados legais canônicos ausentes e diferenças tipográficas por bloco. Não impedem emissão com os campos GI disponíveis; não se declara paridade integral. Melhorias: estilos por seleção, alinhamento justificado no PDF, estilização adicional de tabelas, paginação e catálogo integral quando houver fonte. Nenhuma ativação de assinatura, OCR ou distribuição externa.

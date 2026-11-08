@@ -117,3 +117,8 @@ Consultar FINANCEIRO_TOPICO_01_OPERACAO_DIARIA.md, subetapa de adiantamentos. Re
 ## Finalização do tópico1
 
 Revisão financeira e cancelamento em lote de séries entregues com prévia persistida, confirmação explícita do total, transação/CAS/idempotência e auditoria por ocorrência. Mudanças financeiras limitadas a rascunhos elegíveis; cancelamento permitido a aprovados não liquidados mediante concessão de aprovação. Valores pagos/históricos, origens gerenciadas, períodos fechados e campos de proveniência preservados. Sem nova migração, permanecem20. Critérios e evidências: FINANCEIRO_TOPICO_01_OPERACAO_DIARIA.md e CI da PR #10. Não declarar os demais tópicos ou o Financeiro integralmente concluídos.
+
+
+## Tópico2 — documentos e recibos
+
+Implementação revisável em FINANCEIRO_TOPICO_02_DOCUMENTOS_RECIBOS.md: modelos estruturados versionados, prévia/token, emissão a partir de liquidações com snapshot/PDF privado, origem única, cancelamento/cópias históricas e arquivamento/restauração de anexos. Migração021 e testes unitários/MySQL/Playwright adicionados. CI e evidências por SHA na PR10. Não equivale à conclusão integral do Financeiro ou paridade das36 variáveis não comprovadas.
