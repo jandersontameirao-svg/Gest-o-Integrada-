@@ -18,6 +18,7 @@ interface Task {
   parentTaskId: string | null;
   level: number;
   isMilestone: boolean;
+  isCritical?: boolean;
 }
 
 interface MSProjectGanttProps {
@@ -103,7 +104,7 @@ export function MSProjectGantt({ tasks, onTaskUpdate, onRecalculate, canEdit }: 
     let parsedValue: any = value;
     
     if (field === "duration" || field === "percentComplete") {
-      parsedValue = parseInt(value) || 0;
+      parsedValue = field === "duration" ? Number(value) : parseInt(value) || 0;
     } else if (field === "startDate" || field === "endDate") {
       parsedValue = new Date(value);
     }
@@ -299,12 +300,12 @@ export function MSProjectGantt({ tasks, onTaskUpdate, onRecalculate, canEdit }: 
                   style={{ top: `${index * 33}px`, left: `${left}px`, width: `${width}px` }}
                 >
                   {task.isMilestone ? (
-                    <div className="w-4 h-4 bg-blue-600 transform rotate-45" />
+                    <div className={`w-4 h-4 ${task.isCritical?'bg-red-600':'bg-blue-600'} transform rotate-45`} />
                   ) : (
                     <div className="relative w-full h-5">
                       <div
                         className={`h-full rounded ${
-                          isSummary ? "bg-gray-800" : "bg-blue-500"
+                          isSummary ? "bg-gray-800" : task.isCritical ? "bg-red-600" : "bg-blue-500"
                         } shadow-sm`}
                       />
                       {task.percentComplete > 0 && (
