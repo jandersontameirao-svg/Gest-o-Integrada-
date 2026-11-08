@@ -1,3 +1,5 @@
+> Continuidade 08A: a tela Scrum original foi portada com persistência, histórico e burndown real observado; ver [relatório e matriz 08A](IMPLEMENTACAO_08A_PROJETOS_SCRUM.md). Este documento preserva a entrega inicial 04B; não usar suas pendências históricas como situação atual isoladamente.
+
 > Atualização 05F: descrições abaixo documentam o incremento inicial. Espelhamento canônico, OS, mobilização, custos, documentos, textos e revisões de Fornecedores foram incorporados em 05B–05F. Não estão bloqueados pela ausência de 05B. Compensações/rateios e distribuição histórica permanecem parciais; ver relatório 05F e backlog vivo de Fornecedores.
 
 # 04B — primeiro incremento funcional de Projetos
