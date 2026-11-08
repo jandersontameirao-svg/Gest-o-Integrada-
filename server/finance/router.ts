@@ -1,3 +1,4 @@
+import {strategyFinancialIndicators} from '../../shared/finance/strategy-indicators.ts';
 import {originProjection,type OriginKind} from '../../shared/finance/origin-position.ts';
 import {registerIntegrity} from './integrity.ts';
 import {registerRecovery} from './recovery.ts';
@@ -55,6 +56,22 @@ router.get('/summary',async(req,res)=>{const company=co(req),u=res.locals.user;a
 async function position(u:Principal,t:Title){return consistentRead(u,t.companyId,async c=>{const current=await title(t.id,t.companyId,c);await bucketAccess(u,current.companyId,current.payload.bucket,'read',c);const ss=(await settlements(current.companyId,c)).filter(s=>s.titleId===current.id);return {schemaVersion:1,title:current,paid:paid(current,ss),pending:pending(current,ss),settlements:ss,originStatus:await originHealth(current,c),bankDispatchEnabled:false};});}
 router.get('/titles/:id',async(req,res)=>{const company=co(req),u=res.locals.user;await access(u,company);const t=await title(req.params.id,company),result=await position(u,t);await readAudit(u,company,'title.position');res.json(result);});
 // Explicit reverse lookup: source authorization and financial bucket authorization precede response.
+router.get('/strategy-indicators',async(req,res)=>{
+ const company=co(req),u=res.locals.user,scope='scope-company:'+company;
+ if(text(req.query.scopeId,90)!==scope)invalid('Consulta financeira estratégica exige o escopo da própria empresa.');
+ if(req.query.accountId!==undefined)invalid('Indicadores estratégicos não aceitam recorte implícito por conta.');const filter=summaryFilter(req);if(filter.to>filter.asOf||filter.asOf>today())invalid('Use período encerrado na posição e posição não futura.');
+ const exporting=req.query.export==='true';
+ const result=await consistentRead(u,company,async c=>{
+  await requireAccess(u,scope,'strategy','read',c);await access(u,company,'balances',c);
+  for(const bucket of Object.keys(buckets))await bucketAccess(u,company,bucket as Bucket,'read',c);
+  if(exporting){await requireAccess(u,scope,'strategy','export',c);await access(u,company,'export',c);}
+  const ts=await titles(company,c),cs=await categories(company,c),ss=await settlements(company,c);
+  const selected=strategyFinancialIndicators({accounts:await accounts(company,c),titles:ts,settlements:ss,movements:await movements(company,c),categories:cs},filter);
+  const reconciliationRequired=[];for(const t of ts.filter(t=>selected.provenance.titles.some(p=>p.id===t.id)))if(await originHealth(t,c)==='reconciliation_required')reconciliationRequired.push(t.id);
+  const units=await rows<{unitId:string;validFrom:string;validTo:string|null}>('SELECT unit_id unitId,DATE_FORMAT(valid_from,"%Y-%m-%d") validFrom,DATE_FORMAT(valid_to,"%Y-%m-%d") validTo FROM company_unit_history WHERE company_id=? AND valid_from<=? AND (valid_to IS NULL OR valid_to>?) ORDER BY valid_from',[company,filter.asOf,filter.from],c);
+  return {...selected,companyId:company,scopeId:scope,checkedAt:new Date().toISOString(),reconciliationRequired,unitHistory:units,unitAggregation:false,coverage:'Empresa individual, moeda única; sem publicação ou agregação por unidade/Holding.'};
+ });await readAudit(u,company,exporting?'strategy.indicators.export':'strategy.indicators.read');res.json(result);
+});
 router.get('/origin-position',async(req,res)=>{
  const company=co(req),u=res.locals.user,kind=text(req.query.kind,40) as OriginKind,id=uuid(req.query.sourceId);
  if(!['customer_measurement','supplier_measurement'].includes(kind))invalid('Tipo de origem inválido.');
