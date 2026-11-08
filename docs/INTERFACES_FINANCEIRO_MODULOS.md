@@ -1,3 +1,5 @@
+> Estado07A: a consulta inversa nas telas de Contratos/Fornecedores/Projetos foi implementada; ver IMPLEMENTACAO_07A_INTEGRACAO.md. As descrições06B abaixo são históricas. Adiantamentos/rateios/câmbio evoluíram no próprio Financeiro, conforme ENCERRAMENTO_PENDENCIAS_FINANCEIRO.md; não foram ativados provedores externos ou consolidação monetária automática em Estratégia.
+
 # Interfaces internas — Financeiro v1 (06B)
 
 ## Autoridades
@@ -44,3 +46,8 @@ Compras gerais, adiantamentos/prestações de contas, rateios financeiros/intere
 A posição financeira existe por API, mas as telas reversas de Projetos/Fornecedores ainda exigem adaptação autorizada de leitura. Não apresentar campos antigos de liquidação desconhecida como se já estivessem conectados. Nenhuma regra comercial de alçada/faturabilidade foi inventada.
 
 Conclusão operacional do contrato de cliente não quita nem impede a preparação de recebível de medição faturável. Cancelamento da origem exige decisão financeira explícita. Moeda é revalidada na origem e não pode ser reinterpretada pela conciliação.
+
+
+## Consulta inversa07A v1
+
+GET /api/v1/finance/origin-position?companyId=...&kind=customer_measurement|supplier_measurement&sourceId=UUID. Exige acesso financeiro à aba e leitura da origem/contrato ou OS/projeto. Snapshot consistente, auditoria de leitura, projeção mínima sem anexos/contas/notas. position=null significa título não preparado; não significa liquidação zero. Retorna posição vigente, origem/revisão/estado, checkedAt e invoicingStatus=not_tracked. Atualização explícita pelo usuário; sem polling. Reutilizado nas telas canônicas e no espelhamento existente em Projetos, sem duplicar títulos ou eventos.

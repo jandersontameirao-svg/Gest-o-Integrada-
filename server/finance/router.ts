@@ -1,3 +1,4 @@
+import {originProjection,type OriginKind} from '../../shared/finance/origin-position.ts';
 import {registerIntegrity} from './integrity.ts';
 import {registerRecovery} from './recovery.ts';
 import {projectScenario,type ScenarioData} from '../../shared/finance/scenarios.ts';
@@ -53,6 +54,31 @@ function summaryFilter(req:Request){const asOf=day(req.query.asOf??today()),from
 router.get('/summary',async(req,res)=>{const company=co(req),u=res.locals.user;await access(u,company,'balances');const filter=summaryFilter(req),result=await consistentRead(u,company,async c=>{await access(u,company,'balances',c);const allowed=new Set<string>();for(const b of Object.keys(buckets))if(await checkAccess(u,'scope-company:'+company,'finance',b+'.read',c))allowed.add(b);const selectedTitles=(await titles(company,c)).filter(t=>allowed.has(t.payload.bucket)),originWarnings=[];for(const t of selectedTitles)if(t.status!=='cancelled'&&await originHealth(t,c)==='reconciliation_required')originWarnings.push(t.id);return {...financeSummary(await accounts(company,c),selectedTitles,await settlements(company,c),await movements(company,c),await categories(company,c),filter),originWarnings,originWarningPolicy:'Obrigações permanecem até decisão explícita; nova liquidação fica bloqueada.'};});await readAudit(u,company,'summary');res.json(result);});
 async function position(u:Principal,t:Title){return consistentRead(u,t.companyId,async c=>{const current=await title(t.id,t.companyId,c);await bucketAccess(u,current.companyId,current.payload.bucket,'read',c);const ss=(await settlements(current.companyId,c)).filter(s=>s.titleId===current.id);return {schemaVersion:1,title:current,paid:paid(current,ss),pending:pending(current,ss),settlements:ss,originStatus:await originHealth(current,c),bankDispatchEnabled:false};});}
 router.get('/titles/:id',async(req,res)=>{const company=co(req),u=res.locals.user;await access(u,company);const t=await title(req.params.id,company),result=await position(u,t);await readAudit(u,company,'title.position');res.json(result);});
+// Explicit reverse lookup: source authorization and financial bucket authorization precede response.
+router.get('/origin-position',async(req,res)=>{
+ const company=co(req),u=res.locals.user,kind=text(req.query.kind,40) as OriginKind,id=uuid(req.query.sourceId);
+ if(!['customer_measurement','supplier_measurement'].includes(kind))invalid('Tipo de origem inválido.');
+ const result=await consistentRead(u,company,async c=>{
+  await bucketAccess(u,company,kind==='customer_measurement'?'income':'variable','read',c);
+  let sourceRecord:{revision:number;status:string};
+  if(kind==='customer_measurement'){
+   await requireAccess(u,'scope-company:'+company,'contracts','read',c);
+   const [record]=await rows<{contractId:string;revision:number;payload:unknown}>('SELECT r.contract_id contractId,r.revision,r.payload FROM client_contract_records r JOIN client_contracts p ON p.id=r.contract_id WHERE r.id=? AND p.company_id=? AND r.kind="measurement"',[id,company],c);
+   if(!record)throw new HttpError(404,'Medição fora da empresa.');
+   await getContract(record.contractId,u,'read',c);sourceRecord={revision:record.revision,status:String(decode(record.payload).status)};
+  }else{
+   await requireAccess(u,'scope-company:'+company,'suppliers','read',c);
+   const [record]=await rows<{orderId:string;revision:number;status:string}>('SELECT order_id orderId,revision,status FROM supplier_measurements WHERE id=? AND company_id=?',[id,company],c);
+   if(!record)throw new HttpError(404,'Boletim fora da empresa.');
+   const order=await getSupplierOrder(record.orderId,company,c);await requireSupplierOrderRead(u,order,c);sourceRecord=record;
+  }
+  const [found]=await rows<{id:string}>('SELECT id FROM finance_titles WHERE company_id=? AND origin_key=?',[company,kind+':'+id],c);
+  const t=found?await title(found.id,company,c):null;if(t)await bucketAccess(u,company,t.payload.bucket,'read',c);
+  const ss=t?(await settlements(company,c)).filter(s=>s.titleId===t.id):[];
+  return originProjection(company,{kind,id,revision:sourceRecord.revision,status:sourceRecord.status},t,ss,t?await originHealth(t,c):'unprepared',new Date().toISOString());
+ });
+ await readAudit(u,company,'origin.position.reverse');res.json(result);
+});
 router.get('/positions',async(req,res)=>{const company=co(req),u=res.locals.user;await access(u,company);const originKey=text(req.query.originKey,180),[r]=await rows<{id:string}>('SELECT id FROM finance_titles WHERE company_id=? AND origin_key=?',[company,originKey]);if(!r)throw new HttpError(404,'Origem sem posição financeira nesta empresa.');const t=await title(r.id,company);const result=await position(u,t);await readAudit(u,company,'origin.position');res.json(result);});
 router.get('/titles/:id/history',async(req,res)=>{const company=co(req),u=res.locals.user;await access(u,company);const t=await title(req.params.id,company);await bucketAccess(u,company,t.payload.bucket,'read');await readAudit(u,company,'title.history');res.json(await rows('SELECT revision,action,actor_id,reason,before_data,after_data,created_at FROM finance_history WHERE company_id=? AND entity_type="title" AND entity_id=? ORDER BY revision',[company,t.id]));});
 router.get('/titles/:id/export',async(req,res)=>{const company=co(req),u=res.locals.user;await access(u,company,'export');const t=await title(req.params.id,company);await bucketAccess(u,company,t.payload.bucket,'read');const data=await position(u,t);await readAudit(u,company,'title.export');if(req.query.format==='pdf')res.type('application/pdf').attachment('titulo-financeiro.pdf').send(await generatePDF({title:'Título financeiro',filename:'titulo-financeiro.pdf',columns:[{header:'Campo',dataKey:'field'},{header:'Valor',dataKey:'value'}],data:Object.entries(data).map(([field,value])=>({field,value:typeof value==='string'?value:json(value)}))}));else if(!req.query.format||req.query.format==='json')res.attachment('titulo-financeiro.json').json(data);else invalid('Formato inválido.');});
