@@ -42,3 +42,10 @@ Não se declara equivalência completa às36 variáveis Zenply, nem homologaçã
 Unificação de séries documentais que já emitiram separadamente para eventos distintos não é automática; cada série deve ser reemitida separadamente. Nenhuma regra comercial/jurídica nova é imposta. Cadastros legais ausentes e catálogo não comprovado permanecem limitações de dados específicas, sem bloquear os modelos GI que usam campos disponíveis.
 
 Próximo tópico somente em rodada própria, conforme sequência escolhida pelo usuário.
+
+
+## Primeira evidência executada
+
+CI75 aprovada no SHA7b7686636b851ec83b053e67b39f4c2d99220e50: https://github.com/jandersontameirao-svg/Gest-o-Integrada-/actions/runs/42432463452 . Build/TypeScript,99 unitários, integração MySQL duas vezes, catálogo21 up/down/reaplicação,19 jornadas Playwright e auditoria de dependências aprovados. Artefato13597718201 (sge-browser-evidence), SHA2563ca0d3273feda4e20169356590363c054e5cdbeb77994a75fc3476de2bbe98ac, expira2026-11-15T01:08:27Z. Inclui PDFs e captura sintéticos do tópico2.
+
+Reforço subsequente: permissão do tipo financeiro também no cancelamento e reemissão de cancelado, concessão preservada no ticket para replay; proteção de fechamento do editor em curso; teste adicional de expiração/mudança de modelo/variável desconhecida. Resultado do SHA final é registrado na PR10, sem presumir que a CI75 valide mudanças posteriores.
