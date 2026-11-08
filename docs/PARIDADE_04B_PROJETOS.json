@@ -13,8 +13,8 @@
       "source": "client/src/components/MSProjectGantt.tsx",
       "source_sha256": "30b54a114a01f85fa0360eaac7c1aeb1ca1f276a963029f7fe33ce97371ae1d5",
       "destination": "client/projects/legacy/MSProjectGantt.tsx",
-      "adapted_sha256": "10105a819647643e2c1cfb4730de0a81c8935ec59bb941b849ccd95c1cdf5ee2",
-      "status": "ADAPTAR — port parcial, engine somente regras de dependência"
+      "adapted_sha256": "0e97232b940340dead323dd6a1dfe2167b048de7a5320e6f75e0a65aeb8006c4",
+      "status": "ADAPTAR — 04B + 08B: realce crítico em prévia; sem paridade integral Advanced/Interactive"
     },
     {
       "source": "client/src/components/KanbanBoard.tsx",
@@ -48,7 +48,47 @@
         "Datas de tarefas explícitas no formulário; nenhuma data inventada pelo adaptador"
       ],
       "report": "docs/IMPLEMENTACAO_08A_PROJETOS_SCRUM.md"
+    },
+    {
+      "source": "client/src/pages/Calendar.tsx",
+      "source_sha256": "ad8d3c9bd8ebb4eb63eee94fcd43006083147f804b4ff068b151b260d407d531",
+      "destination": "client/projects/legacy/Calendar.tsx",
+      "adapted_sha256": "e0d272ab1cca1bed5f44b082d7a91a2509b9cc33141c1fede456538e81758a87",
+      "status": "ADAPTAR — calendário por projeto funcional; global ainda pendente",
+      "report": "docs/IMPLEMENTACAO_08B_CALENDARIO_PROJETOS.md",
+      "evidence": [
+        "tests/projects-schedule.test.ts",
+        "tests/projects-schedule.integration.ts",
+        "tests/browser/projects-calendar.spec.ts"
+      ]
+    },
+    {
+      "source": "server/gantt-engine.ts",
+      "source_sha256": "cb8a048598dbd128986ae829441160811984ba29dd33620b087dddcde74049cc",
+      "destination": "shared/projects/schedule.ts",
+      "adapted_sha256": "af4a70fba97f070e5eae4f39097e9f7221fd11389de39646e60f115102a4f63c",
+      "status": "ADAPTAR — capacidade útil, topologia e rollups; sem nivelamento de recursos",
+      "report": "docs/IMPLEMENTACAO_08B_CALENDARIO_PROJETOS.md",
+      "evidence": [
+        "tests/projects-schedule.test.ts",
+        "tests/projects-schedule.integration.ts",
+        "tests/browser/projects-calendar.spec.ts"
+      ]
+    },
+    {
+      "source": "server/routers.ts",
+      "source_sha256": "219ab6961a1e5573ed9081b4d2c59c8d2d878cad60005b01a5172f571d0ef507",
+      "destination": "shared/projects/schedule.ts",
+      "adapted_sha256": "af4a70fba97f070e5eae4f39097e9f7221fd11389de39646e60f115102a4f63c",
+      "status": "ADAPTAR — calculateCriticalPath; apenas o trecho CPM portado",
+      "report": "docs/IMPLEMENTACAO_08B_CALENDARIO_PROJETOS.md",
+      "evidence": [
+        "tests/projects-schedule.test.ts",
+        "tests/projects-schedule.integration.ts",
+        "tests/browser/projects-calendar.spec.ts"
+      ]
     }
   ],
-  "limitations": "Ver relatório e backlog; não há paridade integral declarada"
+  "limitations": "Ver relatório e backlog; não há paridade integral declarada",
+  "continuation_08b_base_sha": "fafc39e453a587852969aa40e68baefe0e16921d"
 }
