@@ -1,4 +1,30 @@
-# Matriz de cobertura — Financeiro 06B, incremento 1
+# Matriz de cobertura — Financeiro 06B
+
+## Situação consolidada para revisão
+
+Esta seção é o ponto de leitura atual; as tabelas e deltas abaixo são histórico dos incrementos e **não devem ser lidos como backlog vigente isoladamente**. Evidência funcional: SHA `75a4f608e7996a9af8241115457b1bda8ec24718`, [CI87](https://github.com/jandersontameirao-svg/Gest-o-Integrada-/actions/runs/42477391019),114 unitários/173 MySQL duas vezes/21 jornadas/23 migrações/auditoria sem vulnerabilidades. Homologação humana ainda não registrada.
+
+| Requisitos | Estado atual comprovado em testes sintéticos | Limite ou próximo aceite |
+|---|---|---|
+| Z01/Z02 | Navegação GI, empresa, dashboard, performance, caixa e preferências | Revisão visual, mobile e rapidez pelo usuário |
+| Z03/Z04 | Títulos, baixas/estornos, adiantamentos/prestação, parcelas e revisão de séries | Políticas comerciais não presumidas; histórico de todos os estados não reconstruído |
+| Z05 | Transferência interna e interempresa pareada, câmbio explícito/estorno | Tratamento fiscal/societário depende de política e homologação |
+| Z06 |20 relatórios, filtros, composição e CSV/PDF/XLSX | Paridade visual integral e homologação contábil pendentes |
+| Z07/Z17 | Contatos canônicos, faixas de atraso, busca/filtros financeiros | Busca global e ficha completa Zenply não comprovadas como equivalentes |
+| Z08/Z09/Z10 | Mapeamento CSV/XLSX, datas explícitas, OFX declarado UTF8/1252/Latin1, deduplicação, conciliação individual/agrupada, exportação | Layout real deve ser ensaiado; sem API/banco externo ativo |
+| Z11/Z13/Z14/Z15 | Autenticação GI, permissões, competência, auditoria, configuração e preferências | Não inclui equivalência de avatar/administração SaaS; controles de infraestrutura dependem do ambiente real |
+| Z12 | Planos/assinaturas/cobrança do uso do software fora da implementação automática | Decisão de produto, sem confundir com cobrança empresarial |
+| Z16 | Editor/modelos/versões de recibos e anexos privados, dados legais canônicos |26 nomes Zenply ausentes; ITEM_VALOR não comprovado; limitações tipográficas |
+| Z18 | Cancelamentos/estornos e recuperação isolada preservam histórico | Sem expurgo de produção; decisões de retenção dependem de governança |
+| Z19 | Nenhum conector de cobranças/NFS-e ativo | Regras externas não homologadas; fora da rodada autorizada |
+| Z20 | Estados funcionais e jornadas automatizadas | Revisão assistiva, ajuda e paridade visual integral pendentes |
+| E01/E02/E03 | Cenários/caixa, orçamento versionado, indicadores, rateios/resultados e consolidação gerencial de caixa | Não é contabilidade fiscal ou balanço societário consolidado |
+| E04 | Nenhum provedor IA ativo; proposta histórica determinística identificada | Conexões externas e sugestões por IA não declaradas concluídas |
+| E05 | Intercâmbio histórico/baixas e restauração vazia reconciliada por hash no banco de teste | Arquivos/API reais e transição de produção não comprovados/autorizados |
+
+Roteiro de aceite, reprodução e transição: [HOMOLOGACAO_FINANCEIRO.md](HOMOLOGACAO_FINANCEIRO.md). Detalhes do último incremento: [ENCERRAMENTO_PENDENCIAS_FINANCEIRO.md](ENCERRAMENTO_PENDENCIAS_FINANCEIRO.md). Testado não equivale a homologado.
+
+## Histórico de cobertura — incremento1 e deltas
 
 Base funcional: PDF Zenply/UTU de 07/11/2026. Arquitetura: GI existente e Comando 06B. Código UTU atual: c63ad1c260cabfb3f5276ad7db4bf3e43b68016f. Observação de tela não equivale a teste; código encontrado não equivale a fluxo homologado. Estados abaixo são implementação/teste isolado, nunca homologação externa. Evidências finais por SHA na PR.
 

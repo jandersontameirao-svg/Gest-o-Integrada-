@@ -1,5 +1,13 @@
 # Backlog vivo — Financeiro 06B
 
+## Prioridade vigente
+
+Entrega técnica validada na CI87/SHA75a4f608e7996a9af8241115457b1bda8ec24718. Próxima etapa: executar e registrar a revisão do responsável conforme [HOMOLOGACAO_FINANCEIRO.md](HOMOLOGACAO_FINANCEIRO.md). As listas por incremento abaixo ficam preservadas como histórico, com seus deltas; não representam pendências atuais sem leitura da [situação consolidada](MATRIZ_COBERTURA_06B_FINANCEIRO.md).
+
+Separar: (1) homologação humana e disponibilidade das fontes; (2) limites internos conhecidos de UX, catálogo e reconstrução histórica; (3) infraestrutura/transição de produção que exige autorização específica. Nenhum aceite humano ou produção foi marcado como realizado.
+
+## Histórico do backlog
+
 Comando 06B autoriza implementação isolada sem novos aceites de rotina. Sem merge/deploy, produção, dados reais ou serviços externos. Incremento 1 não é conclusão integral.
 
 ## Entregue neste incremento — evidências por SHA na PR
