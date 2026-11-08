@@ -1,3 +1,4 @@
+import {financeActions} from '../shared/finance/model.ts';
 import {randomUUID} from 'node:crypto';
 import {companies,modules} from '../shared/catalog.ts';
 import {hashPassword} from '../server/crypto.ts';
@@ -41,7 +42,10 @@ try {
   if(email==='holding@example.test')for(const action of ['edit','approve','reopen','export','attachments'])await connection.execute('INSERT INTO scope_grants VALUES (?,?,?,?,?)',[id,'scope-holding','projects',action,'allow']);
   if(email==='holding@example.test')for(const action of ['edit','approve','export','attachments','governance'])await connection.execute('INSERT INTO scope_grants VALUES (?,?,?,?,?)',[id,'scope-holding','suppliers',action,'allow']);
   if(email==='holding@example.test')for(const action of ['edit','approve','export','attachments'])await connection.execute('INSERT INTO scope_grants VALUES (?,?,?,?,?)',[id,'scope-holding','contracts',action,'allow']);
+  if(email==='holding@example.test')for(const action of ['edit','approve','settle','reverse','transfer','reopen','export','attachments','governance',...financeActions])await connection.execute('INSERT INTO scope_grants VALUES (?,?,?,?,?)',[id,'scope-holding','finance',action,'allow']);
+  if(email!=='holding@example.test'&&email!=='restrito@example.test')for(const action of financeActions.filter(a=>a.endsWith('.read')))await connection.execute('INSERT INTO scope_grants VALUES (?,?,?,?,?)',[id,'scope-company:'+company,'finance',action,'allow']);
   await connection.execute('INSERT INTO memberships(user_id,company_id,role_id,corporate) VALUES (?,?,?,?)',[id,company,role,corporate]);
+  if(email==='holding@example.test'){const personId=randomUUID();await connection.execute('INSERT INTO business_parties(id,tax_id,name,kind) VALUES (?,?,?,?)',[personId,'99706123440','Responsável financeiro DEMONSTRAÇÃO','individual']);await connection.execute('INSERT INTO project_person_links VALUES (?,?,?)',['holding',personId,id]);}
  }
  await connection.commit(); console.log('Empresas cadastradas e dados sintéticos de demonstração criados.');
 } catch(error) {await connection.rollback(); throw error;} finally {connection.release(); await pool.end();}

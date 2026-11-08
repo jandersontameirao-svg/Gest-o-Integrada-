@@ -1,0 +1,119 @@
+{
+  "sourceRepository": "jandersontameirao-svg/gestao-estrategica-utu",
+  "sourceRef": "main",
+  "sourceCommit": "c63ad1c260cabfb3f5276ad7db4bf3e43b68016f",
+  "productionVersionVerified": false,
+  "originalModified": false,
+  "components": [
+    {
+      "source": "client/src/components/financeiro/operacao.tsx",
+      "sourceSHA256": "826d2930dea06c84d869897012d75a9174d0b66e2f510da705916dec1fa7e0e3",
+      "destination": "client/finance/legacy/TitleFields.tsx",
+      "destinationSHA256": "feb2fef0d2ef7af027c45a127216b577a259cebc345c80c113ea93adb8207c48",
+      "classification": "ADAPTAR",
+      "evidence": "Formulário substancialmente reaproveitado; props/REST GI, tipos canônicos, série exata e concessões. Anexo público não portado; privado ainda pendente.",
+      "tests": [
+        "tests/finance.test.ts",
+        "tests/finance.integration.ts",
+        "tests/finance-sources.integration.ts",
+        "tests/browser/finance.spec.ts"
+      ]
+    },
+    {
+      "source": "client/src/components/financeiro/operacao.tsx",
+      "sourceSHA256": "826d2930dea06c84d869897012d75a9174d0b66e2f510da705916dec1fa7e0e3",
+      "destination": "client/finance/legacy/Metric.tsx",
+      "destinationSHA256": "ac1c9ea053c742fc56b9051065dd3e6df1a986821469ecf874fdc04032d3650d",
+      "classification": "REAPROVEITAR/ADAPTAR",
+      "evidence": "Componente Metric preservado; imports dos componentes GI.",
+      "tests": [
+        "tests/finance.test.ts",
+        "tests/finance.integration.ts",
+        "tests/finance-sources.integration.ts",
+        "tests/browser/finance.spec.ts"
+      ]
+    },
+    {
+      "source": "server/financeCalc.ts",
+      "sourceSHA256": "749fe11f88ffaefb9d3f78a0db9d05df285d806f771b8aeb58ad7acde33114cc",
+      "destination": "shared/finance/model.ts",
+      "destinationSHA256": "41e5aab5f080b880261c317bf0242e89afb024f917b9cff357bcdeb923198fc5",
+      "classification": "ADAPTAR/RECONSTRUIR regras incorretas",
+      "evidence": "Funções puras como referência; centavos/datas/classificação/abertura/pendentes corrigidos, sem copiar os cálculos defeituosos.",
+      "tests": [
+        "tests/finance.test.ts",
+        "tests/finance.integration.ts",
+        "tests/finance-sources.integration.ts",
+        "tests/browser/finance.spec.ts"
+      ]
+    },
+    {
+      "source": "drizzle/schema.ts",
+      "sourceSHA256": "02add1ae7969094919d602730610eadb7711d16c930d208f08636b06ee95e0bb",
+      "destination": "db/migrations/017_finance_core.up.sql",
+      "destinationSHA256": "50fcf70b91cc221fbe306f59be9f8e292385f0a305520739d1d05b9452af5ad1",
+      "classification": "ADAPTAR modelo",
+      "evidence": "Títulos/contas como referência; migração GI com empresa, entidades compartilhadas e liquidações incrementais. Sem copiar banco ou dados.",
+      "tests": [
+        "tests/finance.test.ts",
+        "tests/finance.integration.ts",
+        "tests/finance-sources.integration.ts",
+        "tests/browser/finance.spec.ts"
+      ]
+    },
+    {
+      "source": "server/routers.ts",
+      "sourceSHA256": "c9013f4b9b8e32402f6a579a8957cbf0c5faeea41e8c4861a40a747939063fb7",
+      "destination": "server/finance/router.ts",
+      "destinationSHA256": "d37e78299cf01c3743165b782483db78059c48c54874f50da84587d4688a63e1",
+      "classification": "RECONSTRUIR fronteira de segurança GI",
+      "evidence": "REST/autenticação/escopo/auditoria existentes; sem cookie/JWT/tRPC/backend/storage externos UTU.",
+      "tests": [
+        "tests/finance.test.ts",
+        "tests/finance.integration.ts",
+        "tests/finance-sources.integration.ts",
+        "tests/browser/finance.spec.ts"
+      ]
+    },
+    {
+      "source": "client/src/components/financeiro/ContasTransferencias.tsx",
+      "sourceSHA256": "b0dea2216fa207c1d5a8b5c3259ef40757c3680e36fef456e0468aab2eeb90ca",
+      "destination": "client/finance/Workspace.tsx",
+      "destinationSHA256": "85f42c0e8982a3d3e4004a664915555c1493e4e38fdea6aa46bd813834741caa",
+      "classification": "ADAPTAR referência de fluxo",
+      "evidence": "Consulta de contas/transferências considerada; não é cópia integral. Transferências/baixas preservam decisões separadas.",
+      "tests": [
+        "tests/finance.test.ts",
+        "tests/finance.integration.ts",
+        "tests/finance-sources.integration.ts",
+        "tests/browser/finance.spec.ts"
+      ]
+    },
+    {
+      "source": "client/src/pages/FinanceiroHub.tsx",
+      "sourceSHA256": "231e3d85d4bf754cf45d4da93cc4067bb061ebc7c78cca386df4d8db322804c1",
+      "destination": "client/finance/Workspace.tsx",
+      "destinationSHA256": "85f42c0e8982a3d3e4004a664915555c1493e4e38fdea6aa46bd813834741caa",
+      "classification": "ADAPTAR organização",
+      "evidence": "Navegação Financeiro GI/Zenply; não portar heurística budget.list como orçamento empresarial.",
+      "tests": [
+        "tests/finance.test.ts",
+        "tests/finance.integration.ts",
+        "tests/finance-sources.integration.ts",
+        "tests/browser/finance.spec.ts"
+      ]
+    }
+  ],
+  "notMigrated": [
+    "Autenticação/cookies/JWT/OAuth externos",
+    "SDKs IA/provedores/Cloudflare R2",
+    "Dados/seeds/credenciais privados",
+    "Heurísticas de moeda/datas/categoria comprovadamente incorretas"
+  ],
+  "pendingReuse": [
+    "Orçamento anual",
+    "Conciliação OFX",
+    "Outras variantes operacionais/relatórios"
+  ],
+  "notClaimed": "Paridade integral Zenply/UTU, migração histórica e homologação externa não concluídas."
+}

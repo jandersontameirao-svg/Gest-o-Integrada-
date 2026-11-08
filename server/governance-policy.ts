@@ -1,6 +1,7 @@
+import {financeActions} from '../shared/finance/model.ts';
 import type {ModuleId,Principal} from '../shared/catalog.ts';
 export type Grant={scope_id:string;module_id:ModuleId;action:string;effect:'allow'|'deny'};
-export const actions=['read','export','governance','transfer','grants','units','edit','approve','reopen','attachments','jobs','ai'] as const;
+export const actions=['read','export','governance','transfer','grants','units','edit','approve','reopen','attachments','jobs','ai','settle','reverse',...financeActions] as const;
 export function evaluateAccess(user:Principal,module:ModuleId,action:string,enabled:boolean,scopeIds:string[],grants:Grant[],profile?:string){
  if(!enabled)return false;
  if(action==='reopen'&&profile!=='DIRETORES')return false;

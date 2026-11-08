@@ -1,10 +1,12 @@
+import {request} from './requests.ts';
+export {request} from './requests.ts';
 import {createContext,useContext,useEffect,useRef,useState,type Dispatch,type SetStateAction,type ReactNode} from 'react';
 import {toast} from 'sonner';
 import type {PlanData,Method} from '../../shared/strategy/model.ts';
 export type StrategyContextValue={data:PlanData;cycleId:string;token:string;refresh:()=>Promise<void>;navigate:(path:string)=>void;dirty:Set<string>};
 export const StrategyContext=createContext<StrategyContextValue|null>(null);
 export function useStrategy(){const ctx=useContext(StrategyContext);if(!ctx)throw Error('Contexto estratégico necessário.');return ctx;}
-export async function request<T>(token:string,path:string,method='GET',body?:unknown):Promise<T>{const r=await fetch('/api/v1/strategy'+path,{method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},...(body!==undefined?{body:JSON.stringify(body)}:{})});const json=await r.json();if(!r.ok)throw Error(json.error??'Falha na operação estratégica.');return json;}
+
 export function useDocument<T>(kind:Method,initial:T){
  const ctx=useStrategy(),doc=ctx.data.documents.find(d=>d.kind===kind&&d.cycle_id===ctx.cycleId);
  const [value,state]=useState<T>(()=>(doc?.payload as T)??initial),[status,setStatus]=useState<'idle'|'saving'|'saved'|'error'>('idle'),[generation,bump]=useState(0);
