@@ -1,3 +1,5 @@
+> Atualização 08A: tela global Scrum original, backlog, sprints, transições auditadas, reabertura por diretor, observações reais de burndown e exportação JSON foram incorporados. Não são mais pendências genéricas. Permanecem Scrum por fase, job diário sem simulação histórica e gráficos comparativos. Matriz e limites em [IMPLEMENTACAO_08A_PROJETOS_SCRUM.md](IMPLEMENTACAO_08A_PROJETOS_SCRUM.md). Trechos históricos abaixo preservam o diagnóstico inicial, com as atualizações 05F/08A tendo precedência.
+
 > Atualização 05F: descrições abaixo documentam o incremento inicial. Espelhamento canônico, OS, mobilização, custos, documentos, textos e revisões de Fornecedores foram incorporados em 05B–05F. Não estão bloqueados pela ausência de 05B. Compensações/rateios e distribuição histórica permanecem parciais; ver relatório 05F e backlog vivo de Fornecedores.
 
 # Backlog após primeiro incremento 04B
