@@ -67,3 +67,8 @@ Esses itens não são falhas de persistência pendentes nem bloqueiam o teste da
 - [ ] Confere manifesto de recuperação em ambiente isolado e plano de corte do histórico.
 - [ ] Registra divergências, responsável e aprovação identificada. Nenhuma caixa está marcada automaticamente.
 - [ ] Autorizações separadas antes de merge, deploy e migração real; plano de recuperação revisado.
+
+
+## Correção necessária identificada na regressão de Estratégia
+
+O trace da CI83 registrou120 chamadas e HTTP429 na leitura após salvar o KPI. O frontend repetia GETs idênticos em paralelo. O helper de Estratégia passa a compartilhar somente consultas em voo por token+caminho, sem cache de resposta concluída. Escritas invalidam o contexto antes/depois, preservando a recarga após gravação e o isolamento entre usuários/planos. O limite120/min, as permissões e os testes permanecem ativos. Testes unitários verificam concorrência, tokens/planos, invalidação por escrita e propagação de429; a jornada SGE também verifica ausência de429 no fluxo normal. Nenhuma alteração dos aplicativos originais ou integração externa.
