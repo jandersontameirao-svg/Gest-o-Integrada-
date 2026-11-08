@@ -4,10 +4,10 @@ import type {Router} from 'express';
 import type {Principal} from '../../shared/catalog.ts';
 import type {Project,ProjectRecord} from '../../shared/projects/model.ts';
 import {sprintTotals,sprintBurndown,type SprintObservation} from '../../shared/projects/scrum.ts';
-import {rows} from '../db.ts';
+import {pool,rows} from '../db.ts';
 import {HttpError} from '../policy.ts';
 import {uuid,text} from '../contracts/validation.ts';
-import {project,records,write,cas,bump,history,access,director,audit} from './router.ts';
+import {project,records,write,cas,bump,history,access,director} from './router.ts';
 export async function observeSprints(c:PoolConnection,p:Project,u:Principal,list:ProjectRecord[],ids:string[],reason:string){
  for(const id of new Set(ids)){
   const sprint=list.find(r=>r.id===id&&r.kind==='sprint');if(!sprint||!['active','completed'].includes(String(sprint.payload.status)))continue;
@@ -20,12 +20,18 @@ async function observations(projectId:string,sprintId:string,c?:PoolConnection){
 }
 export function registerScrum(router:Router){
  router.get('/:id/scrum/:sprintId',async(req,res)=>{
-  const p=await project(req.params.id,res.locals.user),id=uuid(req.params.sprintId),sprint=(await records(p.id)).find(r=>r.id===id&&r.kind==='sprint');
-  if(!sprint)throw new HttpError(404,'Sprint não pertence ao projeto.');
-  if(req.query.export==='json')await access(res.locals.user,p.companyId,'export');
-  const data=sprintBurndown(sprint,await observations(p.id,id));await audit(res.locals.user,p,req.query.export==='json'?'scrum.export':'scrum.read');
-  if(req.query.export==='json')res.setHeader('Content-Disposition','attachment; filename="sprint-historico.json"');
-  res.json({sprint,...data});
+  const c=await pool.getConnection();
+  try{
+   await c.query('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');await c.beginTransaction();
+   const p=await project(req.params.id,res.locals.user,'read',c,true),id=uuid(req.params.sprintId),sprint=(await records(p.id,c)).find(r=>r.id===id&&r.kind==='sprint');
+   if(!sprint)throw new HttpError(404,'Sprint não pertence ao projeto.');
+   if(req.query.export==='json')await access(res.locals.user,p.companyId,'export',c);
+   const data=sprintBurndown(sprint,await observations(p.id,id,c));
+   await c.execute('INSERT INTO audit_events(id,actor_id,company_id,module_id,action,outcome) VALUES (?,?,?,?,?,?)',[randomUUID(),res.locals.user.id,p.companyId,'projects',req.query.export==='json'?'scrum.export':'scrum.read','allowed']);
+   await c.commit();
+   if(req.query.export==='json')res.setHeader('Content-Disposition','attachment; filename="sprint-historico.json"');
+   res.json({projectId:p.id,companyId:p.companyId,projectRevision:p.revision,sprint,...data});
+  }catch(e){await c.rollback();throw e;}finally{c.release();}
  });
  router.post('/:id/scrum/:sprintId/:action',async(req,res)=>{
   const u=res.locals.user as Principal,p=await project(req.params.id,u,'edit'),id=uuid(req.params.sprintId),action=String(req.params.action);
