@@ -1,3 +1,5 @@
+> Atualização07C: apurações mensais financeiras vinculadas a KPIs têm preparação, aprovação por diretor, snapshots/hash, histórico e consulta de contribuições por unidade histórica/Holding. Total monetário permanece bloqueado, sem somar contribuições manuais. Ver IMPLEMENTACAO_07C_PUBLICACOES_FINANCEIRAS.md.
+
 > Atualização07B: consulta financeira por empresa em Estratégia implementada, sem publicação ou consolidação monetária automática. Ver IMPLEMENTACAO_07B_ESTRATEGIA_FINANCEIRO.md.
 
 > Estado07A: a consulta inversa nas telas de Contratos/Fornecedores/Projetos foi implementada; ver IMPLEMENTACAO_07A_INTEGRACAO.md. As descrições06B abaixo são históricas. Adiantamentos/rateios/câmbio evoluíram no próprio Financeiro, conforme ENCERRAMENTO_PENDENCIAS_FINANCEIRO.md; não foram ativados provedores externos ou consolidação monetária automática em Estratégia.
@@ -58,3 +60,8 @@ GET /api/v1/finance/origin-position?companyId=...&kind=customer_measurement|supp
 ## Indicadores para Estratégia07B v1
 
 GET /api/v1/finance/strategy-indicators, com empresa/scope-company correspondente, moeda, from/to/asOf e horizonte explícitos. Mesmas fórmulas canônicas do Financeiro; leitura conjunta de Estratégia e de todas as abas financeiras/balances. Exportação exige export nos dois módulos. Sem escrita em contribuições estratégicas/outbox, unitAggregation=false e publishedToStrategy=false. Identifica classificação ausente, consulta vazia e origens divergentes. Mantém resultado por competência separado de caixa/projeção. Consolidação monetária de unidade/Holding e mapeamento a KPIs não estão implementados neste incremento.
+
+
+## Publicações financeiras estratégicas07C v1
+
+/api/v1/strategy/financial-publications: vínculo canônico empresa/plano/KPI/indicador/fonte/competência/moeda, versões imutáveis e posição aprovada única. Preparação/approve/reject e histórico com revisão, requestId, hash, motivo/evidência e autorização conjunta. Não altera fatos financeiros. /strategy/consolidation inclui financialContributions separado (total=null), com unidade histórica preservada. Rotas manuais impedem publicação concorrente da mesma competência/indicador. Soma monetária, eliminações e câmbio para resultado não são ativados.
