@@ -1,3 +1,5 @@
+> Atualização07D: gráfico temporal original do SGE consome séries financeiras aprovadas por KPI/competência/fonte/moeda, com lacunas e sem mistura com observações manuais. Ver IMPLEMENTACAO_07D_SERIES_FINANCEIRAS.md.
+
 > Atualização07C: apurações mensais financeiras vinculadas a KPIs têm preparação, aprovação por diretor, snapshots/hash, histórico e consulta de contribuições por unidade histórica/Holding. Total monetário permanece bloqueado, sem somar contribuições manuais. Ver IMPLEMENTACAO_07C_PUBLICACOES_FINANCEIRAS.md.
 
 > Atualização07B: consulta financeira por empresa em Estratégia implementada, sem publicação ou consolidação monetária automática. Ver IMPLEMENTACAO_07B_ESTRATEGIA_FINANCEIRO.md.
@@ -65,3 +67,8 @@ GET /api/v1/finance/strategy-indicators, com empresa/scope-company correspondent
 ## Publicações financeiras estratégicas07C v1
 
 /api/v1/strategy/financial-publications: vínculo canônico empresa/plano/KPI/indicador/fonte/competência/moeda, versões imutáveis e posição aprovada única. Preparação/approve/reject e histórico com revisão, requestId, hash, motivo/evidência e autorização conjunta. Não altera fatos financeiros. /strategy/consolidation inclui financialContributions separado (total=null), com unidade histórica preservada. Rotas manuais impedem publicação concorrente da mesma competência/indicador. Soma monetária, eliminações e câmbio para resultado não são ativados.
+
+
+## Séries financeiras07D v1
+
+GET /strategy/financial-publications/series por empresa/plano/KPI, intervalo mensal, fonte e moeda: apenas ponteiro aprovado por mês, com actual decimal ou null, hash/versão/unidade histórica e estado da fonte. Total=null, sem soma manual/corporativa. /:id/approved/:version retorna somente versão aprovada autorizada. Exportação exige ambos os módulos. Metadados de vínculo no plano não expõem valores financeiros e bloqueiam edição manual concorrente. APIs não gravam observações/versões na consulta.
