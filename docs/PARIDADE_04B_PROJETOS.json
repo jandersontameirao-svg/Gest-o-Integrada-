@@ -87,8 +87,74 @@
         "tests/projects-schedule.integration.ts",
         "tests/browser/projects-calendar.spec.ts"
       ]
+    },
+    {
+      "source": "client/src/pages/Templates.tsx",
+      "source_sha256": "67955f89e22e9678b7d18826448fcce50d27f3b1dfd98c11277cf9f8c1292b96",
+      "destination": "client/projects/legacy/Templates.tsx",
+      "adapted_sha256": "0a1259626b3b188d5fdc47eeb167e94d9143e953f369a4d431304f12728564a2",
+      "status": "ADAPTAR — 08C: catálogo/estúdio/aplicação atômica; referências arqueológicas parciais não são backup homologado",
+      "report": "docs/IMPLEMENTACAO_08C_TEMPLATES_PROJETOS.md",
+      "evidence": [
+        "tests/projects-templates.test.ts",
+        "tests/projects-templates.integration.ts",
+        "tests/browser/projects-templates.spec.ts"
+      ]
+    },
+    {
+      "source": "client/src/pages/TemplateDetail.tsx",
+      "source_sha256": "68233c9685aedb9e4b61f43342d4137dda166bdfc7844e77f3f03f73bcde45f1",
+      "destination": "client/projects/legacy/TemplateDetail.tsx",
+      "adapted_sha256": "7b7780b699ffaa7c22dc94b070cde3c6d8207ae2c0224271a32c1f4767f50216",
+      "status": "ADAPTAR — 08C: catálogo/estúdio/aplicação atômica; referências arqueológicas parciais não são backup homologado",
+      "report": "docs/IMPLEMENTACAO_08C_TEMPLATES_PROJETOS.md",
+      "evidence": [
+        "tests/projects-templates.test.ts",
+        "tests/projects-templates.integration.ts",
+        "tests/browser/projects-templates.spec.ts"
+      ]
+    },
+    {
+      "source": "client/src/components/TemplateGantt.tsx",
+      "source_sha256": "b3d7066e6acca70b73a8828d5df769a2e6f70dbeea1153fdcb0702d7f8e33cd2",
+      "destination": "client/projects/legacy/TemplateGantt.tsx",
+      "adapted_sha256": "0953173971482e88019239c0f3a6476adf5f7c6dda0449f7043693161d31a3d1",
+      "status": "ADAPTAR — 08C: catálogo/estúdio/aplicação atômica; referências arqueológicas parciais não são backup homologado",
+      "report": "docs/IMPLEMENTACAO_08C_TEMPLATES_PROJETOS.md",
+      "evidence": [
+        "tests/projects-templates.test.ts",
+        "tests/projects-templates.integration.ts",
+        "tests/browser/projects-templates.spec.ts"
+      ]
+    },
+    {
+      "source": "server/db.ts",
+      "source_sha256": "cbdeb419e0641b3311533fbdbbfc6b64a7e9cbe38b736c0d67490c877d1280bb",
+      "destination": "server/projects/template-seeds.ts",
+      "adapted_sha256": "67fdeb9b903cab95679c8596d9ac2d3d370e5ab3af4617d4d5971c2d5843ee98",
+      "status": "ADAPTAR — 08C: catálogo/estúdio/aplicação atômica; referências arqueológicas parciais não são backup homologado",
+      "report": "docs/IMPLEMENTACAO_08C_TEMPLATES_PROJETOS.md",
+      "evidence": [
+        "tests/projects-templates.test.ts",
+        "tests/projects-templates.integration.ts",
+        "tests/browser/projects-templates.spec.ts"
+      ]
+    },
+    {
+      "source": "server/templates-arqueologia.test.ts",
+      "source_sha256": "8c12c04118bcce9c9c6d95aee634c508725950a372740693cd0804627f231766",
+      "destination": "server/projects/template-seeds.ts",
+      "adapted_sha256": "67fdeb9b903cab95679c8596d9ac2d3d370e5ab3af4617d4d5971c2d5843ee98",
+      "status": "ADAPTAR — 08C: catálogo/estúdio/aplicação atômica; referências arqueológicas parciais não são backup homologado",
+      "report": "docs/IMPLEMENTACAO_08C_TEMPLATES_PROJETOS.md",
+      "evidence": [
+        "tests/projects-templates.test.ts",
+        "tests/projects-templates.integration.ts",
+        "tests/browser/projects-templates.spec.ts"
+      ]
     }
   ],
   "limitations": "Ver relatório e backlog; não há paridade integral declarada",
-  "continuation_08b_base_sha": "fafc39e453a587852969aa40e68baefe0e16921d"
+  "continuation_08b_base_sha": "fafc39e453a587852969aa40e68baefe0e16921d",
+  "continuation_08c_base_sha": "e93911b3991f13fc45d9a8ca2d043d77abc4bdd2"
 }
