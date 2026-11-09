@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GI-supported subset profile, not the complete Microsoft SDK schema.
+     Field order and type codes follow MicrosoftDocs office-developer-msproject-xml-docs.
+     Exact scope and citations: docs/IMPLEMENTACAO_08F_FASES_INTERCAMBIO.md. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:p="http://schemas.microsoft.com/project" targetNamespace="http://schemas.microsoft.com/project" elementFormDefault="qualified">
+ <xs:simpleType name="Name255"><xs:restriction base="xs:string"><xs:maxLength value="255"/></xs:restriction></xs:simpleType>
+ <xs:simpleType name="Percent"><xs:restriction base="xs:integer"><xs:minInclusive value="0"/><xs:maxInclusive value="100"/></xs:restriction></xs:simpleType>
+ <xs:simpleType name="LinkType"><xs:restriction base="xs:integer"><xs:enumeration value="0"/><xs:enumeration value="1"/><xs:enumeration value="2"/><xs:enumeration value="3"/></xs:restriction></xs:simpleType>
+ <xs:simpleType name="DayType"><xs:restriction base="xs:integer"><xs:minInclusive value="0"/><xs:maxInclusive value="7"/></xs:restriction></xs:simpleType>
+ <xs:complexType name="WorkingTimes"><xs:sequence><xs:element name="WorkingTime" maxOccurs="unbounded"><xs:complexType><xs:sequence><xs:element name="FromTime" type="xs:time"/><xs:element name="ToTime" type="xs:time"/></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType>
+ <xs:complexType name="Calendar"><xs:sequence>
+  <xs:element name="UID" type="xs:positiveInteger"/><xs:element name="Name" type="xs:string"/><xs:element name="IsBaseCalendar" type="xs:boolean"/>
+  <xs:element name="WeekDays"><xs:complexType><xs:sequence><xs:element name="WeekDay" minOccurs="7" maxOccurs="unbounded"><xs:complexType><xs:sequence>
+   <xs:element name="DayType" type="p:DayType"/><xs:element name="DayWorking" type="xs:boolean"/>
+   <xs:element name="TimePeriod" minOccurs="0"><xs:complexType><xs:sequence><xs:element name="FromDate" type="xs:dateTime"/><xs:element name="ToDate" type="xs:dateTime"/></xs:sequence></xs:complexType></xs:element>
+   <xs:element name="WorkingTimes" type="p:WorkingTimes" minOccurs="0"/>
+  </xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType></xs:element>
+ </xs:sequence></xs:complexType>
+ <xs:complexType name="Task"><xs:sequence>
+  <xs:element name="UID" type="xs:positiveInteger"/><xs:element name="ID" type="xs:positiveInteger"/><xs:element name="Name" type="p:Name255"/>
+  <xs:element name="Type" type="xs:integer" fixed="1"/><xs:element name="OutlineNumber" type="xs:string"/><xs:element name="OutlineLevel" type="xs:positiveInteger"/>
+  <xs:element name="Start" type="xs:dateTime"/><xs:element name="Finish" type="xs:dateTime"/>
+  <xs:element name="Duration" type="xs:duration" minOccurs="0"/><xs:element name="DurationFormat" type="xs:integer" fixed="7" minOccurs="0"/>
+  <xs:element name="EffortDriven" type="xs:boolean" fixed="0"/><xs:element name="Estimated" type="xs:boolean" fixed="0"/><xs:element name="Milestone" type="xs:boolean"/><xs:element name="Summary" type="xs:boolean"/>
+  <xs:element name="PercentComplete" type="p:Percent"/><xs:element name="ConstraintType" type="xs:integer" fixed="2" minOccurs="0"/><xs:element name="CalendarUID" type="xs:positiveInteger"/><xs:element name="ConstraintDate" type="xs:dateTime" minOccurs="0"/><xs:element name="Notes" type="xs:string"/>
+  <xs:element name="PredecessorLink" minOccurs="0" maxOccurs="unbounded"><xs:complexType><xs:sequence>
+   <xs:element name="PredecessorUID" type="xs:positiveInteger"/><xs:element name="Type" type="p:LinkType"/><xs:element name="CrossProject" type="xs:boolean" fixed="0"/>
+   <xs:element name="LinkLag" type="xs:integer"/><xs:element name="LagFormat" type="xs:integer" fixed="8"/>
+  </xs:sequence></xs:complexType></xs:element>
+ </xs:sequence></xs:complexType>
+ <xs:element name="Project"><xs:complexType><xs:sequence>
+  <xs:element name="SaveVersion" type="xs:integer" fixed="12"/><xs:element name="UID" type="xs:string"/><xs:element name="Name" type="p:Name255"/>
+  <xs:element name="Title" type="xs:string"/><xs:element name="Subject" type="xs:string"/><xs:element name="Company" type="xs:string"/><xs:element name="Author" type="xs:string"/>
+  <xs:element name="CreationDate" type="xs:dateTime"/><xs:element name="LastSaved" type="xs:dateTime"/><xs:element name="ScheduleFromStart" type="xs:boolean" fixed="1"/>
+  <xs:element name="StartDate" type="xs:dateTime"/><xs:element name="FinishDate" type="xs:dateTime"/><xs:element name="CalendarUID" type="xs:positiveInteger"/>
+  <xs:element name="DefaultStartTime" type="xs:time"/><xs:element name="DefaultFinishTime" type="xs:time"/><xs:element name="MinutesPerDay" type="xs:positiveInteger"/><xs:element name="MinutesPerWeek" type="xs:positiveInteger"/>
+  <xs:element name="DefaultTaskType" type="xs:integer" fixed="1"/><xs:element name="DurationFormat" type="xs:integer" fixed="7"/><xs:element name="NewTasksEffortDriven" type="xs:boolean" fixed="0"/><xs:element name="NewTasksEstimated" type="xs:boolean" fixed="0"/>
+  <xs:element name="Calendars"><xs:complexType><xs:sequence><xs:element name="Calendar" type="p:Calendar"/></xs:sequence></xs:complexType></xs:element>
+  <xs:element name="Tasks"><xs:complexType><xs:sequence><xs:element name="Task" type="p:Task" maxOccurs="unbounded"/></xs:sequence></xs:complexType></xs:element>
+ </xs:sequence></xs:complexType>
+ <xs:key name="taskUids"><xs:selector xpath="p:Tasks/p:Task"/><xs:field xpath="p:UID"/></xs:key>
+ <xs:key name="taskIds"><xs:selector xpath="p:Tasks/p:Task"/><xs:field xpath="p:ID"/></xs:key>
+ <xs:keyref name="validPredecessors" refer="p:taskUids"><xs:selector xpath="p:Tasks/p:Task/p:PredecessorLink"/><xs:field xpath="p:PredecessorUID"/></xs:keyref>
+ </xs:element>
+</xs:schema>
