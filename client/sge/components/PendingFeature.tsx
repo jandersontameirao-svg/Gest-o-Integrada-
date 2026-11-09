@@ -1,0 +1,1 @@
+export default function PendingFeature(_props:Record<string,unknown>){return <aside role="note" className="rounded border p-4 my-4 bg-amber-50 text-amber-900">Recurso do SGE ainda pendente de port neste incremento. Nenhuma alteração ou envio é simulado.</aside>;}

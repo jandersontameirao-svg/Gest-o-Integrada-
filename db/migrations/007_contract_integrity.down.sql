@@ -1,0 +1,10 @@
+DROP TABLE contract_document_downloads;
+DROP TABLE contract_number_allocations;
+DROP TABLE contract_number_sequences;
+DROP TABLE contract_alert_settings;
+DROP TABLE contract_balance_snapshots;
+ALTER TABLE client_contract_documents DROP COLUMN mime_type;
+UPDATE client_contract_documents SET record_id=NULL WHERE record_id IN (SELECT id FROM client_contract_records WHERE (kind IN ('item','item_change','risk','occurrence','participant') OR (kind='measurement' AND JSON_CONTAINS_PATH(payload,'one','$.items[0].contractItemId'))));
+DELETE FROM client_contract_history WHERE entity_id IN (SELECT id FROM client_contract_records WHERE (kind IN ('item','item_change','risk','occurrence','participant') OR (kind='measurement' AND JSON_CONTAINS_PATH(payload,'one','$.items[0].contractItemId'))));
+DELETE FROM client_contract_records WHERE (kind IN ('item','item_change','risk','occurrence','participant') OR (kind='measurement' AND JSON_CONTAINS_PATH(payload,'one','$.items[0].contractItemId')));
+ALTER TABLE client_contract_records MODIFY kind ENUM('amendment','milestone','obligation','measurement') NOT NULL;

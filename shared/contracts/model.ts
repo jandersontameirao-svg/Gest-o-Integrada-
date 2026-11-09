@@ -1,0 +1,15 @@
+export type ContractPayload={title:string;description:string;totalValue:string;currency:string;startDate:string;endDate:string;observations:string;status:'draft'|'active'|'paused'|'completed'|'cancelled';managerName:string;managerEmail:string;approverName:string;approverEmail:string;legacyCode:string};
+export type Contract={id:string;companyId:string;partyId:string;reference:string;payload:ContractPayload;revision:number;signedDate:string|null;projectRef:string|null};
+export type RecordKind='amendment'|'milestone'|'obligation'|'measurement'|'item'|'item_change'|'risk'|'occurrence'|'participant';
+export type ContractRecord={id:string;kind:RecordKind;seq:number;payload:Record<string,unknown>;revision:number};
+export type Customer={id:string;name:string;taxId:string;kind:string;contact:Record<string,string>};
+export type ContractData={contract:Contract;records:ContractRecord[];effectiveValue:string;items:ReturnType<typeof import('./items.ts').itemSummary>;measurements:ReturnType<typeof import('./measurements.ts').measurementSummary>;documents:{id:string;file_name:string;sha256:string;mime_type:string;series_id:string;version:number;record_id:string|null}[];preproject:{project_ref:string;status:string;effectiveStatus:string;revision:number;decision:Record<string,unknown>}|null;capabilities:{edit:boolean;approve:boolean;attachments:boolean;export:boolean;director:boolean}};
+// Two decimal fixed point. No floating point increments or conversion between currencies.
+export function money(v:unknown,negative=false){if(typeof v!=='string'||!(/^-?\d{1,13}(?:\.\d{1,2})?$/).test(v)||(!negative&&v.startsWith('-')))throw Error('Valor decimal inválido. Use ponto e até duas casas.');const [i,d='']=v.split('.');return i+'.'+d.padEnd(2,'0');}
+export function cents(v:string){const n=money(v,true);return BigInt(n.replace('.',''));}
+export function amount(v:bigint){return (v<0n?'-':'')+(v<0n?-v:v)/100n+'.'+((v<0n?-v:v)%100n).toString().padStart(2,'0');}
+export function effectiveValue(base:string,records:ContractRecord[],asOf=new Date().toISOString().slice(0,10)){return amount(records.filter(r=>r.kind==='amendment'&&['active','completed'].includes(String(r.payload.status))&&(!r.payload.effectiveDate||String(r.payload.effectiveDate)<=asOf)).reduce((n,r)=>n+cents(String(r.payload.additionalValue)),cents(base)));}
+export function dateOnly(v:unknown,optional=false){if(optional&&v==='')return '';if(typeof v!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(v)||!Number.isFinite(Date.parse(v))||new Date(v).toISOString().slice(0,10)!==v||v<'1900-01-01'||v>'2100-12-31')throw Error('Data inválida.');return v;}
+export const authorityV1={version:1,customerContracts:'contracts',supplierContracts:'suppliers',supplierOrders:'suppliers',operationalProjects:'projects',strategicProjects:'strategy',ledger:'finance-future'} as const;
+
+export function validateValueSchedule(base:string,records:ContractRecord[]){for(const date of new Set(['2100-12-31',...records.filter(r=>r.kind==='amendment').map(r=>String(r.payload.effectiveDate??'1900-01-01'))]))if(cents(effectiveValue(base,records,date))<0n)throw Error('Aditivos produzem valor negativo em uma vigência.');}

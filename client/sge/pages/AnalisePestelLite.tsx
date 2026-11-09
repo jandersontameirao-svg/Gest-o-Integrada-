@@ -1,0 +1,578 @@
+import {ReadOnly} from "../../strategy/context.tsx";
+import PendingFeature from "../components/PendingFeature.tsx";
+import {useDocument} from "../../strategy/context.tsx";
+import { useEffect, useState, useRef, useCallback } from "react";
+import { useNotification } from "../hooks/useNotification.ts";
+import { toast } from "sonner";
+import { useUndoRedo } from "../hooks/useUndoRedo.ts";
+import { UndoRedoToolbar } from "../components/UndoRedoToolbar.tsx";
+import { trpc } from "../../strategy/legacy.tsx";
+import { Button } from "../components/ui/button.tsx";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card.tsx";
+import { Slider } from "../components/ui/slider.tsx";
+import { Badge } from "../components/ui/badge.tsx";
+import { Save, Plus, Trash2, Building2, DollarSign, Users, Cpu, Leaf, Scale, AlertTriangle, FileDown, Check, Pencil } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, Cell } from "recharts";
+
+interface FatorPestel {
+  id: string;
+  categoria: "Político" | "Econômico" | "Social" | "Tecnológico" | "Ambiental" | "Legal";
+  impacto: number; // 1-5
+  probabilidade: number; // 1-5
+  descricao: string;
+}
+
+const categorias = [
+  { nome: "Político", icone: Building2, cor: "#ef4444", corBg: "#fee2e2" },
+  { nome: "Econômico", icone: DollarSign, cor: "#3b82f6", corBg: "#dbeafe" },
+  { nome: "Social", icone: Users, cor: "#10b981", corBg: "#d1fae5" },
+  { nome: "Tecnológico", icone: Cpu, cor: "#8b5cf6", corBg: "#ede9fe" },
+  { nome: "Ambiental", icone: Leaf, cor: "#059669", corBg: "#d1fae5" },
+  { nome: "Legal", icone: Scale, cor: "#f59e0b", corBg: "#fef3c7" },
+];
+
+interface AnalisePestelLiteProps {
+  empresaId: string;
+}
+
+// Helper para converter config do banco para formato de exportação
+function convertTemplateConfig(config: any) {
+  if (!config) return undefined;
+  return {
+    corPrimaria: config.corPrimaria,
+    corSecundaria: config.corSecundaria,
+    incluirPestel: !!config.incluirPestel,
+    incluirSwot: !!config.incluirSwot,
+    incluirOkr: !!config.incluirOkr,
+    incluirBsc: !!config.incluirBsc,
+    incluirGraficos: !!config.incluirGraficos,
+    incluirRecomendacoes: !!config.incluirRecomendacoes,
+    rodapePersonalizado: config.rodapePersonalizado || undefined,
+  };
+}
+
+function AnalisePestelLite({ empresaId }: AnalisePestelLiteProps) {
+  const notification = useNotification();
+  const [fatorEmEdicao,setFatorEmEdicao]=useState<FatorPestel|null>(null);
+  const [impactoEdicao,setImpactoEdicao]=useState(3);
+  const [probabilidadeEdicao,setProbabilidadeEdicao]=useState(3);
+  const {value,setValue,status:autoSaveStatus,save,loaded}=useDocument<FatorPestel[]>("pestel",[]);
+  const {state:fatores,setState:setFatores,undo,redo,canUndo,canRedo}=useUndoRedo<FatorPestel[]>(value);
+  useEffect(()=>{if(JSON.stringify(fatores)!==JSON.stringify(value))setValue(fatores);},[fatores]);
+  const manualSaveSuccess=autoSaveStatus==='saved';
+  const salvarMutation={isPending:autoSaveStatus==='saving'};
+  const hasUserChanges={current:false};
+  const isLoading=!loaded;
+  const [categoriaAtiva, setCategoriaAtiva] = useState<string | null>(null);
+
+  const [novoFator, setNovoFator] = useState<Partial<FatorPestel>>({
+    categoria: "Político",
+    impacto: 3,
+    probabilidade: 3,
+    descricao: "",
+  });
+
+  const adicionarFator = () => {
+    if (!novoFator.descricao || novoFator.descricao.trim() === "") {
+      notification.warning("Por favor, preencha a descrição do fator antes de adicionar.");
+      return;
+    }
+    if (novoFator.descricao.trim().length < 5) {
+      notification.warning("A descrição deve ter pelo menos 5 caracteres.");
+      return;
+    }
+    setFatores([
+      ...fatores,
+      {
+        id: crypto.randomUUID(),
+        categoria: novoFator.categoria as any,
+        impacto: novoFator.impacto || 3,
+        probabilidade: novoFator.probabilidade || 3,
+        descricao: novoFator.descricao,
+      },
+    ]);
+    hasUserChanges.current = true;
+    setNovoFator({ categoria: novoFator.categoria, impacto: 3, probabilidade: 3, descricao: "" });
+  };
+
+  const removerFator = (id: string) => {
+    hasUserChanges.current = true;
+    setFatores(fatores.filter((f) => f.id !== id));
+  };
+
+  const editarFator = () => {
+    if (!fatorEmEdicao) return;
+    hasUserChanges.current = true;
+    setFatores(
+      fatores.map((f) =>
+        f.id === fatorEmEdicao.id
+          ? { ...f, impacto: impactoEdicao, probabilidade: probabilidadeEdicao }
+          : f
+      )
+    );
+    setFatorEmEdicao(null);
+  };
+
+  const deletarFatorEdicao = () => {
+    if (!fatorEmEdicao) return;
+    removerFator(fatorEmEdicao.id);
+    setFatorEmEdicao(null);
+  };
+
+  const calcularRisco = (impacto: number, probabilidade: number) => {
+    const risco = impacto * probabilidade;
+    if (risco >= 16) return { label: "Crítico", cor: "bg-red-500" };
+    if (risco >= 12) return { label: "Alto", cor: "bg-orange-500" };
+    if (risco >= 8) return { label: "Médio", cor: "bg-yellow-500" };
+    return { label: "Baixo", cor: "bg-green-500" };
+  };
+
+  const contarPorCategoria = (cat: string) => fatores.filter((f) => f.categoria === cat).length;
+  const riscoMedioPorCategoria = (cat: string) => {
+    const fatoresCat = fatores.filter((f) => f.categoria === cat);
+    if (fatoresCat.length === 0) return "0";
+    return (fatoresCat.reduce((a, f) => a + f.impacto * f.probabilidade, 0) / fatoresCat.length).toFixed(1);
+  };
+
+  const getCorPorRisco = (risco: number) => {
+    if (risco >= 16) return "#ef4444";
+    if (risco >= 12) return "#f97316";
+    if (risco >= 8) return "#eab308";
+    return "#22c55e";
+  };
+
+  const dadosScatter = fatores.map((f) => ({
+    x: f.probabilidade,
+    y: f.impacto,
+    categoria: f.categoria,
+    descricao: f.descricao.substring(0, 30) + "...",
+    risco: f.impacto * f.probabilidade,
+  }));
+
+  const dadosBarras = categorias.map((cat) => ({
+    categoria: cat.nome,
+    quantidade: contarPorCategoria(cat.nome),
+    risco: parseFloat(riscoMedioPorCategoria(cat.nome)),
+    cor: cat.cor,
+  }));
+
+  const fatoresFiltrados = categoriaAtiva ? fatores.filter((f) => f.categoria === categoriaAtiva) : fatores;
+
+  const handleSave = () => { void save(); };
+
+  if (isLoading) return <div className="text-center py-8">Carregando...</div>;
+
+  return (
+    <div className="space-y-4">
+      {/* Toolbar Undo/Redo */}
+      <div className="flex justify-end">
+        <UndoRedoToolbar onUndo={undo} onRedo={redo} canUndo={canUndo} canRedo={canRedo} />
+      </div>
+      
+      {/* Métricas Resumidas */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Resumo da Análise PESTEL</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+            <div className="bg-blue-100 p-3 rounded-lg">
+              <div className="text-2xl font-bold text-blue-700">{fatores.length}</div>
+              <div className="text-xs text-blue-600">Total de Fatores</div>
+            </div>
+            <div className="bg-orange-100 p-3 rounded-lg">
+              <div className="text-2xl font-bold text-orange-700">
+                {(fatores.reduce((a, f) => a + f.impacto * f.probabilidade, 0) / (fatores.length || 1)).toFixed(1)}
+              </div>
+              <div className="text-xs text-orange-600">Risco Médio</div>
+            </div>
+            <div className="bg-red-100 p-3 rounded-lg text-center">
+              <div className="text-2xl font-bold text-red-700">
+                {fatores.filter((f) => f.impacto * f.probabilidade >= 12).length}
+              </div>
+              <div className="text-xs text-red-600">Alto Risco</div>
+            </div>
+            <div className="bg-purple-100 p-3 rounded-lg text-center">
+              <div className="text-2xl font-bold text-purple-700">
+                {fatores.filter((f) => f.impacto * f.probabilidade >= 12).length}
+              </div>
+              <div className="text-xs text-purple-600">Alto Risco</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Cards por Categoria */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        {categorias.map((cat) => {
+          const Icon = cat.icone;
+          const quantidade = contarPorCategoria(cat.nome);
+          const riscoMedio = parseFloat(riscoMedioPorCategoria(cat.nome));
+          const ativo = categoriaAtiva === cat.nome;
+          return (
+            <Card
+              key={cat.nome}
+              className={`cursor-pointer transition-all hover:shadow-lg ${ativo ? "ring-2 ring-offset-2" : ""}`}
+              style={{ borderLeftColor: cat.cor, borderLeftWidth: "4px", backgroundColor: ativo ? cat.corBg : "white" }}
+              onClick={() => setCategoriaAtiva(ativo ? null : cat.nome)}
+            >
+              <CardContent className="p-4 text-center">
+                <Icon className="h-6 w-6 mx-auto mb-2" style={{ color: cat.cor }} />
+                <div className="text-xs font-semibold mb-1">{cat.nome}</div>
+                <div className="text-2xl font-bold" style={{ color: cat.cor }}>{quantidade}</div>
+                {quantidade > 0 && (
+                  <Badge className="mt-2 text-xs" style={{ backgroundColor: getCorPorRisco(riscoMedio) }}>
+                    Risco: {riscoMedio}
+                  </Badge>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      {categoriaAtiva && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center justify-between">
+          <span className="text-sm font-semibold">Filtrando por: {categoriaAtiva}</span>
+          <Button size="sm" variant="outline" onClick={() => setCategoriaAtiva(null)}>
+            Limpar Filtro
+          </Button>
+        </div>
+      )}
+
+      {/* Gráficos */}
+      {fatores.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Matriz de Risco (Impacto × Probabilidade)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={250}>
+                <ScatterChart>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" dataKey="x" name="Probabilidade" domain={[0, 6]} label={{ value: "Probabilidade", position: "bottom" }} />
+                  <YAxis type="number" dataKey="y" name="Impacto" domain={[0, 6]} label={{ value: "Impacto", angle: -90, position: "left" }} />
+                  <Tooltip cursor={{ strokeDasharray: "3 3" }} content={({ payload }) => {
+                    if (payload && payload.length > 0) {
+                      const data = payload[0].payload;
+                      return (
+                        <div className="bg-white p-2 border rounded shadow-lg text-xs">
+                          <div><strong>{data.categoria}</strong></div>
+                          <div>{data.descricao}</div>
+                          <div>Risco: {data.risco}</div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }} />
+                  <Scatter data={dadosScatter}>
+                    {dadosScatter.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={getCorPorRisco(entry.risco)} />
+                    ))}
+                  </Scatter>
+                </ScatterChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Risco por Categoria</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={dadosBarras}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="categoria" angle={-45} textAnchor="end" height={80} interval={0} tick={{ fontSize: 12 }} />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="risco" radius={[8, 8, 0, 0]}>
+                    {dadosBarras.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.cor} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Lista de Fatores */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Fatores Identificados ({fatoresFiltrados.length})</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {fatoresFiltrados.length === 0 ? (
+            <p className="text-center text-gray-500 py-4">Nenhum fator identificado ainda. Adicione um fator abaixo.</p>
+          ) : (
+            fatoresFiltrados.map((fator) => {
+              const risco = calcularRisco(fator.impacto, fator.probabilidade);
+              const catInfo = categorias.find((c) => c.nome === fator.categoria);
+              const Icon = catInfo?.icone || AlertTriangle;
+              return (
+                  <div key={fator.id} className="border rounded-lg p-4 hover:shadow-md transition-all" style={{ borderLeftColor: catInfo?.cor, borderLeftWidth: "4px" }}>
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex items-center gap-2">
+                        <div className="p-2 rounded-lg" style={{ backgroundColor: catInfo?.corBg }}>
+                          <Icon className="h-4 w-4" style={{ color: catInfo?.cor }} />
+                        </div>
+                        <div>
+                          <div className="font-semibold text-sm">{fator.categoria}</div>
+                          <div className="text-xs text-gray-600">{fator.descricao}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge className={`${risco.cor} text-white`}>{risco.label}</Badge>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setFatorEmEdicao(fator);
+                            setImpactoEdicao(fator.impacto);
+                            setProbabilidadeEdicao(fator.probabilidade);
+                          }} 
+                          className="text-blue-600 hover:text-blue-800"
+                          title="Editar fator"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button onClick={(e) => {
+                          e.stopPropagation();
+                          removerFator(fator.id);
+                        }} className="text-red-600 hover:text-red-800" title="Deletar fator">
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span className="font-semibold">Impacto</span>
+                          <span>{fator.impacto}/5</span>
+                        </div>
+                        <div className="h-2 bg-gray-200 rounded-full">
+                          <div className="h-2 bg-blue-500 rounded-full" style={{ width: `${(fator.impacto / 5) * 100}%` }}></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span className="font-semibold">Probabilidade</span>
+                          <span>{fator.probabilidade}/5</span>
+                        </div>
+                        <div className="h-2 bg-gray-200 rounded-full">
+                          <div className="h-2 bg-orange-500 rounded-full" style={{ width: `${(fator.probabilidade / 5) * 100}%` }}></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-white border rounded-lg p-4 mt-4">
+                      <PendingFeature />
+                    </div>
+                </div>
+              );
+            })
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Novo Fator */}
+      <Card className="bg-blue-50 border-blue-200">
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Plus className="h-4 w-4" /> Adicionar Novo Fator
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div>
+            <label className="text-sm font-semibold">Categoria</label>
+            <div className="grid grid-cols-3 gap-2 mt-2">
+              {categorias.map((cat) => {
+                const Icon = cat.icone;
+                const selecionado = novoFator.categoria === cat.nome;
+                return (
+                  <button
+                    key={cat.nome}
+                    onClick={() => setNovoFator({ ...novoFator, categoria: cat.nome as any })}
+                    className={`p-2 rounded-lg border-2 transition-all ${selecionado ? "border-blue-500 shadow-md" : "border-gray-200"}`}
+                    style={{ backgroundColor: selecionado ? cat.corBg : "white" }}
+                  >
+                    <Icon className="h-5 w-5 mx-auto mb-1" style={{ color: cat.cor }} />
+                    <div className="text-xs font-semibold">{cat.nome}</div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div>
+            <label className="text-sm font-semibold">Descrição do Fator</label>
+            <textarea
+              value={novoFator.descricao}
+              onChange={(e) => setNovoFator({ ...novoFator, descricao: e.target.value })}
+              placeholder="Ex: Nova legislação trabalhista pode aumentar custos operacionais..."
+              className="w-full border rounded px-3 py-2 text-sm mt-1"
+              rows={3}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-sm font-semibold">Impacto: {novoFator.impacto}/5</label>
+              <Slider
+                value={[novoFator.impacto || 3]}
+                onValueChange={(val) => setNovoFator({ ...novoFator, impacto: val[0] })}
+                min={1}
+                max={5}
+                step={1}
+                className="mt-2"
+              />
+              <div className="text-xs text-gray-500 mt-1">Qual o impacto no negócio?</div>
+            </div>
+            <div>
+              <label className="text-sm font-semibold">Probabilidade: {novoFator.probabilidade}/5</label>
+              <Slider
+                value={[novoFator.probabilidade || 3]}
+                onValueChange={(val) => setNovoFator({ ...novoFator, probabilidade: val[0] })}
+                min={1}
+                max={5}
+                step={1}
+                className="mt-2"
+              />
+              <div className="text-xs text-gray-500 mt-1">Qual a chance de ocorrer?</div>
+            </div>
+          </div>
+          <Button onClick={adicionarFator} className="w-full gap-2 bg-blue-600 hover:bg-blue-700">
+            <Plus className="h-4 w-4" />
+            Adicionar Fator
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Indicador de Auto-Save */}
+      {autoSaveStatus !== 'idle' && (
+        <div className={`text-sm px-3 py-2 rounded-lg flex items-center gap-2 ${
+          autoSaveStatus === 'saving' ? 'bg-blue-100 text-blue-700' :
+          autoSaveStatus === 'saved' ? 'bg-green-100 text-green-700' :
+          'bg-red-100 text-red-700'
+        }`}>
+          {autoSaveStatus === 'saving' && <><span className="animate-spin">⏳</span> Salvando automaticamente...</>}
+          {autoSaveStatus === 'saved' && <><span>✓</span> Salvo automaticamente!</>}
+          {autoSaveStatus === 'error' && <><span>✕</span> Erro ao salvar. Tente manualmente.</>}
+        </div>
+      )}
+
+      {/* Feedback de save manual */}
+      {manualSaveSuccess && (
+        <div className="text-sm px-3 py-2 rounded-lg flex items-center gap-2 bg-green-100 text-green-700 border border-green-300">
+          <span>✓</span> Análise PESTEL salva com sucesso!
+        </div>
+      )}
+
+      {/* Salvar e Exportar */}
+      <div className="flex gap-2">
+        <Button onClick={handleSave} className="flex-1 gap-2 bg-orange-600 hover:bg-orange-700 text-white" disabled={salvarMutation.isPending}>
+          <Save className="h-4 w-4" />
+          {salvarMutation.isPending ? 'Salvando...' : 'Salvar Análise PESTEL'}
+        </Button>
+        <Button 
+          disabled title="PDF legado pendente de port. Use a exportação JSON autorizada do plano."
+          className="gap-2 bg-green-600 hover:bg-green-700 text-white"
+        >
+          <FileDown className="h-4 w-4" />
+          Exportar PDF
+        </Button>
+      </div>
+
+      {/* Modal de Edição de Fator */}
+      {fatorEmEdicao && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="p-6 space-y-4">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold">Editar Fator PESTEL</h2>
+                <button
+                  onClick={() => setFatorEmEdicao(null)}
+                  className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
+                >
+                  ×
+                </button>
+              </div>
+              
+              <div>
+                <label className="text-sm font-semibold">Descrição</label>
+                <p className="text-sm text-gray-600 mt-1 bg-gray-50 p-2 rounded">{fatorEmEdicao.descricao}</p>
+              </div>
+              
+              <div>
+                <label className="text-sm font-semibold">Categoria</label>
+                <p className="text-sm text-gray-600 mt-1 bg-gray-50 p-2 rounded">{fatorEmEdicao.categoria}</p>
+              </div>
+              
+              <div className="bg-blue-50 p-3 rounded-lg">
+                <div className="flex justify-between mb-3">
+                  <label className="text-sm font-semibold">Impacto</label>
+                  <span className="text-sm font-bold text-blue-600">{impactoEdicao}/5</span>
+                </div>
+                <Slider
+                  value={[impactoEdicao]}
+                  onValueChange={(value) => setImpactoEdicao(value[0])}
+                  min={1}
+                  max={5}
+                  step={1}
+                  className="mt-2"
+                />
+              </div>
+              
+              <div className="bg-orange-50 p-3 rounded-lg">
+                <div className="flex justify-between mb-3">
+                  <label className="text-sm font-semibold">Probabilidade</label>
+                  <span className="text-sm font-bold text-orange-600">{probabilidadeEdicao}/5</span>
+                </div>
+                <Slider
+                  value={[probabilidadeEdicao]}
+                  onValueChange={(value) => setProbabilidadeEdicao(value[0])}
+                  min={1}
+                  max={5}
+                  step={1}
+                  className="mt-2"
+                />
+              </div>
+              
+              <div className="flex gap-2 pt-4 border-t">
+                <Button 
+                  onClick={editarFator} 
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                >
+                  Salvar Alterações
+                </Button>
+                <Button 
+                  onClick={deletarFatorEdicao} 
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                >
+                  Deletar
+                </Button>
+                <Button 
+                  onClick={() => setFatorEmEdicao(null)} 
+                  variant="outline" 
+                  className="flex-1"
+                >
+                  Cancelar
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Plano de Ação */}
+      {categoriaAtiva && (
+        <PendingFeature />
+      )}
+
+      {/* Comentários */}
+      <PendingFeature />
+    </div>
+  );
+}
+
+export default function ScopedAnalisePestelLite(props:AnalisePestelLiteProps){return <ReadOnly><AnalisePestelLite {...props}/></ReadOnly>;}

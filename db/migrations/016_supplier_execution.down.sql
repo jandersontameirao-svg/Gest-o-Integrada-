@@ -1,0 +1,3 @@
+DROP TABLE supplier_execution_history;
+DROP TABLE supplier_execution_proposals;
+DROP TABLE supplier_execution_requests;

@@ -1,0 +1,90 @@
+name: Foundation CI
+on:
+  pull_request:
+  push:
+    branches: [main, dev/comando-01-fundacao]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: ci-disposable-root
+          MYSQL_DATABASE: arqueo_demo
+          MYSQL_USER: arqueo_app
+          MYSQL_PASSWORD: ci-disposable-app
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-interval=10s --health-timeout=5s --health-retries=12
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      NODE_ENV: test
+      DB_NAME: arqueo_demo
+      DB_USER: arqueo_app
+      DB_PASSWORD: ci-disposable-app
+      DEMO_PASSWORD: ci-synthetic-password-only-2026
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Instalar dependências
+        run: npm ci
+      - name: Configuração descartável de testes
+        run: touch .env
+      - run: npm run build
+      - run: npm test
+      - run: npm run migrate
+      - name: Migração idempotente
+        run: npm run migrate
+      - run: npm run seed
+      - run: npm run test:integration
+      - name: Rollback em banco descartável
+        run: npm run migrate -- down
+        env:
+          ALLOW_DESTRUCTIVE_ROLLBACK: 'yes'
+      - name: Reaplicar após rollback
+        run: npm run migrate
+      - name: Validar dados e API após rollback/reaplicação
+        run: |
+          npm run seed
+          npm run test:integration
+      - name: Recriar apenas o banco descartável para E2E
+        run: |
+          npm run migrate -- down
+          npm run migrate
+          npm run seed
+        env:
+          ALLOW_DESTRUCTIVE_ROLLBACK: 'yes'
+      - name: Instalar Chromium de teste
+        run: npx playwright install --with-deps chromium
+      - name: Paridade dos formulários no navegador
+        run: npm run test:e2e
+      - name: Diagnóstico acessível de falhas sintéticas
+        if: failure()
+        run: |
+          python - <<'PYTHON'
+          from pathlib import Path
+          for p in Path('test-results').rglob('error-context.md'):
+              print(p.read_text()[:30000])
+          PYTHON
+      - name: Evidências de navegador (somente dados sintéticos)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sge-browser-evidence
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+      - name: Auditoria de dependências
+        run: npm audit --audit-level=high
+      - name: Lockfile preservado
+        run: git diff --exit-code -- package.json package-lock.json
+

@@ -1,0 +1,47 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {randomUUID} from 'node:crypto';
+import {rows} from '../server/db.ts';
+export function registerScheduleTests(base:()=>string,director:()=>Promise<string>,manager:()=>Promise<string>){
+ let id='',foreign='',a='',b='';
+ const data={name:'Calendário sintético 08B',internalCode:'CAL-08B',description:'Sem dados reais',managerId:null,status:'planning',methodology:'waterfall',priority:'medium',currency:'BRL',proposedValue:'0.00',decisionReason:'Diretor autoriza somente planejamento sintético'};
+ async function api(path:string,method='GET',body?:Record<string,unknown>,token?:string){return fetch(base()+path,{method,headers:{Authorization:'Bearer '+(token??await director()),'Content-Type':'application/json'},...(body?{body:JSON.stringify({requestId:randomUUID(),...body})}:{})});}
+ const state=async()=>{const r=await api('/projects/'+id);assert.equal(r.status,200,await r.clone().text());return r.json();};
+ const preview=async()=>{const r=await api('/projects/'+id+'/schedule');assert.equal(r.status,200,await r.clone().text());return r.json();};
+ async function record(kind:string,payload:Record<string,unknown>,old?:{id:string;revision:number}){const s=await state();return api('/projects/'+id+'/records/'+kind,'POST',{revision:s.project.revision,data:payload,...(old?{id:old.id,recordRevision:old.revision}:{})});}
+ const task=(title:string)=>({title,description:'',startDate:'2026-11-06',endDate:'2026-11-06',durationDays:2,progress:0,status:'todo',priority:'medium',storyPoints:0,estimatedHours:0});
+ const work={name:'Calendário sintético',workingDays:[1,2,3,4,5],exceptions:[{date:'2026-11-09',type:'HOLIDAY',reason:'Feriado sintético'}]};
+ test('08B calendário persistente é separado do cronograma; preview não grava e contém proveniência',async()=>{
+  let r=await api('/projects','POST',{companyId:'arqueoproject',explicitDirectorDecision:true,data});assert.equal(r.status,201);id=(await r.json()).id;r=await api('/projects','POST',{companyId:'arqueocean',explicitDirectorDecision:true,data:{...data,internalCode:'CAL-OCEAN'}});assert.equal(r.status,201);foreign=(await r.json()).id;
+  r=await record('task',task('A'));assert.equal(r.status,200);a=(await r.json()).id;r=await record('task',{...task('B'),durationDays:1});assert.equal(r.status,200);b=(await r.json()).id;r=await record('dependency',{predecessorId:a,successorId:b,type:'FS',lagDays:0});assert.equal(r.status,200);
+  let s=await state();r=await api('/projects/'+id+'/schedule/calendar','POST',{revision:s.project.revision,calendarRevision:0,calendar:work,reason:'Calendário aprovado sintético'});assert.equal(r.status,200,await r.clone().text());assert.equal((await r.json()).scheduleChanged,false);s=await state();assert.equal(s.records.find((r:{id:string})=>r.id===a).payload.endDate,'2026-11-06');assert.equal(s.workCalendar.calendar.exceptions[0].date,'2026-11-09');const p=await preview();assert.equal(p.companyId,'arqueoproject');assert.equal(p.projectId,id);assert.equal(p.analysis.tasks.find((t:{id:string})=>t.id===a).earlyFinish,'2026-11-10');assert.equal(p.analysis.tasks.find((t:{id:string})=>t.id===b).earlyStart,'2026-11-11');assert.equal(p.previewHash.length,64);assert.equal((await state()).project.revision,p.projectRevision);
+ });
+ test('08B prévia adulterada/sem confirmação é negada e apply concorrente idempotente persiste uma revisão',async()=>{
+  const p=await preview(),body={revision:p.projectRevision,calendarRevision:p.config.revision,previewHash:p.previewHash,confirmed:true,reason:'Confirmação sintética das datas',requestId:randomUUID()};
+  assert.equal((await api('/projects/'+id+'/schedule/apply','POST',{...body,requestId:randomUUID(),confirmed:false})).status,400);assert.equal((await api('/projects/'+id+'/schedule/apply','POST',{...body,requestId:randomUUID(),previewHash:'0'.repeat(64)})).status,409);
+  const pair=await Promise.all([api('/projects/'+id+'/schedule/apply','POST',body),api('/projects/'+id+'/schedule/apply','POST',body)]);assert.deepEqual(pair.map(r=>r.status),[200,200]);assert.equal((await pair[0].json()).changed,2);assert.equal((await pair[1].json()).revision,p.projectRevision+1);
+  const s=await state();assert.equal(s.records.find((r:{id:string})=>r.id===a).payload.endDate,'2026-11-10');assert.equal(s.records.find((r:{id:string})=>r.id===b).payload.startDate,'2026-11-11');assert.equal((await preview()).analysis.changes.length,0);const [n]=await rows<{n:number}>('SELECT COUNT(*) n FROM operational_project_history WHERE project_id=? AND action="schedule.calendar.apply"',[id]);assert.equal(n.n,1);
+  assert.equal((await api('/projects/'+id+'/recalculate','POST',{revision:s.project.revision})).status,409);
+ });
+ test('08B alterações posteriores invalidam preview; calendário concorrente respeita CAS e histórico',async()=>{
+  const p=await preview(),s=await state(),old=s.records.find((r:{id:string})=>r.id===a);assert.equal((await record('task',{...old.payload,title:'A revisada'},old)).status,200);
+  assert.equal((await api('/projects/'+id+'/schedule/apply','POST',{revision:p.projectRevision,calendarRevision:p.config.revision,previewHash:p.previewHash,confirmed:true,reason:'Prévia obsoleta'})).status,409);
+  const current=await state(),input={revision:current.project.revision,calendarRevision:1,calendar:{...work,exceptions:[...work.exceptions,{date:'2026-11-12',type:'HALF_DAY',reason:'Meio dia sintético'}]},reason:'Revisão autorizada'};
+  const pair=await Promise.all([api('/projects/'+id+'/schedule/calendar','POST',input),api('/projects/'+id+'/schedule/calendar','POST',input)]);assert.deepEqual(pair.map(r=>r.status).sort(),[200,409]);assert.equal((await state()).workCalendar.revision,2);
+ });
+ test('08B segurança: sessão, empresa, exportação, configuração, IDs estrangeiros e UTU/Vinho',async()=>{
+  assert.equal((await fetch(base()+'/projects/'+id+'/schedule')).status,401);assert.equal((await api('/projects/'+foreign+'/schedule','GET',undefined,await manager())).status,403);
+  assert.equal((await api('/projects/'+id+'/schedule','GET',undefined,await manager())).status,200);assert.equal((await api('/projects/'+id+'/schedule?export=json','GET',undefined,await manager())).status,403);
+  let s=await state();assert.equal((await api('/projects/'+id+'/schedule/calendar','POST',{revision:s.project.revision,calendarRevision:2,calendar:work,reason:'Negar gerente sem concessão'},await manager())).status,403);
+  assert.equal((await record('dependency',{predecessorId:a,successorId:randomUUID(),type:'FS',lagDays:0})).status,400);
+  for(const companyId of ['utu','vinho-24'])assert.equal((await api('/projects','POST',{companyId,explicitDirectorDecision:true,data})).status,403);
+  const r=await api('/projects/'+id+'/schedule?export=json');assert.equal(r.status,200);assert.match(r.headers.get('content-disposition')!,/planejamento-calendario\.json/);assert.equal((await r.json()).companyId,'arqueoproject');
+ });
+ test('08B sprint encerrada bloqueia aplicação inteira, preservando as datas de todas as tarefas',async()=>{
+  const today=new Date().toISOString().slice(0,10);let r=await record('sprint',{title:'Encerrar sintética',goal:'',status:'planned',startDate:today,endDate:today});assert.equal(r.status,200);const sprint=(await r.json()).id;let s=await state();let t=s.records.find((r:{id:string})=>r.id===a);assert.equal((await record('task',{...t.payload,sprintId:sprint},t)).status,200);s=await state();r=await api('/projects/'+id+'/scrum/'+sprint+'/start','POST',{revision:s.project.revision,recordRevision:1,reason:'Iniciar sintética'});assert.equal(r.status,200);s=await state();r=await api('/projects/'+id+'/scrum/'+sprint+'/complete','POST',{revision:s.project.revision,recordRevision:2,reason:'Encerrar sem completar tarefas',acceptIncomplete:true});assert.equal(r.status,200);
+  s=await state();r=await api('/projects/'+id+'/schedule/calendar','POST',{revision:s.project.revision,calendarRevision:2,calendar:{...work,exceptions:[...work.exceptions,{date:'2026-11-10',type:'HOLIDAY',reason:'Forçar impacto sintético'}]},reason:'Apenas configuração, sem reescrever passado'});assert.equal(r.status,200);const p=await preview();assert.ok(p.analysis.changes.some((c:{id:string})=>c.id===a));assert.equal((await api('/projects/'+id+'/schedule/apply','POST',{revision:p.projectRevision,calendarRevision:3,previewHash:p.previewHash,confirmed:true,reason:'Negar impacto em sprint encerrada'})).status,409);s=await state();assert.equal(s.records.find((r:{id:string})=>r.id===a).payload.endDate,'2026-11-10');assert.equal(s.records.find((r:{id:string})=>r.id===b).payload.startDate,'2026-11-11');
+ });
+ test('08B projeto encerrado nega mudança de calendário e não gera orçamento, compromisso ou financeiro',async()=>{
+  let s=await state();assert.equal((await api('/projects/'+id,'PUT',{revision:s.project.revision,data:{...s.project.payload,status:'completed'}})).status,200);s=await state();assert.equal((await api('/projects/'+id+'/schedule/calendar','POST',{revision:s.project.revision,calendarRevision:3,calendar:work,reason:'Negar projeto encerrado'})).status,409);const [n]=await rows<{n:number}>('SELECT COUNT(*) n FROM operational_project_budgets WHERE project_id=?',[id]);assert.equal(n.n,0);const [events]=await rows<{n:number}>('SELECT COUNT(*) n FROM module_event_outbox WHERE source_module="projects" AND entity_id=? AND event_type="operational_project.schedule.calendar.apply.v1"',[id]);assert.equal(events.n,1);
+ });
+}

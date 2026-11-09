@@ -1,0 +1,11 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {calendar,attainment,rag} from '../shared/strategy/model.ts';
+import {validateMethod,validateEntry} from '../server/strategy-validation.ts';
+import {fixtures} from './strategy-fixtures.ts';
+test('paridade SGE: sete modelos completos preservam os campos dos fixtures sintéticos',()=>{for(const [kind,value]of Object.entries(fixtures)){const snapshot=JSON.stringify(value);assert.equal(validateMethod(kind,value),kind);assert.equal(JSON.stringify(value),snapshot);}});
+test('OKR preserva mais de três KRs e realizado, sem serialização destrutiva',()=>{validateMethod('okr',fixtures.okr);assert.equal(fixtures.okr[0].keyResults.length,4);assert.equal(fixtures.okr[0].keyResults[3].atual,40);});
+test('perspectivas customizadas do BSC preservadas sem remover quatro perspectivas padrão',()=>{assert.doesNotThrow(()=>validateMethod('bsc',[...fixtures.bsc,{id:'custom',nome:'Inovação',icone:'custom',cor:'#123456',indicadores:[]}]));assert.throws(()=>validateMethod('bsc',fixtures.bsc.slice(1)));});
+test('SGE mensal: fórmula e limiares RAG 90/70 preservados; denominador nulo não vira sucesso',()=>{assert.equal(attainment(70,100),70);assert.equal(rag(90),'verde');assert.equal(rag(70),'amarelo');assert.equal(rag(69.99),'vermelho');assert.equal(attainment(1,0),null);assert.equal(rag(null),null);});
+test('calendário plurianual tem um ciclo anual, quatro trimestrais e doze mensais por ano',()=>{const cycles=calendar(2026,2027);assert.equal(cycles.length,34);assert.equal(cycles.filter(c=>c.kind==='monthly').length,24);});
+test('dados inválidos/IDs duplicados/NaN não são aceitos ou modificados silenciosamente',()=>{assert.throws(()=>validateMethod('vrio',[{...fixtures.vrio[0],valioso:6}]));assert.throws(()=>validateMethod('porter',[...fixtures.porter,...fixtures.porter]));assert.throws(()=>validateMethod('okr',[{id:'x',objetivo:'Teste',keyResults:[{id:'a',descricao:'Teste',meta:0,atual:1}]}]));assert.throws(()=>validateEntry('kpi-value',{kpiId:'id',ano:2026,mes:1,meta:NaN}));});
