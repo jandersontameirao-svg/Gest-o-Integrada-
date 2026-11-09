@@ -15,7 +15,7 @@ export async function observeSprints(c:PoolConnection,p:Project,u:Principal,list
   await c.execute('INSERT INTO project_sprint_observations(id,project_id,sprint_id,project_revision,actor_id,recorded_at,reason,total_points,remaining_points,task_count,done_count) VALUES (?,?,?,?,?,UTC_TIMESTAMP(6),?,?,?,?,?)',[randomUUID(),p.id,id,p.revision,u.id,reason,totals.totalPoints,totals.remainingPoints,totals.taskCount,totals.doneCount]);
  }
 }
-async function observations(projectId:string,sprintId:string,c?:PoolConnection){
+export async function observations(projectId:string,sprintId:string,c?:PoolConnection){
  return rows<SprintObservation>('SELECT id,sprint_id sprintId,project_revision projectRevision,actor_id actorId,DATE_FORMAT(recorded_at,"%Y-%m-%dT%H:%i:%s.%fZ") recordedAt,reason,total_points totalPoints,remaining_points remainingPoints,task_count taskCount,done_count doneCount FROM project_sprint_observations WHERE project_id=? AND sprint_id=? ORDER BY project_revision',[projectId,sprintId],c);
 }
 export function registerScrum(router:Router){
