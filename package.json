@@ -1,0 +1,60 @@
+{
+  "name": "grupo-arqueo-gestao-integrada",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "dev:api": "node --env-file=.env --experimental-strip-types server/index.ts",
+    "check": "tsc --noEmit",
+    "build": "npm run check && vite build",
+    "test": "node --test tests/core.test.ts tests/governance-policy.test.ts tests/strategy.test.ts tests/consolidation.test.ts tests/contracts.test.ts tests/contracts-03d.test.ts tests/projects.test.ts tests/suppliers-structure.test.ts tests/suppliers-operations.test.ts tests/suppliers-reviews.test.ts tests/suppliers-documents.test.ts tests/suppliers-legal.test.ts tests/suppliers-lifecycle.test.ts tests/suppliers-integration.test.ts tests/suppliers-execution.test.ts tests/finance.test.ts tests/finance-planning.test.ts tests/finance-imports.test.ts tests/finance-advances.test.ts tests/finance-series.test.ts tests/finance-receipts.test.ts tests/finance-final.test.ts tests/finance-integrity.test.ts tests/strategy-requests.test.ts tests/finance-origin-position.test.ts tests/strategy-finance.test.ts tests/strategy-financial-publications.test.ts tests/financial-series.test.ts tests/projects-scrum.test.ts tests/projects-schedule.test.ts tests/projects-templates.test.ts",
+    "test:integration": "node --env-file=.env --test tests/api.test.ts",
+    "migrate": "node --env-file=.env scripts/migrate.ts",
+    "seed": "node --env-file=.env scripts/seed.ts",
+    "start": "node --env-file=.env server/index.ts",
+    "test:e2e": "E2E_OUTPUT_DIR=test-results/finance-final PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/finance-final playwright test tests/browser/finance-final.spec.ts && E2E_OUTPUT_DIR=test-results/contracts PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/contracts playwright test tests/browser/contracts.spec.ts && E2E_OUTPUT_DIR=test-results/strategy PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/strategy playwright test tests/browser/strategy.spec.ts && E2E_OUTPUT_DIR=test-results/contracts-03d PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/contracts-03d playwright test tests/browser/contracts-03d.spec.ts && E2E_OUTPUT_DIR=test-results/projects PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/projects playwright test tests/browser/projects.spec.ts && E2E_OUTPUT_DIR=test-results/suppliers-structure PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/suppliers-structure playwright test tests/browser/suppliers-structure.spec.ts && E2E_OUTPUT_DIR=test-results/suppliers-operations PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/suppliers-operations playwright test tests/browser/suppliers-operations.spec.ts && E2E_OUTPUT_DIR=test-results/suppliers-reviews PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/suppliers-reviews playwright test tests/browser/suppliers-reviews.spec.ts && E2E_OUTPUT_DIR=test-results/suppliers-documents PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/suppliers-documents playwright test tests/browser/suppliers-documents.spec.ts && E2E_OUTPUT_DIR=test-results/suppliers-legal PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/suppliers-legal playwright test tests/browser/suppliers-legal.spec.ts && E2E_OUTPUT_DIR=test-results/suppliers-lifecycle PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/suppliers-lifecycle playwright test tests/browser/suppliers-lifecycle.spec.ts && E2E_OUTPUT_DIR=test-results/suppliers-integration PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/suppliers-integration playwright test tests/browser/suppliers-integration.spec.ts && E2E_OUTPUT_DIR=test-results/suppliers-execution PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/suppliers-execution playwright test tests/browser/suppliers-execution.spec.ts && E2E_OUTPUT_DIR=test-results/finance PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/finance playwright test tests/browser/finance.spec.ts && E2E_OUTPUT_DIR=test-results/finance-planning PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/finance-planning playwright test tests/browser/finance-planning.spec.ts && E2E_OUTPUT_DIR=test-results/finance-imports PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/finance-imports playwright test tests/browser/finance-imports.spec.ts && E2E_OUTPUT_DIR=test-results/finance-daily PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/finance-daily playwright test tests/browser/finance-daily.spec.ts && E2E_OUTPUT_DIR=test-results/finance-advances PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/finance-advances playwright test tests/browser/finance-advances.spec.ts && E2E_OUTPUT_DIR=test-results/finance-series PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/finance-series playwright test tests/browser/finance-series.spec.ts && E2E_OUTPUT_DIR=test-results/finance-receipts PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/finance-receipts playwright test tests/browser/finance-receipts.spec.ts && E2E_OUTPUT_DIR=test-results/finance-integrity PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/finance-integrity playwright test tests/browser/finance-integrity.spec.ts && E2E_OUTPUT_DIR=test-results/integration-finance PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/integration-finance playwright test tests/browser/integration-finance.spec.ts && E2E_OUTPUT_DIR=test-results/integration-project-finance PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/integration-project-finance playwright test tests/browser/integration-project-finance.spec.ts && E2E_OUTPUT_DIR=test-results/strategy-finance PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/strategy-finance playwright test tests/browser/strategy-finance.spec.ts && E2E_OUTPUT_DIR=test-results/strategy-financial-publications PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/strategy-financial-publications playwright test tests/browser/strategy-financial-publications.spec.ts && E2E_OUTPUT_DIR=test-results/financial-series PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/financial-series playwright test tests/browser/financial-series.spec.ts && E2E_OUTPUT_DIR=test-results/projects-scrum PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/projects-scrum playwright test tests/browser/projects-scrum.spec.ts && E2E_OUTPUT_DIR=test-results/projects-calendar PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/projects-calendar playwright test tests/browser/projects-calendar.spec.ts && E2E_OUTPUT_DIR=test-results/projects-templates PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report/projects-templates playwright test tests/browser/projects-templates.spec.ts"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-slider": "^1.3.6",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.2.1",
+    "fflate": "^0.8.3",
+    "helmet": "^8.1.0",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.9",
+    "lucide-react": "^0.453.0",
+    "mysql2": "^3.15.1",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "recharts": "^2.15.4",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@tailwindcss/vite": "^4.1.14",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.7.0",
+    "@types/react": "^19.2.1",
+    "@types/react-dom": "^19.2.1",
+    "@vitejs/plugin-react": "^5.0.4",
+    "tailwindcss": "^4.1.14",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.7"
+  }
+}
