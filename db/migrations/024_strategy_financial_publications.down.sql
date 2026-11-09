@@ -1,3 +1,0 @@
-DROP TABLE strategy_financial_requests;
-DROP TABLE strategy_financial_versions;
-DROP TABLE strategy_financial_publications;

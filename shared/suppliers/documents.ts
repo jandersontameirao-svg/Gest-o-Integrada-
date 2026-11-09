@@ -1,7 +1,0 @@
-export const supplierDocumentTypes={contract:'Contrato',certificate:'Certidão',invoice:'Nota Fiscal (arquivo)',license:'Licença',insurance:'Seguro',registration:'Registro',other:'Outro'} as const;
-export type SupplierDocumentType=keyof typeof supplierDocumentTypes;
-export type FileOwnerKind='supplier'|'contract'|'order'|'measurement';
-export type FileMetadata={name:string;documentType:SupplierDocumentType;qualificationKey:string;issuedAt:string;expiresAt:string;description:string};
-export type SupplierPrivateFile={id:string;companyId:string;supplierId:string;ownerKind:FileOwnerKind;ownerId:string;projectId:string|null;seriesId:string;version:number;fileName:string;mimeType:string;size:number;sha256:string;metadata:FileMetadata;status:'pending'|'accepted'|'rejected'|'archived';revision:number;createdBy:string;createdAt:string};
-export type QualificationRule={name:string;key:string;documentType:SupplierDocumentType;ownerKind:'supplier'|'contract'|'order';effectiveFrom:string;enabled:boolean;required:boolean;needsExpiry:boolean;validThroughEnd:boolean;scopeModelIds:string[];projectId:string|null};
-export function documentValidity(metadata:Pick<FileMetadata,'issuedAt'|'expiresAt'>,from:string,to:string,rule:Pick<QualificationRule,'needsExpiry'|'validThroughEnd'>){if(metadata.issuedAt&&metadata.issuedAt>from)return 'not_yet_valid';if(rule.needsExpiry&&!metadata.expiresAt)return 'expiry_missing';if(metadata.expiresAt&&metadata.expiresAt<(rule.validThroughEnd?to:from))return 'expired';return 'valid';}

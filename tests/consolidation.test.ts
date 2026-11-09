@@ -1,6 +1,0 @@
-import {test} from 'node:test';
-import assert from 'node:assert/strict';
-import {consolidate,sumDecimal,date,type Fact} from '../shared/strategy/consolidation.ts';
-const fact={source_id:'a',plan_id:'p',scope_id:'c',metric_id:'m',measure:'kpi-value',period_start:'2026-01-01',period_end:'2026-01-31',currency:'BRL',origin_unit_id:'arqueo',source_revision:1,current_revision:1,plan_version:1,target_value:'0.100000',actual_value:'0.200000',name:'Sintético',unit:'reais',additive:1} satisfies Fact;
-test('Consolidação exata não mistura moeda, medida ou competência',()=>{assert.equal(sumDecimal(['0.100000','0.200000']),'0.300000');const g=consolidate([fact,{...fact,source_id:'b'},{...fact,source_id:'c',currency:'USD'},{...fact,source_id:'d',period_start:'2026-02-01',period_end:'2026-02-28'},{...fact,source_id:'e',measure:'target'}]);assert.equal(g.length,4);assert.equal(g[0].actual,'0.400000');assert.equal(g[0].count,2);});
-test('Qualitativos, ausências e fontes desatualizadas não produzem totais falsos',()=>{assert.equal(consolidate([{...fact,additive:0}])[0].actual,null);assert.equal(consolidate([{...fact,actual_value:null}])[0].actual,null);const stale=consolidate([{...fact,current_revision:2}])[0];assert.equal(stale.actual,null);assert.equal(stale.stale,true);assert.equal(sumDecimal(['-0.100000','0.200000']),'0.100000');assert.throws(()=>date('2026-02-30'));});

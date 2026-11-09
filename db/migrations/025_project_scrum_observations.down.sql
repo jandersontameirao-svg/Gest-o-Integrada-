@@ -1,1 +1,0 @@
-DROP TABLE project_sprint_observations;

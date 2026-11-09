@@ -1,3 +1,0 @@
-DROP TABLE supplier_lifecycle_requests;
-DROP TABLE supplier_lifecycle_history;
-DROP TABLE supplier_contract_amendments;

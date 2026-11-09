@@ -1,3 +1,0 @@
-DROP TABLE supplier_integration_requests;
-DROP TABLE supplier_order_change_history;
-DROP TABLE supplier_order_changes;
