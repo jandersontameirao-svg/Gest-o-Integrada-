@@ -1,3 +1,4 @@
+import {registerReportTests} from './projects-reports.integration.ts';
 import {registerTemplateTests} from './projects-templates.integration.ts';
 import {registerScheduleTests} from './projects-schedule.integration.ts';
 import {registerFinancialSeriesTests} from './financial-series.integration.ts';
@@ -60,6 +61,7 @@ const supplierLegalServer=createApp().listen(0,'127.0.0.1');let supplierLegalBas
 const supplierDocumentsServer=createApp().listen(0,'127.0.0.1');let supplierDocumentsBase:string;
 const supplierReviewsServer=createApp().listen(0,'127.0.0.1');let supplierReviewsBase:string;
 const suppliersServer=createApp().listen(0,'127.0.0.1');let suppliersBase:string;
+const reportServer=createApp().listen(0,'127.0.0.1');let reportBase:string;
 const templateServer=createApp().listen(0,'127.0.0.1');let templateBase:string;
 const scheduleServer=createApp().listen(0,'127.0.0.1');let scheduleBase:string;
 const scrumServer=createApp().listen(0,'127.0.0.1');let scrumBase:string;
@@ -74,6 +76,7 @@ let alignmentBase:string;
 let strategyBase:string;
 let base:string;
 before(async()=>{
+ if(!reportServer.listening)await new Promise<void>(resolve=>reportServer.once('listening',resolve));reportBase='http://127.0.0.1:'+(reportServer.address() as AddressInfo).port+'/api/v1';
  if(!financialSeriesServer.listening)await new Promise<void>(resolve=>financialSeriesServer.once('listening',resolve));financialSeriesBase='http://127.0.0.1:'+(financialSeriesServer.address() as AddressInfo).port+'/api/v1';
  if(!financialPublicationServer.listening)await new Promise<void>(resolve=>financialPublicationServer.once('listening',resolve));financialPublicationBase='http://127.0.0.1:'+(financialPublicationServer.address() as AddressInfo).port+'/api/v1';
  if(!strategyFinanceServer.listening)await new Promise<void>(resolve=>strategyFinanceServer.once('listening',resolve));strategyFinanceBase='http://127.0.0.1:'+(strategyFinanceServer.address() as AddressInfo).port+'/api/v1';
@@ -109,7 +112,7 @@ before(async()=>{
  strategyBase='http://127.0.0.1:'+(strategyServer.address() as AddressInfo).port+'/api/v1';
  base='http://127.0.0.1:'+(server.address() as AddressInfo).port+'/api/v1';
 });
-after(async()=>{for(const instance of [financialSeriesServer,financialPublicationServer,strategyFinanceServer,financeIntegrityServer,financeFinalServer,financeReceiptServer,supplierBindingServer,supplierChangeServer,supplierExecutionServer,financeSeriesServer,financeAdvanceServer,financeDailyServer,financeImportsServer,financePlanningServer,financeServer,financeSourceServer])await new Promise<void>((resolve,reject)=>instance.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierLifecycleServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierLegalServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierDocumentsServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierReviewsServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierOperationsServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>suppliersServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>templateServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>scheduleServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>scrumServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>projectsServer.close(error=>error?reject(error):resolve()));for(const instance of [integrityServer,filesServer])await new Promise<void>((resolve,reject)=>instance.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>consolidationServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>contractServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>alignmentServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>strategyServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()));await pool.end();});
+after(async()=>{await new Promise<void>((resolve,reject)=>reportServer.close(error=>error?reject(error):resolve()));for(const instance of [financialSeriesServer,financialPublicationServer,strategyFinanceServer,financeIntegrityServer,financeFinalServer,financeReceiptServer,supplierBindingServer,supplierChangeServer,supplierExecutionServer,financeSeriesServer,financeAdvanceServer,financeDailyServer,financeImportsServer,financePlanningServer,financeServer,financeSourceServer])await new Promise<void>((resolve,reject)=>instance.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierLifecycleServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierLegalServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierDocumentsServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierReviewsServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>supplierOperationsServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>suppliersServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>templateServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>scheduleServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>scrumServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>projectsServer.close(error=>error?reject(error):resolve()));for(const instance of [integrityServer,filesServer])await new Promise<void>((resolve,reject)=>instance.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>consolidationServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>contractServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>alignmentServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>strategyServer.close(error=>error?reject(error):resolve()));await new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()));await pool.end();});
 async function login(email:string){
  const response=await fetch(base+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:process.env.DEMO_PASSWORD})});
  assert.equal(response.status,200);return (await response.json()).token as string;
@@ -229,6 +232,7 @@ registerSupplierStructureTests(()=>suppliersBase,directorToken,managerToken);
 registerProjectTests(()=>projectsBase,directorToken,managerToken);
 registerScrumTests(()=>scrumBase,directorToken,managerToken);
 registerScheduleTests(()=>scheduleBase,directorToken,managerToken);
+registerReportTests(()=>reportBase,directorToken,managerToken);
 registerTemplateTests(()=>templateBase,directorToken,managerToken);
 register03dTests(()=>integrityBase,()=>filesBase,directorToken,managerToken);
 register03cTests(()=>consolidationBase,directorToken,managerToken);
@@ -271,7 +275,7 @@ test('migrações validam checksum/dirty e rollback 002 preserva 001 e usuários
  assert.equal((await rows<{n:number}>('SELECT COUNT(*) n FROM users'))[0].n,before);
  assert.equal((await rows('SELECT version FROM schema_migrations')).length,1);
  await migrate(c,'up');await migrate(c,'up');
- assert.equal((await rows('SELECT version FROM schema_migrations')).length,27);
+ assert.equal((await rows('SELECT version FROM schema_migrations')).length,28);
  }finally{c.release();}
 });
 

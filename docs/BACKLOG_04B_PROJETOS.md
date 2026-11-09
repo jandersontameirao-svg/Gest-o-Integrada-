@@ -17,3 +17,9 @@ Aprimorar: calendário persistente de disponibilidade (hoje alerta na escrita), 
 O saldo após fatos conhecidos não equivale ao saldo após compromissos, indisponível até 05B. Fato acima do orçamento permanece rascunho até ajuste autorizado; política de sobrecusto deve ser homologada. Projeto já materializado não é apagado ou bloqueado automaticamente por revogação posterior da abertura: tratamento operacional depende de decisão humana.
 
 Não declarar paridade integral por quantidade de arquivos. Checklist de homologação: comparar formulários/grade/cartões ao original, testar erros/recarga/histórico e perfis; homologar cálculo de datas e orçamento; conferir 05B canônico antes de ativar espelhamento. Sem merge/deploy automático.
+
+## 08D — Relatórios
+
+Entregue o recorte de emissão por empresa/projeto, filtros reais, snapshots imutáveis e exportações PDF/CSV/XLSX/JSON autorizadas. Ver `IMPLEMENTACAO_08D_RELATORIOS_PROJETOS.md` e CI da PR correspondente.
+
+Melhorias futuras: variantes especializadas PDF de Gantt/Scrum/orçamento; agrupamento gráfico por fase; diferenciação analítica mais profunda entre resumo executivo e visão por empresa; XML MS Project com validação de dependências; paginação do histórico além de 50 emissões. Homologação visual/negócio continua distinta dos testes automatizados. Não há bloqueio para continuar o desenvolvimento por ausência de integração de IA: permanece desligada por decisão do usuário.
