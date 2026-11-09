@@ -47,3 +47,7 @@ Build e TypeScript locais aprovados; 150 testes unitários locais aprovados. Int
 | Homologação visual e de negócio | Pendente de revisão | CI não equivale a homologação pelo CEO |
 
 Não se declara conclusão integral do módulo Projetos. Não foram ativadas integrações externas, IA, envio de mensagens, migração real, merge ou deploy.
+
+## Correção de regressão detectada no CI 107
+
+Build, 150 unitários e 207 integrações MySQL passaram duas vezes, incluindo rollback/reaplicação. A regressão Playwright de Estratégia demonstrou uma consulta de consolidação antes da confirmação da publicação recém-iniciada: um toast anterior ainda visível não garantia o término da nova gravação, e os botões de consulta/exportação estavam habilitados enquanto a escrita corria. Correção mínima em `client/strategy/Alignment.tsx`: ambos aguardam o estado de gravação já existente. O teste mantém a verificação exata de `25.000000`, segura deliberadamente a resposta real da publicação e exige os dois botões desabilitados até sua liberação. Não houve alteração de cálculo, autorização ou backend estratégico. Nenhum retry, aumento de timeout ou teste desabilitado. CI 107: https://github.com/jandersontameirao-svg/Gest-o-Integrada-/actions/runs/42578413475.
