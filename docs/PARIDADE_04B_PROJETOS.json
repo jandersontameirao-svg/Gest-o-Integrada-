@@ -188,9 +188,58 @@
         "tests/projects-reports.integration.ts",
         "tests/browser/projects-reports.spec.ts"
       ]
+    },
+    {
+      "source": "client/src/lib/export-utils.ts",
+      "source_sha256": "28fc080c1429a9432430aa3d59622e37feedcc1e64b7dd93af5da436ce274fcb",
+      "destination": "shared/projects/special-reports.ts",
+      "adapted_sha256": "93b2187da18a7738ebe37a05560df1d6812f4a61dbc824662b89cfa85b2a7f24",
+      "status": "ADAPTAR — 08E Gantt/sprint especializados e componentes de gráficos; orçamento usa regras canônicas GI, sem alegar exportador financeiro inexistente no legado",
+      "tests": [
+        "tests/projects-special-reports.test.ts",
+        "tests/projects-special-reports.integration.ts",
+        "tests/browser/projects-special-reports.spec.ts"
+      ]
+    },
+    {
+      "source": "client/src/lib/export-utils.ts",
+      "source_sha256": "28fc080c1429a9432430aa3d59622e37feedcc1e64b7dd93af5da436ce274fcb",
+      "destination": "server/projects/report-visuals.ts",
+      "adapted_sha256": "72db3efe653d35fdecff9811dac9e6db9f2ddd945be63f36b2c30dbed2206a5a",
+      "status": "ADAPTAR — 08E Gantt/sprint especializados e componentes de gráficos; orçamento usa regras canônicas GI, sem alegar exportador financeiro inexistente no legado",
+      "tests": [
+        "tests/projects-special-reports.test.ts",
+        "tests/projects-special-reports.integration.ts",
+        "tests/browser/projects-special-reports.spec.ts"
+      ]
+    },
+    {
+      "source": "client/src/pages/Scrum.tsx",
+      "source_sha256": "1d9141098edf3bd271dd50f12a3dfdd4eabad9626dac66132f84db1011d1806e",
+      "destination": "client/projects/ReportVisual.tsx",
+      "adapted_sha256": "d9373ebdf9a3bbe8d06ce70a60ac0c3f63ee89fa728bb27ef4d00b2397f3cc80",
+      "status": "ADAPTAR — 08E Gantt/sprint especializados e componentes de gráficos; orçamento usa regras canônicas GI, sem alegar exportador financeiro inexistente no legado",
+      "tests": [
+        "tests/projects-special-reports.test.ts",
+        "tests/projects-special-reports.integration.ts",
+        "tests/browser/projects-special-reports.spec.ts"
+      ]
+    },
+    {
+      "source": "client/src/pages/Reports.tsx",
+      "source_sha256": "84a57b5a14ef8e4db5164969122ba138c66bc97db1a720977b488bc9efd5e4dd",
+      "destination": "client/projects/Reports.tsx",
+      "adapted_sha256": "ce52f5e613a58e92c7ab3778beee9afb4ac18d895164fb3a1569b659abc89137",
+      "status": "ADAPTAR — 08E Gantt/sprint especializados e componentes de gráficos; orçamento usa regras canônicas GI, sem alegar exportador financeiro inexistente no legado",
+      "tests": [
+        "tests/projects-special-reports.test.ts",
+        "tests/projects-special-reports.integration.ts",
+        "tests/browser/projects-special-reports.spec.ts"
+      ]
     }
   ],
   "limitations": "Ver relatório e backlog; não há paridade integral declarada",
   "continuation_08b_base_sha": "fafc39e453a587852969aa40e68baefe0e16921d",
-  "continuation_08c_base_sha": "e93911b3991f13fc45d9a8ca2d043d77abc4bdd2"
+  "continuation_08c_base_sha": "e93911b3991f13fc45d9a8ca2d043d77abc4bdd2",
+  "continuation_08e_base_sha": "f6408e4231256fb1a61117a13c4dce3254b6bb9f"
 }

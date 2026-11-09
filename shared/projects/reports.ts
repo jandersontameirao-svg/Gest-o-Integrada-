@@ -2,22 +2,30 @@
  * phase/task breakdown, status and priority labels. All filters now apply server-side. */
 import type {Project,ProjectRecord} from './model.ts';
 import {dateOnly} from '../contracts/model.ts';
-export const reportTypes=[{id:'project_progress',title:'Progresso de Projetos',description:'Fases, atividades, progresso declarado e datas.'},{id:'tasks_summary',title:'Resumo de Tarefas',description:'Atividades, prioridades, responsáveis e atrasos.'},{id:'executive_summary',title:'Resumo Executivo',description:'Posição gerencial dos projetos da empresa.'},{id:'company_overview',title:'Visão por Empresa',description:'Resumo da empresa sem misturar moedas ou custos.'}] as const;
-export type ReportFilter={type:typeof reportTypes[number]['id'];projectId:string|null;from:string|null;to:string|null};
+export const reportTypes=[{id:'project_progress',title:'Progresso de Projetos',description:'Fases, atividades, progresso declarado e datas.'},{id:'tasks_summary',title:'Resumo de Tarefas',description:'Atividades, prioridades, responsáveis e atrasos.'},{id:'executive_summary',title:'Resumo Executivo',description:'Posição gerencial dos projetos da empresa.'},{id:'company_overview',title:'Visão por Empresa',description:'Resumo da empresa sem misturar moedas ou custos.'},{id:'gantt_schedule',title:'Cronograma Gantt',description:'Datas planejadas, dependências e caminho crítico.'},{id:'scrum_sprint',title:'Relatório de Sprint',description:'Objetivo, tarefas e burndown observado, sem estimativas fictícias.'},{id:'project_budget',title:'Orçamento do Projeto',description:'Original, atualizado, comprometido, realizado e saldo canônicos.'}] as const;
+export type ReportFilter={type:typeof reportTypes[number]['id'];projectId:string|null;from:string|null;to:string|null;sprintId?:string};
 export function reportFilter(input:unknown):ReportFilter{
  if(!input||typeof input!=='object'||Array.isArray(input))throw Error('Filtros obrigatórios.');const b=input as Record<string,unknown>;
- if(Object.keys(b).some(k=>!['type','projectId','from','to'].includes(k)))throw Error('Filtro desconhecido.');
+ if(Object.keys(b).some(k=>!['type','projectId','from','to','sprintId'].includes(k)))throw Error('Filtro desconhecido.');
  if(!reportTypes.some(t=>t.id===b.type))throw Error('Tipo de relatório inválido.');
  const date=(v:unknown)=>v===null||v===undefined||v===''?null:dateOnly(String(v));
  const from=date(b.from),to=date(b.to);if(from&&to&&from>to)throw Error('Período invertido.');
  const projectId=b.projectId===null||b.projectId===undefined||b.projectId===''?null:String(b.projectId);
  if(projectId&&!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(projectId))throw Error('Projeto inválido.');
- return {type:b.type as ReportFilter['type'],projectId,from,to};
+ const specialized=['gantt_schedule','scrum_sprint','project_budget'].includes(String(b.type));
+ if(specialized&&!projectId)throw Error('Selecione um projeto para o relatório especializado.');
+ const sprintId=b.sprintId===undefined||b.sprintId===null||b.sprintId===''?undefined:String(b.sprintId);
+ if(b.type==='scrum_sprint'&&(!sprintId||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(sprintId)))throw Error('Selecione uma sprint válida.');
+ if(b.type!=='scrum_sprint'&&sprintId)throw Error('Sprint não se aplica a este relatório.');
+ if(b.type==='project_budget'&&(from||to))throw Error('Orçamento é posição na emissão; filtro histórico de período não é suportado.');
+ return {type:b.type as ReportFilter['type'],projectId,from,to,...(sprintId?{sprintId}:{})};
 }
 const status:Record<string,string>={todo:'A fazer',in_progress:'Em andamento',review:'Em revisão',done:'Concluída',planning:'Planejamento',on_hold:'Pausado',completed:'Concluído',cancelled:'Cancelado'};
 const priority:Record<string,string>={low:'Baixa',medium:'Média',high:'Alta',urgent:'Urgente'};
 export type ReportSource={project:Project;records:ProjectRecord[]};
-export type ProjectReport={schemaVersion:1;companyId:string;companyName:string;generatedAt:string;filter:ReportFilter;title:string;columns:string[];rows:string[][];summary:{projects:number;tasks:number;completed:number;overdue:number;completionPercent:number|null};sources:{projectId:string;revision:number;originKey:string;currency:string;recordRevisions:{id:string;revision:number}[]}[];limitations:string[]};
+export type ReportSection={title:string;columns:string[];rows:string[][]};
+export type ReportVisual={kind:'gantt';bars:{id:string;label:string;start:string;end:string;progress:number;critical:boolean}[]}|{kind:'burndown';points:{date:string;ideal:number|null;actual:number|null}[]};
+export type ProjectReport={schemaVersion:1;companyId:string;companyName:string;generatedAt:string;filter:ReportFilter;title:string;columns:string[];rows:string[][];summary:{projects:number;tasks:number;completed:number;overdue:number;completionPercent:number|null};sources:{projectId:string;revision:number;originKey:string;currency:string;recordRevisions:{id:string;revision:number}[]}[];limitations:string[];sections?:ReportSection[];visual?:ReportVisual;metadata?:Record<string,unknown>};
 export function buildProjectReport(companyId:string,companyName:string,input:ReportSource[],filter:ReportFilter,generatedAt:string,labels:Record<string,string>={}):ProjectReport{
  const today=dateOnly(generatedAt.slice(0,10)),projects=input.filter(s=>s.project.companyId===companyId&&(!filter.projectId||s.project.id===filter.projectId));
  if(input.some(s=>s.project.companyId!==companyId))throw Error('Fonte de outra empresa.');
@@ -31,8 +39,14 @@ export function buildProjectReport(companyId:string,companyName:string,input:Rep
  const detailed=['project_progress','tasks_summary'].includes(filter.type);
  return {schemaVersion:1,companyId,companyName,generatedAt,filter,title:reportTypes.find(t=>t.id===filter.type)!.title,columns:detailed?['ID projeto','Projeto','ID atividade','Fase','Atividade','Estado','Prioridade','Responsável','Início planejado','Fim planejado','Progresso declarado (%)','Atrasada na emissão','Tipo de linha','Revisão']:['ID projeto','Número','Projeto','Estado','Moeda','Atividades folha','Concluídas','Atrasadas na emissão','Conclusão por contagem (%)','Revisão'],rows:detailed?taskRows:projectRows,summary,sources:projects.map(s=>({projectId:s.project.id,revision:s.project.revision,originKey:s.project.originKey,currency:s.project.payload.currency,recordRevisions:s.records.filter(r=>['phase','task'].includes(r.kind)).map(r=>({id:r.id,revision:r.revision}))})),limitations:['Posição congelada na emissão; não reconstrói saldos ou execução de datas passadas.','Período filtra sobreposição inclusiva das datas planejadas das atividades; projetos sem atividades no período permanecem com contagem zero.','Percentual de conclusão por contagem de atividades folha; não equivale a avanço físico ponderado. Pais são exibidos, sem dupla contagem nos totais.','Atraso considera o dia civil UTC da emissão; atividade com fim hoje não está atrasada.','Sem consolidação financeira, conversão de moedas, anexos privados ou autoridade de faturamento.']};
 }
-export function reportTable(r:ProjectReport):string[][]{return [['Empresa',r.companyName,'ID',r.companyId],['Relatório',r.title,'Emissão UTC',r.generatedAt],['Período planejado',r.filter.from??'Sem início',r.filter.to??'Sem fim'],['Projetos',String(r.summary.projects),'Atividades folha',String(r.summary.tasks),'Concluídas',String(r.summary.completed),'Atrasadas',String(r.summary.overdue)],r.columns,...r.rows,...r.limitations.map(l=>['Limitação',l]),...r.sources.map(s=>['Proveniência',s.projectId,String(s.revision),s.originKey,s.currency])];}
+export function reportTable(r:ProjectReport):string[][]{return [['Empresa',r.companyName,'ID',r.companyId],['Relatório',r.title,'Emissão UTC',r.generatedAt],['Período planejado',r.filter.from??'Sem início',r.filter.to??'Sem fim'],['Projetos',String(r.summary.projects),'Atividades folha',String(r.summary.tasks),'Concluídas',String(r.summary.completed),'Atrasadas',String(r.summary.overdue)],r.columns,...r.rows,...(r.sections??[]).flatMap(s=>[['Seção',s.title],s.columns,...s.rows]),...metadataRows(r.metadata),...r.limitations.map(l=>['Limitação',l]),...r.sources.map(s=>['Proveniência',s.projectId,String(s.revision),s.originKey,s.currency])];}
 export function reportCsv(table:string[][]){return '\uFEFF'+table.map(row=>row.map(v=>'"'+(/^[\s]*[=+\-@\t\r]/.test(v)?"'"+v:v).replaceAll('"','""')+'"').join(';')).join('\r\n');}
 
 /** Canonical JSON independent of MySQL JSON object key ordering. */
 export function canonicalReport(value:unknown):string {if(Array.isArray(value))return "["+value.map(canonicalReport).join(",")+"]";if(value!==null&&typeof value==="object")return "{"+Object.entries(value).sort(([a],[b])=>a<b?-1:a>b?1:0).map(([k,v])=>JSON.stringify(k)+":"+canonicalReport(v)).join(",")+"}";return JSON.stringify(value);}
+
+/** Excel cells have a 32767 UTF-16 character limit. Keep every JSON fragment below it
+ * without splitting surrogate pairs; the immutable JSON download remains authoritative. */
+function metadataRows(metadata:Record<string,unknown>|undefined):string[][]{
+ if(!metadata)return [];const parts:string[]=[];let chunk='';for(const char of canonicalReport(metadata)){if(chunk.length+char.length>30000){parts.push(chunk);chunk='';}chunk+=char;}if(chunk)parts.push(chunk);return parts.map((part,i)=>['Metadados JSON — parte '+(i+1)+'/'+parts.length,part]);
+}
