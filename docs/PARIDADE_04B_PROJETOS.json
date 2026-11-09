@@ -236,10 +236,34 @@
         "tests/projects-special-reports.integration.ts",
         "tests/browser/projects-special-reports.spec.ts"
       ]
+    },
+    {
+      "source": "client/src/lib/export-utils.ts — exportGanttToMSProject",
+      "source_sha256": "28fc080c1429a9432430aa3d59622e37feedcc1e64b7dd93af5da436ce274fcb",
+      "destination": "shared/projects/interchange.ts",
+      "adapted_sha256": "c1e542676841f814b39099cc2a257c118b66dcd7b0d5a9be9b6fab3a5ae7de2a",
+      "status": "ADAPTAR — 08F perfil XML MSPDI explícito e somente exportação; tipos/vínculos/calendário/UIDs corrigidos. XSD GI parcial, não homologação no MS Project/MPP.",
+      "tests": [
+        "tests/projects-interchange.test.ts",
+        "tests/projects-interchange.integration.ts",
+        "tests/browser/projects-interchange.spec.ts"
+      ]
+    },
+    {
+      "source": "GI — gráficos Recharts e regras canônicas de hierarquia 08B/08E",
+      "destination": "shared/projects/phases.ts",
+      "adapted_sha256": "79ab2b7f6f85cd0ad24b96d34522b5ef4e79e848201a42aa13595c0ed85032d4",
+      "status": "REAPROVEITAR/ADAPTAR — 08F contagem de folhas por fase, sem avanço físico inferido",
+      "tests": [
+        "tests/projects-interchange.test.ts",
+        "tests/projects-interchange.integration.ts",
+        "tests/browser/projects-interchange.spec.ts"
+      ]
     }
   ],
   "limitations": "Ver relatório e backlog; não há paridade integral declarada",
   "continuation_08b_base_sha": "fafc39e453a587852969aa40e68baefe0e16921d",
   "continuation_08c_base_sha": "e93911b3991f13fc45d9a8ca2d043d77abc4bdd2",
-  "continuation_08e_base_sha": "f6408e4231256fb1a61117a13c4dce3254b6bb9f"
+  "continuation_08e_base_sha": "f6408e4231256fb1a61117a13c4dce3254b6bb9f",
+  "continuation_08f_base_sha": "6331b0a1baf22a97cfc2a5c694290858d28d8b21"
 }
