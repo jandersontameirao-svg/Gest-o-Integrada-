@@ -91,7 +91,7 @@ export default function Templates({items,canApply,canApprove,canEdit,busy,onSeed
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {templates.map(template => (
               <Card 
-                key={template.id} 
+                key={template.id} role="article" aria-label={template.name} 
                 className="overflow-hidden hover:shadow-lg transition-all duration-300 border-0 shadow-md"
               >
                 {/* Colored Header */}

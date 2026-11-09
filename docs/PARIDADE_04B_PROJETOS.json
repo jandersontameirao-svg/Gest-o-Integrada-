@@ -92,7 +92,7 @@
       "source": "client/src/pages/Templates.tsx",
       "source_sha256": "67955f89e22e9678b7d18826448fcce50d27f3b1dfd98c11277cf9f8c1292b96",
       "destination": "client/projects/legacy/Templates.tsx",
-      "adapted_sha256": "159e0462fd5be14d88de7c576ff326a19e1406eb657457c76db4f008ad5160af",
+      "adapted_sha256": "0a1259626b3b188d5fdc47eeb167e94d9143e953f369a4d431304f12728564a2",
       "status": "ADAPTAR — 08C: catálogo/estúdio/aplicação atômica; referências arqueológicas parciais não são backup homologado",
       "report": "docs/IMPLEMENTACAO_08C_TEMPLATES_PROJETOS.md",
       "evidence": [
