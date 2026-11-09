@@ -41,7 +41,7 @@ Downloads continuam privados e revalidam empresa, projeto e ação, inclusive de
 
 ## Verificação
 
-158 testes unitários locais e TypeScript/build aprovados. Novos testes MySQL cobrem fontes persistidas, sprint encerrada/zero observado, orçamento original/revisado/fato validado, comparação com posição canônica, formatos reais, imutabilidade, concorrência idempotente, moeda/escopo/IDs, revogação e ausência de efeito financeiro. Playwright usa fixtures sintéticas pela API autorizada local e a interface real para gerar, baixar, consultar histórico e regenerar após revisão do teto, com screenshots e bloqueio de tráfego externo.
+159 testes unitários locais e TypeScript/build aprovados. Novos testes MySQL cobrem fontes persistidas, sprint encerrada/zero observado, orçamento original/revisado/fato validado, comparação com posição canônica, formatos reais, imutabilidade, concorrência idempotente, moeda/escopo/IDs, revogação e ausência de efeito financeiro. Playwright usa fixtures sintéticas pela API autorizada local e a interface real para gerar, baixar, consultar histórico e regenerar após revisão do teto, com screenshots e bloqueio de tráfego externo.
 
 Integração MySQL/Playwright e auditoria completa serão confirmadas na CI da PR; não se considera o build local prova de homologação. Mantidos os 28 pares de migrações, rollback/reaplicação, toda a regressão anterior, workflow e lockfile. Evidências finais/SHA ficam na PR, evitando novo ciclo de CI apenas para editar links.
 
@@ -52,3 +52,5 @@ Entregue o recorte funcional dos três relatórios especializados, com gráficos
 XML/MPP do MS Project continua pendente de validação técnica específica: o exportador original contém interpolação sem escape, mapeamento incorreto de tipos e pressupostos de duração/calendário. Não se declara interoperabilidade pela mera geração de XML; importação/exportação nativa exigirá teste de arquivo e semântica de calendário/lag. Não é bloqueio destes relatórios.
 
 Homologação visual/de negócio cabe à revisão humana dos screenshots e fluxos; não foi executada em produção. Não se declara conclusão integral ou paridade de todas as variantes do legado. Sem merge, deploy, IA ativa ou APIs externas.
+
+Integridade XLSX: metadados JSON extensos são divididos em partes numeradas de até 30.000 unidades UTF-16, sem cortar pares de caracteres. Isso respeita o limite de 32.767 caracteres por célula Excel e preserva o conteúdo completo; o teste reconstitui e confere o JSON com caracteres suplementares. Limite de linhas continua validado antes da gravação.
