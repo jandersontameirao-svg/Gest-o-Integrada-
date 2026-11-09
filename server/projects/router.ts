@@ -1,3 +1,4 @@
+import {registerReports} from './reports.ts';
 import {registerTemplates} from './templates.ts';
 import {registerSchedule,workCalendar} from './schedule.ts';
 import {observeSprints,registerScrum} from './scrum.ts';
@@ -31,6 +32,7 @@ async function write(req:Request,u:Principal,company:string,action:string,fn:(c:
 async function audit(u:Principal,p:Project,action:string){await pool.execute('INSERT INTO audit_events(id,actor_id,company_id,module_id,action,outcome) VALUES (?,?,?,?,?,?)',[randomUUID(),u.id,p.companyId,'projects',action,'allowed']);}
 async function validateUser(id:unknown,company:string,c:PoolConnection){if(!id)return;if(!(await rows('SELECT u.id FROM users u JOIN memberships m ON m.user_id=u.id WHERE u.id=? AND u.active=1 AND (m.company_id=? OR m.corporate=1)',[uuid(id),company],c)).length)invalid('Usuário não vinculado ao escopo.');}
 async function snapshot(p:Project,u:Principal){const list=await records(p.id),budget=await budgets(p.id);return {project:p,records:list,workCalendar:await workCalendar(p.id),budgets:budget,budget:budgetSummary(budget,list,await projectSupplierCosts(p.id)),documents:await checkAccess(u,'scope-company:'+p.companyId,'projects','attachments')?await rows('SELECT id,file_name,mime_type,sha256,version,target_id FROM project_documents WHERE project_id=?',[p.id]):[],capabilities:{reopen:await checkAccess(u,'scope-company:'+p.companyId,'projects','reopen'),edit:await checkAccess(u,'scope-company:'+p.companyId,'projects','edit'),approve:await checkAccess(u,'scope-company:'+p.companyId,'projects','approve'),export:await checkAccess(u,'scope-company:'+p.companyId,'projects','export'),attachments:await checkAccess(u,'scope-company:'+p.companyId,'projects','attachments')},suppliers:{status:'available_05c',canonicalOrdersAvailable:true,externalProvidersEnabled:false}};}
+registerReports(router);
 registerTemplates(router);
 router.get('/list',async(req,res)=>{const company=text(req.query.companyId,40);await access(res.locals.user,company,'read');res.json((await rows<Project>('SELECT id,company_id companyId,contract_id contractId,origin_key originKey,payload,revision FROM operational_projects WHERE company_id=? ORDER BY created_at,id',[company])).map(p=>({...p,payload:decode(p.payload)})));});
 router.get('/users',async(req,res)=>{const company=text(req.query.companyId,40);await access(res.locals.user,company,'read');res.json(await rows('SELECT DISTINCT u.id,u.name FROM users u JOIN memberships m ON m.user_id=u.id WHERE u.active=1 AND (m.company_id=? OR m.corporate=1)',[company]));});
