@@ -2,6 +2,8 @@ import type {jsPDF} from 'jspdf';
 import type {ProjectReport} from '../../shared/projects/reports.ts';
 /** Printed charts are built from the same immutable dataset as the tables. */
 export function drawReportVisual(doc:jsPDF,report:ProjectReport){
+ const groups=new Map<string,NonNullable<ProjectReport['phaseSummary']>>();for(const p of report.phaseSummary??[]){const items=groups.get(p.projectId);if(items)items.push(p);else groups.set(p.projectId,[p]);}
+ for(const items of groups.values())for(let offset=0;offset<items.length;offset+=12){doc.addPage();doc.setFontSize(13);doc.text('Execução por fase — atividades folha',14,15);doc.setFontSize(8);doc.text(doc.splitTextToSize(items[0].projectName,260),14,24);const rows=items.slice(offset,offset+12),max=Math.max(1,...items.map(p=>p.total));rows.forEach((p,i)=>{const y=36+i*12;doc.text(doc.splitTextToSize(p.phaseName,80).slice(0,2),14,y+3);let x=100;for(const [key,color] of [['todo',[148,163,184]],['inProgress',[36,84,129]],['review',[237,117,1]],['done',[56,129,91]]] as const){const w=p[key]/max*145;doc.setFillColor(color[0],color[1],color[2]);if(w)doc.rect(x,y,w,5,'F');x+=w;}doc.text(String(p.total),250,y+4);});doc.text('Cinza: a fazer. Azul: em andamento. Laranja: em revisão. Verde: concluídas. Não é progresso físico.',14,195);}
  const visual=report.visual;if(!visual)return;
  if(visual.kind==='gantt'){
   if(!visual.bars.length)return;

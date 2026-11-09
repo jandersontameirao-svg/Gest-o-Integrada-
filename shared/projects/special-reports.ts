@@ -1,3 +1,5 @@
+import {buildXmlProfile} from './interchange.ts';
+import {summarizePhases,phaseSection} from './phases.ts';
 /** Adapted from original exportGanttToPDF / exportSprintReportToPDF.
  * Uses the GI calendar, observed burndown and canonical budget rules. No IO or estimates of actuals. */
 import {budgetSummary,type ProjectRecord} from './model.ts';
@@ -26,7 +28,9 @@ export function buildSpecialReport(companyId:string,companyName:string,source:Re
   report.sections!.push({title:'Fases — contagem de atividades folha no período',columns:['ID fase','Fase','Atividades folha','Concluídas'],rows:[...all.filter(r=>r.kind==='phase').map(r=>({id:r.id,title:str(r.payload.title)})),{id:'',title:'Sem fase'}].map(phase=>{const leaves=selected.filter(t=>!parents.has(t.id)&&String(t.payload.phaseId??'')===phase.id);return [phase.id,phase.title,str(leaves.length),str(leaves.filter(t=>t.payload.status==='done').length)];})});
   report.visual={kind:'gantt',bars:selected.map(t=>({id:t.id,label:str(t.payload.title),start:str(t.payload.startDate),end:str(t.payload.endDate),progress:Number(t.payload.progress),critical:analysis.criticalPath.includes(t.id)}))};
   report.metadata={...report.metadata,calendarRevision:data.calendar.revision,calendar:analysis.calendar,criticalPath:analysis.criticalPath,criticalEdges:analysis.criticalEdges};
-  report.limitations=[...analysis.limitations,'Barras mostram datas planejadas persistidas; colunas CPM são prévia calculada no grafo completo e não alteram o projeto.','Período seleciona sobreposição das datas planejadas; dependências fora da seleção continuam influenciando o CPM, mas não aparecem na seção de arestas.','Progresso é declarado na atividade; não é avanço físico ponderado nem execução inferida.'];
+  report.phaseSummary=summarizePhases(p,all,filter.from,filter.to);report.sections!.push(phaseSection(report.phaseSummary));
+  if(filter.xmlWindow){report.metadata={...report.metadata,projectName:p.payload.name,xmlProfile:buildXmlProfile(all,data.calendar.calendar,data.calendar.revision,filter.xmlWindow)};report.limitations.push('XML exporta prévia CPM com janela explícita e restrições de início fixas; não altera o planejamento salvo. Formato MPP e abertura no MS Project não homologados.');}
+  report.limitations=[...report.limitations,...analysis.limitations,'Barras mostram datas planejadas persistidas; colunas CPM são prévia calculada no grafo completo e não alteram o projeto.','Período seleciona sobreposição das datas planejadas; dependências fora da seleção continuam influenciando o CPM, mas não aparecem na seção de arestas.','Progresso é declarado na atividade; não é avanço físico ponderado nem execução inferida.'];
  }else if(filter.type==='scrum_sprint'){
   const sprint=all.find(r=>r.kind==='sprint'&&r.id===filter.sprintId);if(!sprint)throw Error('Sprint não pertence ao projeto.');
   if(!data.observations||data.observations.some(o=>o.sprintId!==sprint.id))throw Error('Observações fora da sprint.');
