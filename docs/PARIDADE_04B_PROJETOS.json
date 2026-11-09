@@ -157,7 +157,7 @@
       "source": "client/src/pages/Reports.tsx",
       "source_sha256": "84a57b5a14ef8e4db5164969122ba138c66bc97db1a720977b488bc9efd5e4dd",
       "destination": "client/projects/Reports.tsx",
-      "adapted_sha256": "6d4fe0cbd493cf56a83201bd8c46d4b21094aa6b4733162e104fb566095fd3ed",
+      "adapted_sha256": "d3a235c4331d60b822681c972f3435e71b380c78baf9618a6a9373e91eb25e82",
       "status": "ADAPTAR — 08D famílias de relatórios e exportações com snapshot; variantes avançadas ainda parciais",
       "tests": [
         "tests/projects-reports.test.ts",
