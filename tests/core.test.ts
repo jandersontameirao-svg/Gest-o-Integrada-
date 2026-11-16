@@ -54,4 +54,8 @@ test('tokens não são previsíveis e o banco recebe somente digest',()=>{
  const a=newToken();const b=newToken();assert.notEqual(a,b);
  assert.equal(a.length,43);assert.equal(digestToken(a).length,64);assert.notEqual(a,digestToken(a));
 });
-
+test('hash armazenado corrompido nega a senha sem lançar exceção',async()=>{
+ assert.equal(await verifyPassword('qualquer-senha-sintetica','scrypt$00112233445566778899aabbccddeeff$'+'z'.repeat(128)),false);
+ assert.equal(await verifyPassword('qualquer-senha-sintetica','scrypt$00112233445566778899aabbccddeeff$'+'ab'.repeat(32)+'zz'.repeat(32)),false);
+ const good=await hashPassword('senha-sintetica-forte-2026');assert.equal(await verifyPassword('senha-sintetica-forte-2026',good),true);assert.equal(await verifyPassword('outra',good),false);
+});

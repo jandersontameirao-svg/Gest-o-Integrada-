@@ -46,7 +46,7 @@ function App() {
  const active=modules.find(m=>m.id===module)!;
  return <><header><div className="brand"><span className="brand-mark" aria-hidden="true">A</span><div><strong>GRUPO ARQUEO</strong><small>GESTÃO INTEGRADA</small></div></div>
  {user&&<div className="account"><span>{user.name}</span><button onClick={async()=>{const leave=new Event('strategy:leave',{cancelable:true});if(!window.dispatchEvent(leave)){setError('Aguarde o salvamento antes de sair.');return;}setError('');try{await api('/auth/logout',{method:'POST'});setToken('');setUser(null);setOverview(null);}catch(e){setError((e as Error).message);}}}>Sair</button></div>}</header>
- <div className="demo">AMBIENTE DE DEMONSTRAÇÃO · Dados sintéticos · Fundação / Comando 01</div>
+ <div className="demo">AMBIENTE DE DEMONSTRAÇÃO · Dados sintéticos · Sem homologação ou produção</div>
  {!user?<main className="login"><p className="eyebrow">UMA BASE COMUM PARA O GRUPO</p><h1>Gestão conectada.<br/>Empresas independentes.</h1><p>Acesse seu ambiente de trabalho com sua conta da Gestão Integrada.</p>
  <Panel title="Entrar na plataforma"><form onSubmit={login}><label>E-mail<input name="email" type="email" autoComplete="username" required/></label><label>Senha<input name="password" type="password" autoComplete="current-password" required maxLength={256}/></label><button className="primary" disabled={loading}>{loading?'Entrando…':'Entrar'}</button></form></Panel>
  {error&&<p role="alert" className="error">{error}</p>}</main>:<>
