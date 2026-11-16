@@ -1,3 +1,4 @@
+import {civilToday} from '../../shared/civil-date.ts';
 import {effectiveExecution} from '../../shared/suppliers/execution.ts';
 import {linkedInstrumentAccess} from './bound-instrument.ts';
 import {Router,type Request} from 'express';import {randomUUID,createHash} from 'node:crypto';import type {PoolConnection} from 'mysql2/promise';
@@ -6,7 +7,7 @@ import {supplierAccess,supplierWrite,getStructuralDocument,validateProjectLink,s
 import {getSupplierContract,listSupplierOrders,auditSupplierOperation,ensureOpenSupplierPeriods} from './operations-router.ts';
 import {contractTermsAsOf,applyAmendmentTerms,contractAllocatedValue,type SupplierAmendment} from '../../shared/suppliers/lifecycle.ts';import {orderCosts,type SupplierContract} from '../../shared/suppliers/operations.ts';import {cents,amount} from '../../shared/contracts/model.ts';
 import {amendmentInput} from './lifecycle-validation.ts';import {fields} from './validation.ts';import {generatePDF} from '../contracts/pdf.ts';
-const router=Router(),json=JSON.stringify,decode=(v:unknown)=>typeof v==='string'?JSON.parse(v):v,today=()=>new Date().toISOString().slice(0,10),digest=(s:string)=>createHash('sha256').update(s).digest('hex');
+const router=Router(),json=JSON.stringify,decode=(v:unknown)=>typeof v==='string'?JSON.parse(v):v,today=()=>civilToday(),digest=(s:string)=>createHash('sha256').update(s).digest('hex');
 const company=(req:Request)=>text(req.method==='GET'?req.query.companyId:obj(req.body).companyId,40);
 async function access(u:Principal,co:string,c:PoolConnection|typeof pool=pool){await supplierAccess(u,co,'read',c);await supplierAccess(u,co,'attachments',c);}
 async function owned(u:Principal,id:unknown,co:string,c:PoolConnection|typeof pool=pool){const ct=await getSupplierContract(id,co,c),d=await getStructuralDocument(ct.documentId,co,c);await validateProjectLink(u,co,d.projectId,d.taskId,c);if(d.projectId)await requireAccess(u,'scope-company:'+co,'projects','attachments',c);if(d.payload.beneficiaryScopeId)await requireAccess(u,d.payload.beneficiaryScopeId,'strategy','read',c);await linkedInstrumentAccess(u,ct,c);return ct;}

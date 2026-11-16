@@ -1,3 +1,4 @@
+import {civilToday} from '../shared/civil-date.ts';
 import {registerInterchangeTests} from './projects-interchange.integration.ts';
 import {registerSpecialReportTests} from './projects-special-reports.integration.ts';
 import {registerReportTests} from './projects-reports.integration.ts';
@@ -214,7 +215,7 @@ test('negação pessoal também remove registros da consolidação corporativa',
  try{const data=await(await get('/modules/finance/overview?companyId=corporate',token)).json();assert.ok(data.records.every((r:{companyId:string})=>r.companyId!=='arqueocean'));assert.equal(data.records.length,4);}finally{await pool.execute('DELETE FROM scope_grants WHERE user_id=? AND scope_id=? AND module_id=? AND action=?',[u.id,'scope-company:arqueocean','finance','read']);}
 });
 test('transferências concorrentes mantêm uma unidade ativa, histórico e auditoria',async()=>{
- const token=await directorToken();const today=new Date().toISOString().slice(0,10);
+ const token=await directorToken();const today=civilToday();
  const results=await Promise.all(['africa','vinho'].map(unitId=>mutate('/governance/transfer',token,{companyId:'arqueoproject',unitId,effectiveDate:today})));
  assert.deepEqual(results.map(r=>r.status).sort(),[200,409]);
  const history=await(await get('/governance/history/arqueoproject',token)).json();assert.equal(history.length,2);assert.equal(history[0].unit_id,'arqueo');assert.equal(history[0].valid_to,today);assert.equal(history[1].valid_from,today);assert.equal(history[1].valid_to,null);

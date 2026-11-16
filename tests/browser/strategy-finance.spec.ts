@@ -1,7 +1,8 @@
+import {civilToday} from '../../shared/civil-date.ts';
 import {test,expect} from '@playwright/test';import {randomUUID} from 'node:crypto';import {readFile} from 'node:fs/promises';
 test('07B: Estratégia lê EBITDA e caixa canônicos, exporta proveniência e recarrega sem publicar contribuições',async({page,context})=>{
  const errors:string[]=[],external:string[]=[];page.on('pageerror',e=>errors.push(e.message));await context.route('**/*',r=>{if(!['127.0.0.1','localhost'].includes(new URL(r.request().url()).hostname)){external.push(r.request().url());return r.abort();}return r.continue();});
- const company='arqueogis-geo',scope='scope-company:'+company,year=new Date().getUTCFullYear()-4,date=year+'-01-15';
+ const company='arqueogis-geo',scope='scope-company:'+company,year=Number(civilToday().slice(0,4))-4,date=year+'-01-15';
  const login=await fetch('http://127.0.0.1:3001/api/v1/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'holding@example.test',password:process.env.DEMO_PASSWORD})});expect(login.ok).toBeTruthy();const token=(await login.json()).token;
  async function api(path:string,method='GET',body?:Record<string,unknown>){return fetch('http://127.0.0.1:3001/api/v1'+path+(path.includes('?')?'&':'?')+'companyId='+company,{method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},...(body?{body:JSON.stringify({companyId:company,requestId:randomUUID(),reason:'Indicadores07B exclusivamente sintéticos',...body})}:{})});}
  async function ok(r:Response,status=200){expect(r.status,await r.clone().text()).toBe(status);return r.json();}

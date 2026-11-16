@@ -1,9 +1,10 @@
+import {civilToday} from '../../shared/civil-date.ts';
 import {readFile} from 'node:fs/promises';
 import {test,expect} from '@playwright/test';
 test.use({timezoneId:'America/Sao_Paulo'});
 test('08A Scrum original: backlog, sprint, status, histórico, exportação e recarga sem APIs externas',async({page,context})=>{
  const errors:string[]=[],external:string[]=[];page.on('pageerror',e=>errors.push(e.message));await context.route('**/*',route=>{const u=new URL(route.request().url());if(!['localhost','127.0.0.1'].includes(u.hostname)){external.push(u.origin);return route.abort();}return route.continue();});
- const today=new Date().toISOString().slice(0,10);
+ const today=civilToday();
  await page.goto('/');await page.getByLabel('E-mail',{exact:true}).fill('holding@example.test');await page.getByLabel('Senha',{exact:true}).fill(process.env.DEMO_PASSWORD!);await page.getByRole('button',{name:'Entrar',exact:true}).click();
  const work=page.getByRole('region',{name:'Projetos operacionais',exact:true});await work.getByLabel('Empresa do projeto',{exact:true}).selectOption('arqueoproject');await work.getByRole('button',{name:'Novo projeto operacional',exact:true}).click();let dialog=page.getByRole('dialog');await dialog.getByLabel('Moeda do projeto',{exact:true}).fill('BRL');await dialog.getByLabel('Valor proposto para abertura',{exact:true}).fill('0.00');await dialog.getByLabel('Justificativa da abertura',{exact:true}).fill('Diretor autoriza somente planejamento sintético');await dialog.getByLabel('Decisão explícita do diretor para projeto sem contrato',{exact:true}).check();await dialog.getByLabel('Nome do Projeto *',{exact:true}).fill('Scrum original 08A browser');await dialog.getByLabel('Código Interno',{exact:true}).fill('SCRUM-BROWSER-08A');await dialog.getByRole('button',{name:'Salvar projeto',exact:true}).click();await expect(work.getByRole('heading',{name:/Scrum original 08A browser · revisão/})).toBeVisible();
  await work.getByRole('button',{name:'scrum',exact:true}).click();await expect(work.getByRole('heading',{name:'Scrum original 08A browser - Scrum',exact:true})).toBeVisible();

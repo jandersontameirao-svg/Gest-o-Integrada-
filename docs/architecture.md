@@ -54,3 +54,10 @@ cards e componentes reutilizáveis. Bordô #702338, azul #203e5a e laranja #b949
 Marca tipográfica provisória; nenhum manual de marca ou logotipo oficial foi fornecido.
 Responsividade por CSS, labels, foco visível e mensagens acessíveis; revisão visual
 e teste assistivo completos permanecem pendentes.
+
+## Data civil de negócio
+
+"Hoje" é calculado por `shared/civil-date.ts` no fuso `America/Sao_Paulo` e usado por servidor, cliente e testes:
+vencimentos, alertas, expiração de autorizações, validação de data futura, vigências e datas padrão de formulário.
+Carimbos de auditoria (`recordedAt`, `createdAt`, sessões) e os campos de recibo identificados como UTC permanecem em UTC.
+Não usar `new Date().toISOString().slice(0,10)` para obter o dia corrente.

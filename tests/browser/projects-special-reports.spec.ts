@@ -1,3 +1,4 @@
+import {civilToday} from '../../shared/civil-date.ts';
 import {test,expect} from '@playwright/test';
 import {readFile} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
@@ -8,7 +9,7 @@ test('08E Gantt, sprint observada e orçamento: relatórios, arquivos, recarga e
  // Only synthetic fixtures, through the real authorized GI API on the local test server.
  const login=await page.request.post('/api/v1/auth/login',{data:{email:'holding@example.test',password:process.env.DEMO_PASSWORD}});expect(login.ok()).toBe(true);const token=(await login.json()).token;
  async function api(path:string,method='GET',body?:Record<string,unknown>){const r=await page.request.fetch('/api/v1/projects'+path,{method,headers:{Authorization:'Bearer '+token},...(body?{data:{requestId:randomUUID(),...body}}:{})});expect(r.ok(),await r.text()).toBe(true);return r.json();}
- const today=new Date().toISOString().slice(0,10),end=new Date(Date.parse(today)+6*86400000).toISOString().slice(0,10);
+ const today=civilToday(),end=new Date(Date.parse(today)+6*86400000).toISOString().slice(0,10);
  const created=await api('','POST',{companyId:'arqueoproject',explicitDirectorDecision:true,data:{name:'Projeto relatórios especializados browser',internalCode:'RPT-08E-BROWSER',description:'Dados sintéticos',managerId:null,status:'planning',methodology:'scrum',priority:'medium',currency:'BRL',proposedValue:'0.00',decisionReason:'Diretor autoriza apenas planejamento sintético'}}),id=created.id;
  const state=()=>api('/'+id);
  async function record(kind:string,data:Record<string,unknown>,old?:{id:string;revision:number}){const s=await state();return api('/'+id+'/records/'+kind,'POST',{revision:s.project.revision,data,...(old?{id:old.id,recordRevision:old.revision}:{})});}

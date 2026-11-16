@@ -1,6 +1,7 @@
+import {civilToday} from '../shared/civil-date.ts';
 import {test} from 'node:test';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';import {pool,rows} from '../server/db.ts';
 export function registerFinanceSeriesTests(base:()=>string,director:()=>Promise<string>,manager:()=>Promise<string>){
- const company='arqueogis-geo',date=new Date().toISOString().slice(0,10);let account='',edited='',protectedSeries='',conflicts='';
+ const company='arqueogis-geo',date=civilToday();let account='',edited='',protectedSeries='',conflicts='';
  async function api(path:string,method='GET',body?:Record<string,unknown>,co=company,token?:string){return fetch(base()+'/finance'+path+(path.includes('?')?'&':'?')+'companyId='+co,{method,headers:{Authorization:'Bearer '+(token??await director()),'Content-Type':'application/json'},...(body?{body:JSON.stringify({companyId:co,requestId:randomUUID(),...body})}:{})});}
  async function ok(r:Response,status=200){assert.equal(r.status,status,await r.clone().text());return r.json();}
  const data=(description:string,value:string)=>({description,bucket:'income',amount:value,currency:'BRL',dueDate:'2028-01-31',competenceDate:'2028-01-31',categoryId:null,accountId:null,contactId:null,projectId:null,contractId:null,documentNumber:'',paymentMethod:'',costCenterId:null,tagIds:[],notes:'Somente dados sintéticos'});

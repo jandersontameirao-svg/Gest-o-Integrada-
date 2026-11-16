@@ -1,10 +1,11 @@
+import {civilToday} from '../../shared/civil-date.ts';
 import {useEffect,useRef,useState} from 'react';
 import {useStrategy} from './context.tsx';import {scopedJson} from '../shared/requests.ts';
 import type {StrategyFinancialIndicators} from '../../shared/finance/strategy-indicators.ts';
 type Result=StrategyFinancialIndicators&{companyId:string;scopeId:string;checkedAt:string;reconciliationRequired:string[];unitHistory:unknown[];coverage:string};
 export function FinanceIndicators(){
  const c=useStrategy(),scope=c.data.plan.scope_id,company=scope.startsWith('scope-company:')?scope.slice(14):'';
- const today=new Date().toISOString().slice(0,10);const [from,setFrom]=useState(today.slice(0,4)+'-01-01'),[to,setTo]=useState(today),[asOf,setAsOf]=useState(today),[currency,setCurrency]=useState('BRL'),[horizon,setHorizon]=useState(90),[state,setState]=useState<{key:string;data?:Result;error?:string;busy?:boolean}|null>(null);
+ const today=civilToday();const [from,setFrom]=useState(today.slice(0,4)+'-01-01'),[to,setTo]=useState(today),[asOf,setAsOf]=useState(today),[currency,setCurrency]=useState('BRL'),[horizon,setHorizon]=useState(90),[state,setState]=useState<{key:string;data?:Result;error?:string;busy?:boolean}|null>(null);
  const key=JSON.stringify([c.token,company,from,to,asOf,currency,horizon]);const current=useRef(key);current.current=key;const sequence=useRef(0);useEffect(()=>()=>{sequence.current++;current.current='';},[]);const visible=state?.key===key?state:null;
  async function load(exporting=false){const own=++sequence.current,identity=key;setState({key:identity,busy:true});try{
   const query=new URLSearchParams({companyId:company,scopeId:scope,from,to,asOf,currency,horizon:String(horizon),...(exporting?{export:'true'}:{})});const data=await scopedJson<Result>(c.token,'/finance/strategy-indicators?'+query);

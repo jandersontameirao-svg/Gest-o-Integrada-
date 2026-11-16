@@ -1,3 +1,4 @@
+import {civilToday} from '../../shared/civil-date.ts';
 import {allocatedOrderCosts} from '../../shared/suppliers/execution.ts';
 import {loadGeneratedInstrument,verifyInstrumentDates,linkedInstrumentAccess,redactLinkedContract} from './bound-instrument.ts';
 import {contractTermsAsOf,contractOrderLimits} from '../../shared/suppliers/lifecycle.ts';
@@ -14,7 +15,7 @@ import {supplierAccess,supplierWrite,getSupplierDraft,getStructuralDocument,vali
 import {contractTerms,orderTerms,validationInput} from './operations-validation.ts';
 import {authorizedValue,validatedValue,orderCosts,periodsBetween,type SupplierContract,type ServiceOrder} from '../../shared/suppliers/operations.ts';
 import {cents,amount} from '../../shared/contracts/model.ts';
-const router=Router(),json=JSON.stringify,decode=(v:unknown)=>typeof v==='string'?JSON.parse(v):v,today=()=>new Date().toISOString().slice(0,10);
+const router=Router(),json=JSON.stringify,decode=(v:unknown)=>typeof v==='string'?JSON.parse(v):v,today=()=>civilToday();
 async function write(req:Request,u:Principal,co:string,fn:(c:PoolConnection,b:Record<string,unknown>)=>Promise<unknown>,guard?:(c:PoolConnection,b:Record<string,unknown>)=>Promise<void>){return supplierWrite(req,u,co,fn,async(c,b)=>{await rows('SELECT id FROM companies WHERE id=? FOR UPDATE',[co],c);if(guard)await guard(c,b);},'supplier_operation_requests');}
 const company=(req:Request)=>text(req.method==='GET'?req.query.companyId:obj(req.body).companyId,40);
 function cas(value:unknown,revision:number){if(value!==revision)throw new HttpError(409,'Revisão alterada; recarregue.');}

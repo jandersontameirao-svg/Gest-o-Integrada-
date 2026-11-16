@@ -1,8 +1,12 @@
 # Gestão Integrada — Grupo Arqueo
 
-Fundação do Comando 01: plataforma independente, modular e multiempresa.
-React + TypeScript, API Node/Express e MySQL 8.4. Sem integração com ATENA OS,
-sem Manus, sem deploy, sem migração dos legados e sem participação da UTU.
+Plataforma independente, modular e multiempresa: React + TypeScript, API Node/Express e MySQL 8.4.
+
+Estado desta branch (`dev/comando-08f-fases-intercambio`): fundação e governança, Planejamento
+Estratégico, Contratos, Projetos, Arq Fornecedores e Financeiro implementados e cobertos por testes
+com dados sintéticos. Nada foi homologado, incorporado à `main` ou publicado. Sem integração com
+ATENA OS, sem Manus, sem deploy, sem migração de dados reais e sem operação da UTU. Os relatórios
+por incremento estão em `docs/IMPLEMENTACAO_*.md` e os backlogs em `docs/BACKLOG_*.md`.
 
 ## Executar localmente
 
@@ -26,7 +30,7 @@ As cinco empresas são cadastradas pelo seed, usando apenas os nomes solicitados
 
 ## Verificação
 
-- `npm test`: política de acesso e criptografia, sem serviços externos.
+- `npm test`: regras puras de todos os módulos (acesso, criptografia, contratos, projetos, fornecedores, financeiro e estratégia), sem serviços externos.
 - `npm run build`: TypeScript estrito + compilação React/Vite.
 - `npm run test:integration`: API HTTP real contra banco descartável já migrado e semeado.
 - `npm audit --audit-level=high`: auditoria do lockfile versionado.
@@ -44,6 +48,5 @@ O servidor escuta somente loopback. Acesso remoto futuro exige proxy HTTPS e rev
 - [API v1](docs/api.md)
 - [Entrega, validação e limitações](docs/delivery.md)
 
-A main contém somente a inicialização mínima. Toda a fundação é proposta em
-`dev/comando-01-fundacao` para revisão por PR. O Comando 02 depende de aprovação.
-
+A `main` contém somente a inicialização mínima. Cada incremento é proposto em branch `dev/comando-*`
+empilhada sobre a anterior, para revisão por PR. Merge, deploy e uso de dados reais exigem autorização própria.

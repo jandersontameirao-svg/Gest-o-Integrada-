@@ -1,6 +1,7 @@
+import {civilToday} from '../shared/civil-date.ts';
 import {test} from 'node:test';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';import {pool,rows} from '../server/db.ts';
 export function registerSupplierLifecycleTests(base:()=>string,director:()=>Promise<string>,manager:()=>Promise<string>){
- const today=new Date().toISOString().slice(0,10),year=new Date().getUTCFullYear(),past=(year-1)+'-01-01',pastEnd=(year-1)+'-01-02',end=(year+2)+'-12-31',tomorrow=new Date(Date.parse(today)+86400000).toISOString().slice(0,10),before=new Date(Date.parse(today)-86400000).toISOString().slice(0,10);
+ const today=civilToday(),year=Number(civilToday().slice(0,4)),past=(year-1)+'-01-01',pastEnd=(year-1)+'-01-02',end=(year+2)+'-12-31',tomorrow=new Date(Date.parse(today)+86400000).toISOString().slice(0,10),before=new Date(Date.parse(today)-86400000).toISOString().slice(0,10);
  let supplier='',template='',document='',contract='',project='',task='',order='',amend='',futureContract='',appliedRequest:Record<string,unknown>,closeRequest:Record<string,unknown>;
  const terms={title:'Contrato ciclo sintético',reference:'LIFE-DEMO',contractType:'service',object:'Pesquisa sintética',totalValue:'1000.00',currency:'BRL',startDate:past,endDate:end,paymentTerms:'Condições sintéticas sem liquidação',representative:'Representante sintético',instrumentText:'Instrumento de origem individualizado para teste'};
  const data=(title:string,delta='500.00',total='1500.00',date=today)=>({title,number:'LIFE-'+title,amendmentType:'financial',description:'Descrição sintética',valueChange:delta,newTotalValue:total,effectiveDate:date,newEndDate:'',scopeChanges:'',paymentTerms:'',content:'Cláusulas sintéticas individualizadas',notes:'Somente teste'});

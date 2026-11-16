@@ -1,7 +1,8 @@
+import {civilToday} from '../shared/civil-date.ts';
 import {test} from 'node:test';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';
 import {pool,rows} from '../server/db.ts';import {generatePDF} from '../server/contracts/pdf.ts';
 export function registerFinanceAdvanceTests(base:()=>string,director:()=>Promise<string>,manager:()=>Promise<string>){
- const date=new Date().toISOString().slice(0,10),co='holding';let account='',person='',category='',first='',second='',file='',expense='',returnTitle='',reimburseTitle='',reimburseSettlement='';
+ const date=civilToday(),co='holding';let account='',person='',category='',first='',second='',file='',expense='',returnTitle='',reimburseTitle='',reimburseSettlement='';
  async function api(path:string,method='GET',body?:Record<string,unknown>,company=co,token?:string){return fetch(base()+'/finance'+path+(path.includes('?')?'&':'?')+'companyId='+company,{method,headers:{Authorization:'Bearer '+(token??await director()),'Content-Type':'application/json'},...(body?{body:JSON.stringify({companyId:company,requestId:randomUUID(),reason:'Adiantamentos exclusivamente sintéticos',...body})}:{})});}
  async function ok(r:Response,status=200){assert.equal(r.status,status,await r.clone().text());return r.json();}
  const view=async(id=first)=>ok(await api('/advances/'+id)),summary=async()=>ok(await api('/summary?currency=BRL&from='+date+'&to='+date+'&asOf='+date)),snapshot=async()=>ok(await api('/snapshot'));
