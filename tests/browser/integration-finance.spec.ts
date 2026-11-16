@@ -1,10 +1,11 @@
+import {civilToday} from '../../shared/civil-date.ts';
 import {test,expect} from '@playwright/test';import {randomUUID} from 'node:crypto';
 test('07A: medição de cliente consulta recebível único; recarga e estorno',async({page,context})=>{
  const errors:string[]=[],external:string[]=[];page.on('pageerror',e=>errors.push(e.message));await context.route('**/*',r=>{if(!['127.0.0.1','localhost'].includes(new URL(r.request().url()).hostname)){external.push(r.request().url());return r.abort();}return r.continue();});
  const login=await fetch('http://127.0.0.1:3001/api/v1/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'holding@example.test',password:process.env.DEMO_PASSWORD})});expect(login.ok).toBeTruthy();const token=(await login.json()).token;
  async function api(path:string,method='GET',body?:Record<string,unknown>){return fetch('http://127.0.0.1:3001/api/v1'+path+(path.includes('?')?'&':'?')+'companyId=arqueoproject',{method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},...(body?{body:JSON.stringify({companyId:'arqueoproject',requestId:randomUUID(),reason:'Integração07A exclusivamente sintética',...body})}:{})});}
  async function ok(r:Response,status=200){expect(r.status,await r.clone().text()).toBe(status);return r.json();}
- const y=new Date().getUTCFullYear()-2,start=y+'-01-01',date=y+'-01-15',end=(y+4)+'-12-31';let supplier='',contract='',project='',task='',order='',bill='';
+ const y=Number(civilToday().slice(0,4))-2,start=y+'-01-01',date=y+'-01-15',end=(y+4)+'-12-31';let supplier='',contract='',project='',task='',order='',bill='';
  async function billAction(action:string,extra:Record<string,unknown>={}){const m=(await ok(await api('/suppliers/reviews/measurements'))).find((m:any)=>m.id===bill);return ok(await api('/suppliers/reviews/measurements/'+bill+'/'+action,'POST',{revision:m.revision,evidence:'Conferência sintética',...extra}));}
  const account=(await ok(await api('/finance/accounts','POST',{data:{name:'Banco07A sintético',kind:'Conta Corrente',currency:'BRL',openingBalance:'0.00',openingDate:start}}),201)).id;
  const input={dueDate:date,competenceDate:date,categoryId:null,accountId:account,evidence:'Preparação humana sintética'};

@@ -1,3 +1,4 @@
+import {civilToday} from '../shared/civil-date.ts';
 import {financialSeries,financialPeriods,type ApprovedFinancialPoint} from '../shared/strategy/financial-series.ts';
 import {Router,type Request} from 'express';
 import {randomUUID,createHash} from 'node:crypto';
@@ -21,7 +22,7 @@ async function authorized(u:Principal,company:string,planId:unknown,action:strin
 async function versions(id:string,c:PoolConnection){return (await rows<FinancialVersion>('SELECT publication_id publicationId,version,snapshot,sha256,status,prepared_by preparedBy,CAST(prepared_at AS CHAR) preparedAt,decided_by decidedBy,CAST(decided_at AS CHAR) decidedAt,decision_reason decisionReason,decision_evidence decisionEvidence FROM strategy_financial_versions WHERE publication_id=? ORDER BY version',[id],c)).map(v=>{const snapshot=decode(v.snapshot);if(sha(snapshot)!==v.sha256)throw new HttpError(409,'Integridade da versão financeira divergente.');return {...v,snapshot};});}
 async function snapshot(p:Plan,binding:Pick<FinancialPublication,'companyId'|'kpiId'|'metricId'|'metricKey'|'periodStart'|'currency'|'originUnitId'>,c:PoolConnection){
  let period;try{period=periodOf(binding.periodStart.slice(0,7));}catch{invalid('Competência inválida.');}
- if(period.to>new Date().toISOString().slice(0,10))invalid('A competência deve estar inteiramente no passado ou encerrada hoje.');
+ if(period.to>civilToday())invalid('A competência deve estar inteiramente no passado ou encerrada hoje.');
  const kpi=(await entries(p.id,c)).find(e=>e.id===binding.kpiId&&e.kind==='kpi');if(!kpi)invalid('KPI fora do plano.');
  const [metric]=await rows<{id:string;unit:string;additive:number}>('SELECT id,unit,additive FROM strategy_metrics WHERE id=?',[binding.metricId],c);if(!metric)invalid('Indicador corporativo inexistente.');
  const expectedUnit=binding.metricKey==='ebitdaMargin'?'%':binding.currency;if(kpi.payload.frequencia!=='mensal'||kpi.payload.unidadeMedida!==expectedUnit||metric.unit!==expectedUnit||binding.metricKey==='ebitdaMargin'&&metric.additive)invalid('KPI mensal e unidade explícita devem corresponder à moeda ou %. Margem não é somável.');

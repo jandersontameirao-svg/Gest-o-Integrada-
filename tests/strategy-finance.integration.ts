@@ -1,6 +1,7 @@
+import {civilToday} from '../shared/civil-date.ts';
 import {test} from 'node:test';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';import {pool,rows} from '../server/db.ts';
 export function registerStrategyFinanceTests(base:()=>string,token:()=>Promise<string>){
- const company='arqueogis-geo',date=(new Date().getUTCFullYear()-4)+'-01-15',scope='scope-company:'+company;let account='',income='',expense='',payment='';
+ const company='arqueogis-geo',date=(Number(civilToday().slice(0,4))-4)+'-01-15',scope='scope-company:'+company;let account='',income='',expense='',payment='';
  async function api(path:string,method='GET',body?:Record<string,unknown>,co=company){return fetch(base()+'/finance'+path+(path.includes('?')?'&':'?')+'companyId='+co,{method,headers:{Authorization:'Bearer '+await token(),'Content-Type':'application/json'},...(body?{body:JSON.stringify({companyId:co,requestId:randomUUID(),reason:'Indicadores estratégicos sintéticos',...body})}:{})});}
  async function ok(r:Response,status=200){assert.equal(r.status,status,await r.clone().text());return r.json();}
  const query='/strategy-indicators?scopeId='+scope+'&from='+date+'&to='+date+'&asOf='+date+'&horizon=90&currency=BRL';

@@ -1,10 +1,11 @@
+import {civilToday} from '../shared/civil-date.ts';
 import type {Principal,ModuleId} from '../shared/catalog.ts';
 import type {PoolConnection} from 'mysql2/promise';
 import {randomUUID} from 'node:crypto';
 import {pool,rows} from './db.ts';
 import {evaluateAccess,type Grant} from './governance-policy.ts';
 import {HttpError} from './policy.ts';
-export async function checkAccess(user:Principal,scopeId:string,module:ModuleId,action:string,connection:PoolConnection|typeof pool=pool,asOf=new Date().toISOString().slice(0,10)){
+export async function checkAccess(user:Principal,scopeId:string,module:ModuleId,action:string,connection:PoolConnection|typeof pool=pool,asOf=civilToday()){
  const [scope]=await rows<{kind:string;company_id:string|null;unit_id:string|null}>('SELECT kind,company_id,unit_id FROM organization_scopes WHERE id=?',[scopeId],connection);
  if(!scope)return false;
  const ids=[scopeId];
@@ -26,7 +27,7 @@ export async function checkAccess(user:Principal,scopeId:string,module:ModuleId,
 export async function requireAccess(user:Principal,scopeId:string,module:ModuleId,action:string,connection:PoolConnection|typeof pool=pool){
  if(!await checkAccess(user,scopeId,module,action,connection)){await pool.execute('INSERT INTO audit_events(id,actor_id,module_id,action,outcome) VALUES (?,?,?,?,?)',[randomUUID(),user.id,module,'access.'+action,'denied']);throw new HttpError(403,'Acesso não autorizado ou módulo não habilitado.');}
 }
-export async function allowedCompanies(user:Principal,module:ModuleId,asOf=new Date().toISOString().slice(0,10)){
+export async function allowedCompanies(user:Principal,module:ModuleId,asOf=civilToday()){
  const list=await rows<{id:string;name:string;isHolding:number}>('SELECT id,name,is_holding isHolding FROM companies ORDER BY sort_order');
  const result=[];
  for(const company of list)if(await checkAccess(user,'scope-company:'+company.id,module,'read',pool,asOf))result.push(company);

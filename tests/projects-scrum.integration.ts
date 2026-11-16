@@ -1,9 +1,10 @@
+import {civilToday} from '../shared/civil-date.ts';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {rows,pool} from '../server/db.ts';
 export function registerScrumTests(base:()=>string,director:()=>Promise<string>,manager:()=>Promise<string>){
- let id='',sprintId='',taskId='',foreign='';const today=new Date().toISOString().slice(0,10);
+ let id='',sprintId='',taskId='',foreign='';const today=civilToday();
  const payload={name:'Scrum sintético 08A',internalCode:'SCRUM-08A',description:'Sem dados reais',managerId:null,status:'planning',methodology:'scrum',priority:'medium',currency:'BRL',proposedValue:'0.00',decisionReason:'Diretor autoriza planejamento, sem despesa'};
  async function api(path:string,method='GET',data?:Record<string,unknown>,token?:string){return fetch(base()+path,{method,headers:{Authorization:'Bearer '+(token??await director()),'Content-Type':'application/json'},...(data?{body:JSON.stringify({requestId:randomUUID(),...data})}:{})});}
  const state=async()=>{const r=await api('/projects/'+id);assert.equal(r.status,200,await r.clone().text());return r.json();};

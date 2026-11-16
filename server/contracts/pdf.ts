@@ -1,3 +1,4 @@
+import {civilToday} from '../../shared/civil-date.ts';
 // Adaptado de ARQUEO-CONTRATOS c799a921, client/src/lib/pdfUtils.ts generatePDF.
 // Mantém template original; gera no backend, sem moeda inferida ou acesso externo.
 import {jsPDF} from "jspdf";
@@ -50,7 +51,7 @@ export async function generatePDF(options: PDFOptions) {
   doc.text("Contract Management", logoX + logoSize + 5, logoY + 18);
   
   // Adicionar data de geração no canto superior direito
-  const currentDate = new Date().toLocaleDateString("pt-BR");
+  const currentDate = civilToday().split('-').reverse().join('/');
   doc.setFontSize(9);
   doc.setTextColor(120, 120, 120);
   doc.text(`Gerado em: ${currentDate}`, pageWidth - 15, logoY + 10, { align: "right" });

@@ -1,3 +1,4 @@
+import {civilToday} from '../shared/civil-date.ts';
 import {Router} from 'express';
 import {randomUUID} from 'node:crypto';
 import {pool,rows} from './db.ts';
@@ -9,7 +10,7 @@ function field(value:unknown,max=160):string{if(typeof value!=='string'||!value.
 export const governanceRouter=Router();
 governanceRouter.get('/snapshot',async(req,res)=>{
  const scope=typeof req.query.scopeId==='string'?req.query.scopeId:'scope-holding';
- const asOf=typeof req.query.asOf==='string'?req.query.asOf:new Date().toISOString().slice(0,10);
+ const asOf=typeof req.query.asOf==='string'?req.query.asOf:civilToday();
  if(!/^\d{4}-\d{2}-\d{2}$/.test(asOf)||!Number.isFinite(Date.parse(asOf))||new Date(asOf).toISOString().slice(0,10)!==asOf)throw new HttpError(400,'Data inválida.');
  await requireAccess(res.locals.user,scope,'strategy','read');
  const units=await rows<{id:string;name:string}>('SELECT id,name FROM business_units WHERE active=TRUE ORDER BY name');
@@ -32,7 +33,7 @@ governanceRouter.post('/units',async(req,res)=>{
 governanceRouter.post('/transfer',async(req,res)=>{
  await requireAccess(res.locals.user,'scope-holding','strategy','transfer');
  const companyId=field(req.body?.companyId,40),unitId=field(req.body?.unitId,40),effectiveDate=field(req.body?.effectiveDate,10);
- if(effectiveDate!==new Date().toISOString().slice(0,10))throw new HttpError(400,'Transferência efetiva hoje (UTC), sem alteração retroativa.');
+ if(effectiveDate!==civilToday())throw new HttpError(400,'Transferência efetiva hoje (UTC), sem alteração retroativa.');
  const c=await pool.getConnection();
  try{await c.beginTransaction();
   if(!(await rows('SELECT id FROM companies WHERE id=? FOR UPDATE',[companyId],c))[0])throw new HttpError(404,'Empresa inexistente.');

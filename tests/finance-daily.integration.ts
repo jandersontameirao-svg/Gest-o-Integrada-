@@ -1,9 +1,10 @@
+import {civilToday} from '../shared/civil-date.ts';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {pool,rows} from '../server/db.ts';
 export function registerFinanceDailyTests(base:()=>string,director:()=>Promise<string>,manager:()=>Promise<string>){
- const date=new Date().toISOString().slice(0,10),previous=new Date(date+'T00:00:00Z');previous.setUTCDate(1);previous.setUTCDate(0);const oldDate=previous.toISOString().slice(0,10),company='arqueogis-arqueologia';let account='',series='',anchor='';
+ const date=civilToday(),previous=new Date(date+'T00:00:00Z');previous.setUTCDate(1);previous.setUTCDate(0);const oldDate=previous.toISOString().slice(0,10),company='arqueogis-arqueologia';let account='',series='',anchor='';
  const payload=(description:string,amount='100.00',bucket='income',day=date)=>({description,bucket,amount,currency:'BRL',dueDate:day,competenceDate:day,categoryId:null,accountId:null,contactId:null,projectId:null,contractId:null,documentNumber:'DEMO',paymentMethod:'PIX',costCenterId:null,tagIds:[],notes:'Dados exclusivamente sintéticos'});
  async function api(path:string,method='GET',body?:Record<string,unknown>,co=company,token?:string){return fetch(base()+'/finance'+path+(path.includes('?')?'&':'?')+'companyId='+co,{method,headers:{Authorization:'Bearer '+(token??await director()),'Content-Type':'application/json'},...(body?{body:JSON.stringify({companyId:co,requestId:randomUUID(),reason:'Teste rotina diária sintética',...body})}:{})});}
  async function ok(r:Response,status=200){assert.equal(r.status,status,await r.clone().text());return r.json();}

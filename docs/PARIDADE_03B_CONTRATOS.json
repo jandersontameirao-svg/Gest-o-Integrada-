@@ -34,7 +34,7 @@
       "source": "client/src/lib/pdfUtils.ts",
       "source_sha256": "40153d030e235181bb6cfe041d9df813a7c8e638f2bc46695b27631a3d112a27",
       "destination": "server/contracts/pdf.ts",
-      "adapted_sha256": "f068acede0c0c863c7872707662829f88ecebf9057fd9608dfd178ccb0acbd8e",
+      "adapted_sha256": "ed067b36e752e47bc2c67735f074c380835fc63a8a2edd4129e796135841f95a",
       "reuse": "generatePDF: cabeçalho, tabela, cores e rodapé originais; execução backend e decimais explícitos; demais geradores não portados"
     }
   ],

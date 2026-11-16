@@ -1,3 +1,4 @@
+import {civilToday} from '../shared/civil-date.ts';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
@@ -5,7 +6,7 @@ import {pool,rows} from '../server/db.ts';
 import {unzipSync,strFromU8} from 'fflate';
 export function registerSpecialReportTests(base:()=>string,director:()=>Promise<string>,manager:()=>Promise<string>){
  let id='',foreign='',a='',b='',sprint='',foreignSprint='';const saved=new Map<string,any>();
- const today=new Date().toISOString().slice(0,10),end=new Date(Date.parse(today)+6*86400000).toISOString().slice(0,10);
+ const today=civilToday(),end=new Date(Date.parse(today)+6*86400000).toISOString().slice(0,10);
  const data={name:'Relatório especializado sintético 08E',internalCode:'RPT-08E',description:'Sem dados reais',managerId:null,status:'planning',methodology:'scrum',priority:'medium',currency:'BRL',proposedValue:'0.00',decisionReason:'Planejamento sintético autorizado pelo diretor'};
  async function api(path:string,method='GET',body?:Record<string,unknown>,token?:string){return fetch(base()+path,{method,headers:{Authorization:'Bearer '+(token??await director()),'Content-Type':'application/json'},...(body?{body:JSON.stringify({requestId:randomUUID(),...body})}:{})});}
  const state=async(project=id)=>{const r=await api('/projects/'+project);assert.equal(r.status,200);return r.json();};

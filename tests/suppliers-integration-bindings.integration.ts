@@ -1,6 +1,7 @@
+import {civilToday} from '../shared/civil-date.ts';
 import {test} from 'node:test';import assert from 'node:assert/strict';import {randomUUID,createHash} from 'node:crypto';import {pool,rows} from '../server/db.ts';
 export function registerSupplierBindingTests(base:()=>string,director:()=>Promise<string>){
- const y=new Date().getUTCFullYear(),start=(y-1)+'-01-01',end=(y+2)+'-12-31',today=new Date().toISOString().slice(0,10);let supplier='',template='',document='',contract='',projectContract='',body='',hash='',newBody='',newHash='',bindingRequest:Record<string,unknown>,approvalRequest:Record<string,unknown>;
+ const y=Number(civilToday().slice(0,4)),start=(y-1)+'-01-01',end=(y+2)+'-12-31',today=civilToday();let supplier='',template='',document='',contract='',projectContract='',body='',hash='',newBody='',newHash='',bindingRequest:Record<string,unknown>,approvalRequest:Record<string,unknown>;
  const data={title:'Contrato texto 05F sintético',reference:'BIND-DEMO',contractType:'service',object:'Pesquisa',totalValue:'1000.00',currency:'BRL',startDate:start,endDate:end,paymentTerms:'Condições sintéticas',representative:'Representante sintético',instrumentText:''};
  const large='SEGREDO_SINTETICO_05F cláusula de demonstração.\n'.repeat(1500)+'{{supplier.name}} · {{document.title}}';
  async function api(path:string,method='GET',b?:Record<string,unknown>,co='arqueoproject'){return fetch(base()+path+(path.includes('?')?'&':'?')+'companyId='+co,{method,headers:{Authorization:'Bearer '+await director(),'Content-Type':'application/json'},...(b?{body:JSON.stringify({companyId:co,requestId:randomUUID(),reason:'Teste sintético de vínculo documental',...b})}:{})});}

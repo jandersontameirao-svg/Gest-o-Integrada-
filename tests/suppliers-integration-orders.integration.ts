@@ -1,6 +1,7 @@
+import {civilToday} from '../shared/civil-date.ts';
 import {test} from 'node:test';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';import {pool,rows} from '../server/db.ts';
 export function registerSupplierOrderChangeTests(base:()=>string,director:()=>Promise<string>){
- const y=new Date().getUTCFullYear(),start=(y-1)+'-01-01',finish=(y-1)+'-01-02',end=(y+2)+'-12-31',today=new Date().toISOString().slice(0,10);let supplier='',contract='',project='',task='',order='',proposal='',loser='',appliedRequest:Record<string,unknown>,finalPrice='';
+ const y=Number(civilToday().slice(0,4)),start=(y-1)+'-01-01',finish=(y-1)+'-01-02',end=(y+2)+'-12-31',today=civilToday();let supplier='',contract='',project='',task='',order='',proposal='',loser='',appliedRequest:Record<string,unknown>,finalPrice='';
  const terms={title:'OS integração 05F',reference:'OS-INTEGRATION',startDate:start,endDate:finish,currency:'BRL',remunerationModel:'delivery',unitRate:'0.00',authorizedUnits:0,minimumUnits:0,agreedValue:'200.00',conditions:'Entrega sintética',authorityEvidence:'Poderes sintéticos'};
  async function api(path:string,method='GET',b?:Record<string,unknown>,co='arqueoproject'){return fetch(base()+path+(path.includes('?')?'&':'?')+'companyId='+co,{method,headers:{Authorization:'Bearer '+await director(),'Content-Type':'application/json'},...(b?{body:JSON.stringify({companyId:co,requestId:randomUUID(),reason:'Teste sintético de alteração de OS',...b})}:{})});}
  const integration=(p:string,m='GET',b?:Record<string,unknown>,co?:string)=>api('/suppliers/integration'+p,m,b,co),ops=(p:string,m='GET',b?:Record<string,unknown>)=>api('/suppliers/operations'+p,m,b);

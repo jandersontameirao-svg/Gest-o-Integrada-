@@ -1,5 +1,6 @@
+import {civilToday} from '../shared/civil-date.ts';
 import {test} from 'node:test';import assert from 'node:assert/strict';import {randomUUID,createHash} from 'node:crypto';import {pool,rows} from '../server/db.ts';import {defaultReceipt} from '../shared/finance/receipts.ts';
-export function registerFinanceReceiptTests(base:()=>string,director:()=>Promise<string>,manager:()=>Promise<string>){const company='arqueocean',date=new Date().toISOString().slice(0,10);let account='',titleId='',settlementId='',template:any,receipt:any,preview:any,version:any;
+export function registerFinanceReceiptTests(base:()=>string,director:()=>Promise<string>,manager:()=>Promise<string>){const company='arqueocean',date=civilToday();let account='',titleId='',settlementId='',template:any,receipt:any,preview:any,version:any;
  async function api(path:string,method='GET',body?:Record<string,unknown>,co=company,token?:string){return fetch(base()+'/finance'+path+(path.includes('?')?'&':'?')+'companyId='+co,{method,headers:{Authorization:'Bearer '+(token??await director()),'Content-Type':'application/json'},...(body?{body:JSON.stringify({companyId:co,requestId:randomUUID(),...body})}:{})});}
  async function ok(r:Response,status=200){assert.equal(r.status,status,await r.clone().text());return r.json();}
  const issue=(p:any,extra:Record<string,unknown>={})=>api('/titles/'+titleId+'/receipts/issue','POST',{previewRequestId:p.previewRequestId,previewToken:p.previewToken,reason:'Emissão sintética validada',...extra});

@@ -1,3 +1,4 @@
+import {civilToday} from '../../shared/civil-date.ts';
 import {strategyFinancialIndicators} from '../../shared/finance/strategy-indicators.ts';
 import {originProjection,type OriginKind} from '../../shared/finance/origin-position.ts';
 import {registerIntegrity} from './integrity.ts';
@@ -14,7 +15,7 @@ import {buildReport,csvCell,type ReportFilter,type Selection} from '../../shared
 import {getContract,records as contractRecords} from '../contracts/router.ts';
 import {netItems} from '../../shared/contracts/measurements.ts';
 import {Router,type Request} from 'express';import {randomUUID,createHash} from 'node:crypto';import type {PoolConnection} from 'mysql2/promise';import type {Principal} from '../../shared/catalog.ts';import {pool,rows} from '../db.ts';import {requireAccess,checkAccess} from '../access.ts';import {HttpError} from '../policy.ts';import {obj,text,uuid,day,decimal,invalid} from '../contracts/validation.ts';import {fields} from '../suppliers/validation.ts';import {cents,amount} from '../../shared/contracts/model.ts';import {buckets,accountTypes,natures,frequencies,installments,nextOccurrence,paid,pending,titleStatus,financeSummary,type Title,type TitleData,type Account,type Category,type Settlement,type CashMovement,type Bucket} from '../../shared/finance/model.ts';import {measurementTotals,type SupplierMeasurement} from '../../shared/suppliers/reviews.ts';import {getSupplierOrder,requireSupplierOrderRead} from '../suppliers/operations-router.ts';import {generatePDF} from '../contracts/pdf.ts';
-const router=Router(),decode=(v:unknown)=>typeof v==='string'?JSON.parse(v):v,json=JSON.stringify,today=()=>new Date().toISOString().slice(0,10),co=(r:Request)=>text(r.method==='GET'?r.query.companyId:obj(r.body).companyId,40);
+const router=Router(),decode=(v:unknown)=>typeof v==='string'?JSON.parse(v):v,json=JSON.stringify,today=()=>civilToday(),co=(r:Request)=>text(r.method==='GET'?r.query.companyId:obj(r.body).companyId,40);
 async function access(u:Principal,company:string,action='read',c:PoolConnection|typeof pool=pool){await requireAccess(u,'scope-company:'+company,'finance','read',c);if(action!=='read')await requireAccess(u,'scope-company:'+company,'finance',action,c);}
 async function bucketAccess(u:Principal,company:string,bucket:Bucket,action:string,c:PoolConnection|typeof pool=pool){await access(u,company,action,c);if(action!=='read')await requireAccess(u,'scope-company:'+company,'finance',bucket+'.read',c);await requireAccess(u,'scope-company:'+company,'finance',bucket+'.'+action,c);}
 function cas(value:unknown,current:number){if(value!==current)throw new HttpError(409,'Revisão alterada; recarregue antes de confirmar.');}
